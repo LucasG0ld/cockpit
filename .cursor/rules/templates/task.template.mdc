@@ -1,0 +1,45 @@
+id: "TASK-[ID_UNIQUE_OU_TICKET]"
+title: "[Titre court et actionnable de la tâche]"
+status: "planned"
+priority: "P0"
+labels: ["[backend]", "[frontend]", "[types]", "[tests]", "[CI]"]
+dependencies: ["[TASK-ID_DEPENDANCE_1]", "[TASK-ID_DEPENDANCE_2]"]
+created: "[YYYY-MM-DD]"
+---
+
+### 1. High-Level Objective
+<!-- Une phrase qui décrit l'état final observable. Éviter le jargon technique. -->
+
+### 2. Background / Context (Optionnel mais recommandé)
+<!-- Courte explication ou justification métier de la tâche. Lier aux tickets/PRDs pertinents. -->
+
+### 3. Assumptions & Constraints
+<!-- Lister toute information manquante ou contrainte à respecter. -->
+-   **ASSUMPTION:** [Si une info manque, énoncez ici l'hypothèse pragmatique.]
+-   **CONSTRAINT:** [Ex: "Utiliser uniquement les dépendances listées dans package.json."]
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+<!-- Lister les fichiers qui doivent être lus ou les tâches qui doivent être terminées avant. -->
+-   **Tasks:** `[ID de la tâche]`
+-   **Files:** `[chemin/vers/fichier/requis]`
+
+### 5. Context Plan
+<!-- **Instruction à l'IA :** Lister ici tous les fichiers que tu dois lire pour compléter cette tâche. Marquer les dépendances en lecture seule (read-only). -->
+-   **BEGIN (add to model context):**
+    -   `src/main.ts`
+    -   `src/types.ts`
+    -   `tests/main.test.ts`
+-   **END STATE (must exist after completion):**
+    -   `src/new-feature.ts`
+    -   `tests/new-feature.test.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+<!-- Étapes concrètes et atomiques. Utiliser des mots-clés denses et des chemins de fichiers. -->
+1.  **IMPLEMENT** `function newFunction()` in `src/new-feature.ts`
+2.  **ADD** test case for `newFunction()` in `tests/new-feature.test.ts`
+3.  ...
+
+### 7. Acceptance Criteria
+<!-- Critères testables et non-ambigus. -->
+-   [ ] Le test d'intégration `test_new_feature_e2e` passe avec succès.
+-   [ ] Le code est conforme aux linters.

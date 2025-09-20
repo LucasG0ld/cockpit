@@ -1,0 +1,50 @@
+# PRD : [Nom de la Fonctionnalité]
+
+**Version:** 1.0
+**Date:** [YYYY-MM-DD]
+**Auteur:** [Votre Nom / Architecte]
+**Épique parente:** [Lien vers le PRD Global ou l'ID de l'épique, ex: `prd-global.mdc#DoD-1`]
+
+---
+
+### 1. Objectif Principal (Le "Pourquoi")
+<!-- Décrivez en 1-2 phrases l'objectif business ou utilisateur de cette fonctionnalité. -->
+
+---
+
+### 2. Personas Utilisateurs
+<!-- Listez les types d'utilisateurs concernés. -->
+
+---
+
+### 3. User Stories & Critères d'Acceptation (Le "Quoi")
+
+#### US-1: [Titre de la User Story]
+*   **En tant que** [type d'utilisateur],
+*   **Je veux** [action],
+*   **Afin de** [résultat].
+
+**Critères d'Acceptation :**
+*   [ ] **Given** [contexte], **When** [action], **Then** [résultat observable et testable].
+*   [ ] **Given** [contexte d'erreur], **When** [action], **Then** [résultat d'erreur].
+
+#### US-2: [Titre de la User Story 2]
+*   ...
+
+---
+
+### 4. Contraintes Techniques et Non-Fonctionnelles
+<!-- Listez les règles spécifiques que l'IA doit respecter. Référencez, ne dupliquez pas. -->
+*   **Référence aux types :** Doit utiliser les types définis dans `src/types/[nom].ts`.
+*   **Référence à l'architecture :** Doit respecter la décision `ADR-XXXX`.
+*   **Contrainte de performance :** ...
+
+---
+
+### 5. Périmètre (Scope)
+
+#### Ce qui est Inclus :
+*   [Description de la fonctionnalité incluse]
+
+#### Ce qui est Exclu (Pour de Futures Tâches) :
+*   [Description de la fonctionnalité non incluse]
