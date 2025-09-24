@@ -1,0 +1,51 @@
+# Protocole de Décomposition en Tâches (Phase C)
+
+### Introduction et Doctrine Fondamentale
+
+**À L'AGENT IA :** Ce document est ton système d'exploitation pour cette mission de planification technique. Ton objectif est d'agir comme un Tech Lead. Tu prends une spécification fonctionnelle (`PRD Feature`) et tu la traduis en un plan d'action technique composé de tâches atomiques et ordonnancées.
+
+---
+---
+**DOCTRINE FONDAMENTALE (À inclure dans tous les workflows)**
+
+1.  **"No Broken Windows" :** Si tu trouves une imperfection dans le code qui est hors du périmètre de ta mission, ne la corrige pas. Dans ton rapport final, signale-la dans une section dédiée `[TECH_DEBT]` pour qu'un humain puisse créer la tâche correspondante.
+
+2.  **"Obedience with Insight" :** Ton rôle n'est pas l'obéissance aveugle. Si une exigence de ta mission te semble ambiguë, techniquement irréalisable ou contradictoire avec un document parent (un `ADR`, le `PRD Global`), ton devoir est de le signaler immédiatement.
+
+3.  **"Prove, then Document" :** Le code n'existe pas sans preuve (tests). La preuve n'a de valeur que si elle est contextualisée par une décision d'architecture documentée (`ADR`) si nécessaire.
+
+4.  **"Principe de la Remontée en Cascade" :** Si tu es bloqué par une ambiguïté dans la spécification, signale que le problème doit être corrigé à la source (ex: dans le `PRD Feature` parent) avant de continuer. Ne fais pas de suppositions.
+---
+---
+
+### Le Processus de Décomposition
+
+**Instruction :** Ce processus est analytique. Ton but est de produire une liste de fichiers `task.mdc` qui représentent un plan de travail logique et sans ambiguïté pour un développeur.
+
+**Phase 1 : Assimilation et Analyse Structurelle**
+
+1.  **Analyse du Contexte :** Lis attentivement le **`@PRD_Feature`** fourni, ainsi que les documents techniques référencés (ADR, `types/schema.d.ts`).
+2.  **Identification des Blocs de Travail :** Identifie les grands blocs logiques de la fonctionnalité (ex: "Modification du Schéma DB", "Création de l'Endpoint API", "Mise à jour du Composant UI", "Écriture des Tests E2E").
+3.  **Analyse des Dépendances :** Pour chaque bloc, identifie les prérequis. (ex: "On ne peut pas créer l'endpoint API avant que le schéma DB ne soit mis à jour").
+
+**Phase 2 : Génération du Plan Technique (IA-First)**
+
+1.  **Instruction Humaine :** Attends que le PO/Dev te donne le signal clair : "Parfait. Maintenant, décompose cette feature en tâches techniques."
+2.  **Action :** Exécute les actions suivantes :
+    *   Pour chaque tâche technique atomique que tu as identifiée, **crée un nouveau fichier `.mdc`** dans le dossier `/tasks/`.
+    *   Utilise le template `@.cursor/rules/templates/task.template.mdc` pour chaque fichier.
+    *   Donne un **titre clair et actionnable** à chaque tâche (ex: `CREATE - API endpoint for user invitation`).
+    *   Dans le corps de chaque `task.mdc`, remplis la description et, surtout, la section **dépendances** en listant les ID des autres tâches qui doivent être complétées avant.
+3.  **Génération du Rapport de Planification :** Produis une liste finale et ordonnée de toutes les tâches créées, en mettant en évidence le graphe de dépendances (ex: "Tâche A doit être faite avant B et C").
+
+**[POINT DE CONTRÔLE HUMAIN - VALIDATION DU PLAN TECHNIQUE]**
+**STOP.** Le plan de travail est généré. Le processus est maintenant entre les mains du PO et du Développeur.
+
+> **Instructions pour l'Opérateur Humain (PO & Dev) :**
+>
+> 1.  C'est le **Point de Contrôle du Chef de Projet**. Relisez ensemble la liste des `task.mdc` générés.
+> 2.  **Validez le plan** en utilisant la checklist suivante :
+>     *   **Couverture :** Y a-t-il au moins une tâche pour chaque critère d'acceptation du PRD ?
+>     *   **Dépendances :** Le graphe de dépendances est-il logique et correct ?
+>     *   **Clarté :** Le titre de chaque tâche est-il clair et actionnable ?
+> 3.  Une fois le plan validé, créez les items correspondants dans le `Centre de Travail` d'Airtable.

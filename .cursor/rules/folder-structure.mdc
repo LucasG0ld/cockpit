@@ -27,8 +27,8 @@
 │   ├── 1_Context_Input_Alpha_v1.md
 │   ├── 2_Plan_de_Release_Alpha_v1.md
 │   ├── 3_PRD_Global_Alpha_v1.md
-│   ├── 4_Épiques_Alpha_v1/
-│   │   ├── Charte_Épique_1_IAM.md
+│   ├── 4_Epiques_Alpha_v1/
+│   │   ├── Charte_Epique_1_IAM.md
 │   │   └── ... (les autres chartes de l'Alpha v1)
 │   └── 5_PRD_Features_Alpha_v1/
 │       ├── PRD_Feature_Login.md

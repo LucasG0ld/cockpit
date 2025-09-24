@@ -1,0 +1,123 @@
+# Protocole d'Implémentation de Tâche (Phase D)
+
+### Introduction et Doctrine Fondamentale
+
+**À L'AGENT IA :** Ce document est ton système d'exploitation pour l'implémentation d'une tâche technique. Tu pars d'un plan validé (`task.mdc`). Ta mission est de le transformer en code de production, testé et de haute qualité. Suis ce protocole et ses commandes avec une rigueur absolue.
+
+---
+---
+**DOCTRINE FONDAMENTALE (À inclure dans tous les workflows)**
+
+1.  **"No Broken Windows" :** Si tu trouves une imperfection dans le code qui est hors du périmètre de ta mission, ne la corrige pas. Dans ton rapport final, signale-la dans une section dédiée `[TECH_DEBT]` pour qu'un humain puisse créer la tâche correspondante.
+
+2.  **"Obedience with Insight" :** Ton rôle n'est pas l'obéissance aveugle. Si une exigence de ta mission te semble ambiguë, techniquement irréalisable ou contradictoire avec un document parent (un `ADR`, le `PRD Global`), ton devoir est de le signaler immédiatement.
+
+3.  **"Prove, then Document" :** Le code n'existe pas sans preuve (tests). La preuve n'a de valeur que si elle est contextualisée par une décision d'architecture documentée (`ADR`) si nécessaire.
+
+4.  **"Principe de la Remontée en Cascade" :** Si tu es bloqué par une ambiguïté dans la spécification, signale que le problème doit être corrigé à la source (ex: dans le `PRD Feature` parent) avant de continuer. Ne fais pas de suppositions.
+---
+---
+
+### Le Processus d'Implémentation en 7 Phases
+
+#### Phase 1 : Planification & Clarification
+
+**Instruction :** Phase de lecture et de questionnement. Ne génère aucun code d'implémentation ni de commande Git.
+
+1.  **Assimilation du Contexte :** Analyse la tâche assignée (`task.mdc`) et ses références (`PRD Feature` parent, `ADR` pertinents, code existant).
+2.  **Plan d'Action :** Rédige un plan détaillé incluant :
+    *   La liste exhaustive des fichiers à créer ou modifier.
+    *   Les `types` et `interfaces` à définir.
+    *   Une stratégie de test complète, décrivant les **scénarios de tests d'intégration réels** qui valideront les exigences de la tâche.
+    *   L'identification de tout risque potentiel.
+3.  **Clarification & Challenge :** Ajoute une section "Clarifications & Assumptions". Si une exigence est ambiguë, pose une question pour la clarifier.
+
+**[POINT DE CONTRÔLE HUMAIN N°1 - ASYNCHRONE]**
+**STOP.** Soumets ton plan. Attends l'approbation humaine.
+
+---
+
+#### Phase 2 : Initialisation de l'Environnement de Travail
+
+**Instruction :** Une fois le plan approuvé, exécute les commandes suivantes pour préparer la branche de travail.
+
+1.  `git checkout main`
+2.  `git pull origin main`
+3.  `git checkout -b feature/[ID-du-ticket-description-courte]` (Adapte le nom de la branche comme défini dans le plan).
+
+---
+
+#### Phase 3 : Développement et Itérations
+
+**Instruction :** Tu es maintenant sur la branche de feature. Commence le cycle de développement.
+
+1.  **Cycle TDD :**
+    *   Écrire le Test d'Intégration qui échoue (RED).
+    *   Écrire le Code d'Implémentation pour faire passer le test (GREEN).
+    *   Refactorer le code pour améliorer sa clarté si nécessaire, en s'assurant que les tests passent toujours.
+2.  **Commit et Push Réguliers :** Après chaque avancée significative et fonctionnelle, exécute :
+    *   `git add .`
+    *   `git commit -m "feat: [décris l'avancée]"` (ou `fix:`, `chore:`, etc.)
+    *   La première fois : `git push -u origin feature/[nom-de-la-branche]`
+    *   Les fois suivantes : `git push`
+3.  **Règle d'Escalade :** Après 3 tentatives infructueuses pour faire passer un test, **STOP**. Signale le blocage et demande de l'aide humaine.
+
+---
+
+#### Phase 4 : Validation et Intégration Continue (Quality Gate)
+
+**Instruction :** Une fois l'implémentation terminée sur la branche, prouve que ton travail est sûr.
+
+1.  `./run_quality_gate.sh`
+2.  Ne procède à la phase suivante que si le rapport est "SUCCESS".
+
+---
+
+#### Phase 5 : Handoff pour Validation Humaine
+
+**Instruction :** Prépare le compte-rendu pour la revue humaine.
+
+1.  Rédige l'ADR, le PIP et la liste de `[TECH_DEBT]` si nécessaire.
+2.  Prépare un message de synthèse final.
+
+**[POINT DE CONTRÔLE HUMAIN N°2 - VALIDATION POUR FUSION]**
+**Action :** Affiche le bloc de texte suivant et attends l'instruction de l'opérateur.
+
+> ---
+> **Instructions pour l'Opérateur Humain :**
+>
+> 1.  **Revue du Code :** Le travail a été réalisé et prouvé sur la branche `feature/[nom-de-la-branche]`. Veuillez la vérifier.
+> 2.  **Validation Finale :** Effectuez vos propres tests si nécessaire.
+> 3.  **Instruction de Fusion :** Si le travail est approuvé, répondez par : **"Le travail est validé. Procède à la fusion dans main."**
+>
+> ---
+
+---
+
+#### Phase 6 : Fusion Contrôlée (sur instruction humaine)
+
+**Instruction :** N'exécute cette phase que sur réception de la commande de fusion explicite.
+
+1.  Accuse réception de l'ordre.
+2.  Exécute rigoureusement les commandes suivantes :
+    *   `git checkout main`
+    *   `git pull origin main`
+    *   `git merge feature/[nom-de-la-branche]`
+3.  **Gestion des Conflits :**
+    *   **En cas de succès :** Passe à l'étape 4.
+    *   **En cas de conflit :** **STOP IMMEDIATEMENT.** Annule la fusion (`git merge --abort`). Signale le conflit. Ne tente jamais de le résoudre.
+4.  **Finalisation :**
+    *   `git push origin main`
+5.  Informe l'opérateur que la fusion et le push ont réussi, puis passe à la phase finale.
+
+---
+
+#### Phase 7 : Nettoyage (sur instruction humaine)
+
+**Instruction :** Le code est sur `main`. Propose de nettoyer l'environnement de travail.
+
+1.  Pose la question : "La fusion est terminée. Puis-je supprimer la branche `feature/[nom-de-la-branche]` en local et sur le dépôt distant ?"
+2.  **Si la réponse est "oui"**, exécute :
+    *   `git branch -d feature/[nom-de-la-branche]`
+    *   `git push origin --delete feature/[nom-de-la-branche]`
+3.  Confirme que le nettoyage est terminé. La tâche est maintenant officiellement close.
