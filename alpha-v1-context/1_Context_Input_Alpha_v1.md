@@ -69,7 +69,7 @@
 
 ## Stack Technique (Contraintes Imposées)
 *   **Frontend** : Next.js (App Router, TypeScript), shadcn/ui, Tailwind CSS.
-*   **Backend** : Next.js API Routes.
+*   **Backend** : Nest.js.
 *   **Base de Données** : Neon (PostgreSQL) avec Prisma.
 *   **Stockage de fichiers** : Cloudflare R2.
 *   **Authentification** : Clerk.
