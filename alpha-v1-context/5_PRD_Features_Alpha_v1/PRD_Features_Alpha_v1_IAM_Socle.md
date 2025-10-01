@@ -22,6 +22,11 @@ Sécuriser l'accès au Cockpit et poser les fondations d'IAM multi-tenant: authe
 
 ### 3. User Stories & Critères d'Acceptation (Le "Quoi")
 
+> Note de Modélisation — Identity vs Membership
+> - Identity: représente l'identité globale d'un utilisateur (ex: `clerkId`, `email`).
+> - Membership: représente l'appartenance d'une Identity à une `Organization`, et porte le `role` et le `status` (ainsi que le contexte d'org).
+> - Conséquence: les opérations de rôle, statut, désactivation/réactivation et transferts s'appliquent à la Membership (scopée à l'organisation), pas à l'Identity globale.
+
 #### US-1: Connexion sécurisée (Clerk) et 2FA obligatoire
 *   **En tant que** utilisateur interne,
 *   **Je veux** être forcé de configurer et d'utiliser une 2FA email à ma première connexion,
@@ -61,7 +66,7 @@ Sécuriser l'accès au Cockpit et poser les fondations d'IAM multi-tenant: authe
 *   [ ] **Given** une invitation avec option "À configurer plus tard", **When** j'accepte, **Then** mon compte est créé avec rôle "Temporaire" sans permissions et un Admin doit m'assigner un rôle définitif avant tout accès au Cockpit.
 *   [ ] **Given** un invité interne, **When** je termine la création de mot de passe, **Then** la configuration 2FA email est immédiatement exigée avant tout accès.
 
-#### US-4: Changement de rôle d'un membre
+#### US-4: Changement de rôle d'un membre (Membership)
 *   **En tant que** Admin,
 *   **Je veux** modifier le rôle d'un membre (y compris le mien),
 *   **Afin de** ajuster ses permissions.
@@ -71,7 +76,7 @@ Sécuriser l'accès au Cockpit et poser les fondations d'IAM multi-tenant: authe
 *   [ ] **Given** un changement de rôle, **When** le rôle entraîne des responsabilités différentes, **Then** l'Admin est invité à réassigner les éléments rattachés à l'ancien rôle (logique similaire aux transferts lors d'une désactivation) avant validation.
 *   [ ] **Given** un changement de rôle, **When** l'opération réussit, **Then** journaliser `user.role.changed` avec `metadata: {from, to}` (succès uniquement).
 
-#### US-5: Désactivation (soft-delete) et Réactivation d'un membre
+#### US-5: Désactivation (soft-delete) et Réactivation d'un membre (Membership)
 *   **En tant que** Admin,
 *   **Je veux** désactiver puis éventuellement réactiver un membre,
 *   **Afin de** contrôler l'accès et assurer la continuité de service.
@@ -99,7 +104,7 @@ Sécuriser l'accès au Cockpit et poser les fondations d'IAM multi-tenant: authe
 *   **Afin de** assurer la traçabilité.
 
 **Critères d'Acceptation :**
-*   [ ] **Given** une action IAM réussie, **When** elle se termine, **Then** enregistrer un événement d'audit avec les champs minimum `{orgId, actorId, type, targetId, metadata, createdAt}`.
+*   [ ] **Given** une action IAM réussie, **When** elle se termine, **Then** enregistrer un événement d'audit avec les champs minimum `{orgId, actorId, type, targetId, metadata, createdAt}`. `actorId` référence une Identity; le contexte d'organisation est défini par `orgId`. `metadata` peut inclure `membershipId` lorsque pertinent (ex: changements de rôle/statut).
 *   [ ] **Given** les actions suivantes, **When** elles réussissent, **Then** tracer: `user.team_member.invited`, `user.team_member.activated`, `user.role.changed`, `user.status.changed`.
 *   [ ] **Given** une action IAM échouée, **When** elle se termine en erreur, **Then** ne pas tracer d'événement (sauf exceptions métiers non IAM comme `payment.failed`, hors périmètre de cette feature).
 

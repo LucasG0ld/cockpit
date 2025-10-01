@@ -2,6 +2,10 @@
 
 Ce document est la source de vérité unique pour tous les événements liés à l'épique 1 (IAM). Il représente la "boîte à outils" des actions que le système peut tracer pour cette fonctionnalité. Tous les noms d'événements doivent suivre la convention `domaine.objet.action` en `snake_case`.
 
+Notes de modélisation:
+- `actorId` référence une `Identity` (et non une Membership). Le contexte d'organisation est capturé via `organizationId`.
+- `metadata` peut inclure `membershipId` lorsque pertinent (ex: changements de rôle/statut au niveau d'une Membership).
+
 | Nom de l'Événement | Déclencheur | Description | Exemple de Metadata |
 | :--- | :--- | :--- | :--- |
 | **`user.team_member.invited`** | Un administrateur envoie une invitation avec succès depuis la page "Équipe". | Trace l'invitation d'un nouveau membre dans une organisation. | `{ "invitedEmail": "new@member.com", "assignedRole": "CSM" }` |

@@ -38,34 +38,32 @@ enum InvitationStatus {
 // --- Tables ---
 
 model Organization {
-  id        String   @id @default(cuid()) // Préfixe: "org_"
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  externalId   String   @unique // Identifiant exposé dans les JWT (ex: "org_<ulid>")
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  users        User[]
+  memberships  Membership[]
   invitations  Invitation[]
   auditEvents  AuditEvent[]
 }
 
-model User {
-  id             String     @id @default(cuid()) // Préfixe: "usr_"
-  clerkId        String     @unique // ID essentiel pour lier à Clerk.
-  email          String     @unique
-  role           UserRole
-  status         UserStatus @default(Active)
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+// Identity globale (unique par clerkId/email), multi-organisation via Membership
+model Identity {
+  id            String   @id @default(cuid())
+  clerkId       String   @unique
+  email         String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  sentInvitations Invitation[] @relation("Inviter")
-  auditEvents     AuditEvent[] @relation("Actor")
+  memberships   Membership[]
+  sentInvites   Invitation[] @relation("Inviter")
+  auditEvents   AuditEvent[] @relation("Actor")
 }
 
 model Invitation {
-  id             String           @id @default(cuid()) // Préfixe: "ivt_"
+  id             String           @id @default(cuid())
   email          String
   role           UserRole
   status         InvitationStatus @default(Pending)
@@ -78,11 +76,11 @@ model Invitation {
   organization   Organization     @relation(fields: [organizationId], references: [id])
 
   invitedById    String
-  invitedBy      User             @relation("Inviter", fields: [invitedById], references: [id])
+  invitedBy      Identity         @relation("Inviter", fields: [invitedById], references: [id])
 }
 
 model AuditEvent {
-  id             String   @id @default(cuid()) // Préfixe: "evt_"
+  id             String   @id @default(cuid())
   eventType      String   // ex: "user.team_member.invited"
   metadata       Json?
   createdAt      DateTime @default(now())
@@ -91,7 +89,27 @@ model AuditEvent {
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   actorId        String
-  actor          User         @relation("Actor", fields: [actorId], references: [id])
+  actor          Identity     @relation("Actor", fields: [actorId], references: [id])
 
-  targetId       String? // ID de l'entité affectée (ex: "usr_xyz").
+  targetId       String? // ID de l'entité affectée (ex: membershipId).
 }
+
+// Appartenance d'une Identity à une Organization, porte rôle/statut/context
+model Membership {
+  id             String     @id @default(cuid())
+  role           UserRole
+  status         UserStatus @default(Active)
+  disabledAt     DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  identityId     String
+  identity       Identity     @relation(fields: [identityId], references: [id])
+
+  @@unique([organizationId, identityId])
+}
+
+// Politique de suppression: RESTRICT (pas de cascade). Les suppressions doivent être explicites au niveau applicatif.
