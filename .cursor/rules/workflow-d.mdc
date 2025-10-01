@@ -71,12 +71,17 @@
 
 ---
 
-#### Phase 4 : Validation et Intégration Continue (Quality Gate)
+#### Phase 4 : Validation Automatisée (Quality Gate)
 
-**Instruction :** Une fois l'implémentation terminée sur la branche, prouve que ton travail est sûr.
+**Instruction :** Prouve que ton travail est sûr en exécutant le script de Quality Gate. Ce script est configuré pour échouer et arrêter tout le processus (`set -e`/`$ErrorActionPreference = "Stop"`) si une seule étape de validation n'est pas respectée.
 
-1.  `./run_quality_gate.sh`
-2.  Ne procède à la phase suivante que si le rapport est "SUCCESS".
+**Action :**
+1.  Détecte ton OS :
+    *   macOS / Linux : `npm run quality-gate:mac`
+    *   Windows : `npm run quality-gate:win`
+2.  Exécute la commande correspondante depuis la racine du projet. Le succès (code de sortie 0) est la **seule condition** pour passer à la Phase 5. En cas d'échec, ton processus s'arrête ici. Signale l'erreur précise et attends l'instruction humaine.
+
+**Note :** Assure-toi que ton terminal permet l'exécution des scripts.
 
 ---
 
