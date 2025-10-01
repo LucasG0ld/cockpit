@@ -1,5 +1,5 @@
 #!/bin/bash
-# ==============================================================================
+# ============================================================================== 
 # QUALITY GATE (macOS / Linux)
 # ==============================================================================
 
@@ -16,6 +16,11 @@ print_success() {
   echo "✅  $1"
 }
 
+print_failure() {
+  echo "❌  $1" >&2
+  exit 1
+}
+
 print_final_success() {
   echo ""
   echo "🎉🎉🎉=======================================================🎉🎉🎉"
@@ -23,21 +28,21 @@ print_final_success() {
   echo "🎉🎉🎉=======================================================🎉🎉🎉"
 }
 
-print_step "1/4 - Lint"
-npm run lint
-print_success "Le code respecte les standards de style."
+run_step() {
+  local label="$1"
+  local command="$2"
+  print_step "$label"
+  if eval "$command"; then
+    print_success "$label — OK"
+  else
+    print_failure "$label — ÉCHEC"
+  fi
+}
 
-print_step "2/4 - Typecheck"
-npm run typecheck
-print_success "La structure des données est valide."
-
-print_step "3/4 - Tests"
-npm run test
-print_success "Tous les tests sont verts."
-
-print_step "4/4 - Build"
-npm run build
-print_success "Compilation réussie."
+run_step "1/4 - Lint" "npm run lint"
+run_step "2/4 - Typecheck" "npm run typecheck"
+run_step "3/4 - Tests" "npm run test"
+run_step "4/4 - Build" "npm run build"
 
 print_final_success
 
