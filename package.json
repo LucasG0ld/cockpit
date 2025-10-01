@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "quality-gate": "bash run_quality_gate.sh"
+    "quality-gate": "node scripts/quality-gate.js",
+    "quality-gate:mac": "bash ./run_quality_gate_mac.sh",
+    "quality-gate:win": "powershell -ExecutionPolicy Bypass -File .\\run_quality_gate_win.ps1"
   },
   "keywords": [],
   "author": "",
