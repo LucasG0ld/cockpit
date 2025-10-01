@@ -11,7 +11,7 @@ created: "2025-10-01"
 Affichage d\'une ligne d\'audit `{eventType, actor, target, createdAt}`.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-PRD US-7: structure minimale d\'audit.
+PRD US-7 et `.docs/annex/epic-1-iam/events.md`.
 
 ### 3. Assumptions & Constraints
 -   **ASSUMPTION:** Données fournies par API audit.

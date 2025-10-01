@@ -3,7 +3,7 @@ title: "FEAT(atom): EmailInput (validation et messages PRD)"
 status: "planned"
 priority: "P1"
 labels: ["[frontend]", "[atoms]", "[forms]"]
-dependencies: []
+dependencies: ["TASK-IAM-BE-004-Invitations-API"]
 created: "2025-10-01"
 ---
 

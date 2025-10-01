@@ -32,7 +32,7 @@ PRD US-6: Toutes les données scoppées par `orgId` extrait du JWT; 403 sur mism
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
 1.  **IMPLEMENT** un interceptor ou service helper injectant `orgId` dans les requêtes Prisma.
-2.  **REFactor** les services IAM pour toujours joindre `where: { organizationId: orgId }`.
+2.  **REFACTOR** les services IAM pour toujours joindre `where: { organizationId: orgId }`.
 3.  **ADD** tests e2e prouvant que les listes sont filtrées par `orgId`.
 
 ### 7. Acceptance Criteria

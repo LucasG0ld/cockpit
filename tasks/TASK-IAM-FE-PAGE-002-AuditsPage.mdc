@@ -3,7 +3,7 @@ title: "FEAT(page): AuditsPage (observabilité IAM succès)"
 status: "planned"
 priority: "P2"
 labels: ["[frontend]", "[page]", "[audit]"]
-dependencies: ["TASK-IAM-FE-ORG-006-AuditEventsTable"]
+dependencies: ["TASK-IAM-FE-ORG-006-AuditEventsTable", "TASK-IAM-FE-TPL-002-AuditsTemplate"]
 created: "2025-10-01"
 ---
 
@@ -17,7 +17,7 @@ PRD US-7: observabilité minimale.
 -   **ASSUMPTION:** Table organisme prête.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-FE-ORG-006-AuditEventsTable`
+-   **Tasks:** `TASK-IAM-FE-ORG-006-AuditEventsTable`, `TASK-IAM-FE-TPL-002-AuditsTemplate`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
@@ -26,7 +26,7 @@ PRD US-7: observabilité minimale.
     - `apps/frontend/src/components/pages/AuditsPage.tsx`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **RENDER** `AuditEventsTable`.
+1.  **RENDER** `AuditsTemplate`.
 
 ### 7. Acceptance Criteria
 -   [ ] Liste affichée.

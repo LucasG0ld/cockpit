@@ -11,7 +11,7 @@ created: "2025-10-01"
 Badge pour types d'événements IAM listés (invited, activated, role.changed, status.changed).
 
 ### 2. Background / Context (Optionnel mais recommandé)
-PRD US-7: types d'événements IAM succès.
+PRD US-7 et `.docs/annex/epic-1-iam/events.md`.
 
 ### 3. Assumptions & Constraints
 -   **ASSUMPTION:** Mapping type → style défini localement.
@@ -26,7 +26,7 @@ PRD US-7: types d'événements IAM succès.
     - `apps/frontend/src/components/atoms/EventTypeBadge.tsx`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **CREATE** `EventTypeBadge` avec mapping.
+1.  **CREATE** `EventTypeBadge` avec mapping basé sur `events.md`.
 
 ### 7. Acceptance Criteria
 -   [ ] Rendu lisible des 4 types IAM.

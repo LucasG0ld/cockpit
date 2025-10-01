@@ -8,7 +8,8 @@ dependencies: [
   "TASK-IAM-FE-ORG-002-MembersTable",
   "TASK-IAM-FE-ORG-003-DeactivationModal",
   "TASK-IAM-FE-ORG-004-ReactivationModal",
-  "TASK-IAM-FE-ORG-005-RoleChangeDialog"
+  "TASK-IAM-FE-ORG-005-RoleChangeDialog",
+  "TASK-IAM-FE-TPL-001-TeamTemplate"
 ]
 created: "2025-10-01"
 ---
@@ -33,7 +34,7 @@ PRD §5 et US-2/4/5.
     - `apps/frontend/src/components/pages/TeamPage.tsx`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **COMPOSE** organismes, gérer état de page et rafraîchissements.
+1.  **COMPOSE** template + organismes, gérer état de page et rafraîchissements.
 2.  **HANDLE** messages d'erreurs globaux.
 
 ### 7. Acceptance Criteria

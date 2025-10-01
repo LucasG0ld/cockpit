@@ -3,7 +3,7 @@ title: "FEAT(api): Désactivation/Réactivation (transfert + audit + PII J+14)"
 status: "planned"
 priority: "P0"
 labels: ["[backend]", "[api]", "[audit]", "[tests]"]
-dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement", "TASK-IAM-BE-008-Audit-Service"]
 created: "2025-10-01"
 ---
 
@@ -11,20 +11,21 @@ created: "2025-10-01"
 Exposer les endpoints pour désactiver et réactiver un membre, avec transferts obligatoires, invalidation de sessions, et journalisation.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-PRD US-5: transfert clients CSM, réassignation onboarding Closer → Admin désactivateur, rôle Temporaire à la réactivation, purge PII après J+14.
+PRD US-5: transfert clients CSM, réassignation onboarding Closer → Admin désactivateur, rôle Temporaire à la réactivation, purge PII après J+14. Événement autorisé: `user.status.changed`.
 
 ### 3. Assumptions & Constraints
 -   **ASSUMPTION:** Les entités "clients" existent et sont listables par propriétaire.
 -   **CONSTRAINT:** Invalidation immédiate des sessions lors de la désactivation.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-003-Tenant-Enforcement`
--   **Files:** `apps/backend/src/api/**`, `apps/backend/src/services/**`
+-   **Tasks:** listées ci-dessus.
+-   **Files:** `apps/backend/src/api/**`, `apps/backend/src/services/**`, `.docs/annex/epic-1-iam/events.md`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
     - `apps/backend/src/api/**`
     - `apps/backend/src/services/**`
+    - `.docs/annex/epic-1-iam/events.md` (read-only)
 -   **END STATE (must exist after completion):**
     - `apps/backend/src/api/users/status.controller.ts`
     - `apps/backend/src/api/users/status.service.ts`

@@ -8,40 +8,39 @@ created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Mettre en place le schéma de base de données IAM (Organisation, User, Invitation, AuditEvent + enums) tel que défini par la Source de Vérité `epic-1-iam.schema.md`, prêt pour utilisation par les APIs et l'UI.
+Mettre en place le schéma de base de données IAM (Organization, User, Invitation, AuditEvent + enums) tel que défini par `.docs/annex/db-schema/epic-1-iam.schema.md`, prêt pour usage API et UI.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Se conformer strictement au PRD `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md` et au schéma validé `.docs/annex/db-schema/epic-1-iam.schema.md`. En cas de conflit, le PRD prévaut.
+Se conformer strictement au PRD `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md` et au schéma validé `.docs/annex/db-schema/epic-1-iam.schema.md`. En cas de conflit PRD vs schéma, le PRD prévaut.
 
 ### 3. Assumptions & Constraints
--   **ASSUMPTION:** Postgres disponible via `DATABASE_URL`.
--   **CONSTRAINT:** Utiliser Prisma et générer un unique jeu de migrations traçables.
+-   **ASSUMPTION:** Postgres accessible via `DATABASE_URL`.
+-   **CONSTRAINT:** Utiliser Prisma; produire une migration traçable unique.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** N/A (tâche initiale du graphe)
+-   **Tasks:** N/A (tâche initiale)
 -   **Files:**
     - `.docs/annex/db-schema/epic-1-iam.schema.md`
     - `apps/backend/prisma/schema.prisma`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
-    - `.docs/annex/db-schema/epic-1-iam.schema.md` (read-only, source de vérité)
+    - `.docs/annex/db-schema/epic-1-iam.schema.md` (read-only)
     - `apps/backend/prisma/schema.prisma`
     - `apps/backend/README.md`
 -   **END STATE (must exist after completion):**
-    - `apps/backend/prisma/schema.prisma` (conforme à l'annexe)
+    - `apps/backend/prisma/schema.prisma` (aligné)
     - `apps/backend/prisma/migrations/*/migration.sql`
-    - `apps/backend/node_modules/.prisma/client/index.d.ts` (types générés)
+    - client Prisma généré
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  Lire `.docs/annex/db-schema/epic-1-iam.schema.md` et aligner `apps/backend/prisma/schema.prisma` (enums: `UserRole`, `UserStatus`, `InvitationStatus`; modèles: `Organization`, `User`, `Invitation`, `AuditEvent` + relations exactes).
-2.  **RUN** `pnpm prisma generate` dans `apps/backend` et corriger toute divergence.
-3.  **CREATE MIGRATION**: `pnpm prisma migrate dev --name iam_epic1_init` (ou `prisma migrate deploy` en CI).
-4.  Vérifier la création des tables et contraintes via Prisma Studio/psql.
-5.  Documenter dans `apps/backend/README.md` la commande d'apply et de rollback.
+1.  Aligner `schema.prisma` sur l'annexe (enums `UserRole`, `UserStatus`, `InvitationStatus`; modèles `Organization`, `User`, `Invitation`, `AuditEvent`).
+2.  `pnpm prisma generate` dans `apps/backend` et corriger divergences.
+3.  `pnpm prisma migrate dev --name iam_epic1_init`.
+4.  Vérifier tables/contraintes via Prisma Studio ou `psql`.
+5.  Documenter commandes dans `apps/backend/README.md`.
 
 ### 7. Acceptance Criteria
--   [ ] `prisma validate` passe et la génération de client réussit.
--   [ ] La migration `iam_epic1_init` crée bien les 4 tables et enums.
--   [ ] Les relations et unicités (ex: `User.clerkId`, `Invitation.token`) sont effectives.
--   [ ] Les types Prisma générés sont disponibles pour les services NestJS.
+-   [ ] `prisma validate` passe; client généré.
+-   [ ] Migration crée tables/enums/indices/unicités attendus.
+-   [ ] Types Prisma exploitables côté NestJS.

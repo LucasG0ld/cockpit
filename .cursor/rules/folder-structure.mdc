@@ -86,6 +86,7 @@
 │   └── k8s/ (optionnel futur)
 │
 ├── .github/workflows/              # CI/CD GitHub Actions
+├── run_quality_gate.sh
 ├── .env.local
 ├── middleware.ts
 ├── next.config.js
