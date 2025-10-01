@@ -79,7 +79,11 @@
 1.  Détecte ton OS :
     *   macOS / Linux : `npm run quality-gate:mac`
     *   Windows : `npm run quality-gate:win`
-2.  Exécute la commande correspondante depuis la racine du projet. Le succès (code de sortie 0) est la **seule condition** pour passer à la Phase 5. En cas d'échec, ton processus s'arrête ici. Signale l'erreur précise et attends l'instruction humaine (les scripts Quality Gate stoppent immédiatement à la première erreur).
+2.  Exécute la commande correspondante depuis la racine du projet. Les scripts Quality Gate:
+    *   exécutent **toutes** les étapes (`lint`, `typecheck`, `test`, `build`) et consignent les erreurs jusqu’à la fin;
+    *   affichent un rapport global des erreurs;
+    *   relancent automatiquement un second run si des erreurs ont été détectées. Le processus échoue si ce second run contient encore des erreurs.
+3.  Le succès (code 0) est la condition pour passer à la Phase 5. En cas d’échec, indique les erreurs et attends instruction.
 
 **Note :** Assure-toi que ton terminal permet l'exécution des scripts.
 

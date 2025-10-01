@@ -1,4 +1,6 @@
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
+
+$global:QualityGateErrors = @()
 
 function Run-Step {
   param([string]$Label, [string]$Command)
@@ -10,7 +12,19 @@ function Run-Step {
   }
   catch {
     Write-Host "[FAIL] $Label" -ForegroundColor Red
-    throw
+    $global:QualityGateErrors += "- $Label : $($_.Exception.Message)"
+  }
+}
+
+function Print-Report {
+  Write-Host ""
+  if ($global:QualityGateErrors.Count -eq 0) {
+    Write-Host "=== QUALITY GATE PASSED ==="
+  }
+  else {
+    Write-Host "=== QUALITY GATE FAILED ===" -ForegroundColor Red
+    Write-Host "" "Résumé des erreurs :"
+    $global:QualityGateErrors | ForEach-Object { Write-Host $_ -ForegroundColor Red }
   }
 }
 
@@ -19,7 +33,10 @@ Run-Step "2/4 - Typecheck" "npm run typecheck"
 Run-Step "3/4 - Tests" "npm run test"
 Run-Step "4/4 - Build" "npm run build"
 
-Write-Host ""
-Write-Host "=== QUALITY GATE PASSED ==="
+Print-Report
+
+if ($global:QualityGateErrors.Count -gt 0) {
+  exit 1
+}
 
 

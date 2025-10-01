@@ -1,9 +1,11 @@
 #!/bin/bash
 # ============================================================================== 
 # QUALITY GATE (macOS / Linux)
-# ==============================================================================
+# ============================================================================== 
 
 set -euo pipefail
+
+ERRORS=()
 
 print_step() {
   echo ""
@@ -12,20 +14,25 @@ print_step() {
   echo "🔵 ======================================================="
 }
 
-print_success() {
-  echo "✅  $1"
+record_error() {
+  local message="$1"
+  ERRORS+=("- $message")
 }
 
-print_failure() {
-  echo "❌  $1" >&2
-  exit 1
-}
-
-print_final_success() {
+print_report() {
   echo ""
-  echo "🎉🎉🎉=======================================================🎉🎉🎉"
-  echo "🎉🎉🎉    QUALITY GATE PASSÉ AVEC SUCCÈS ! BRAVO !     🎉🎉🎉"
-  echo "🎉🎉🎉=======================================================🎉🎉🎉"
+  if [ ${#ERRORS[@]} -eq 0 ]; then
+    echo "🎉🎉🎉=======================================================🎉🎉🎉"
+    echo "🎉🎉🎉    QUALITY GATE PASSÉ AVEC SUCCÈS ! BRAVO !     🎉🎉🎉"
+    echo "🎉🎉🎉=======================================================🎉🎉🎉"
+  else
+    echo "❌❌❌=======================================================❌❌❌"
+    echo "❌❌❌        QUALITY GATE TERMINÉ AVEC ERREURS         ❌❌❌"
+    echo "❌❌❌=======================================================❌❌❌"
+    for err in "${ERRORS[@]}"; do
+      echo "$err"
+    done
+  fi
 }
 
 run_step() {
@@ -33,9 +40,10 @@ run_step() {
   local command="$2"
   print_step "$label"
   if eval "$command"; then
-    print_success "$label — OK"
+    echo "✅  $label"
   else
-    print_failure "$label — ÉCHEC"
+    echo "❌  $label" >&2
+    record_error "$label : voir logs ci-dessus"
   fi
 }
 
@@ -44,6 +52,10 @@ run_step "2/4 - Typecheck" "npm run typecheck"
 run_step "3/4 - Tests" "npm run test"
 run_step "4/4 - Build" "npm run build"
 
-print_final_success
+print_report
+
+if [ ${#ERRORS[@]} -gt 0 ]; then
+  exit 1
+fi
 
 
