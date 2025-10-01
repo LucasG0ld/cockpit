@@ -1,0 +1,34 @@
+id: "TASK-IAM-FE-ATOM-001"
+title: "FEAT(atom): StatusBadge"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "atom"]
+dependencies: []
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Créer un badge d'état réutilisable ("Actif" / "Désactivé").
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM (US-5 affichage statut membre).
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Styles via classes utilitaires (Tailwind/shadcn), accessible.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** —
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    -   `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/atoms/StatusBadge.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/atoms/StatusBadge.tsx` avec props `{ status: 'active'|'disabled' }`.
+2.  **STYLE** variantes (couleurs, icône optionnelle), a11y (role, aria-label).
+
+### 7. Acceptance Criteria
+-   [ ] Rend correctement "Actif"/"Désactivé"; passe tests visuels de base.

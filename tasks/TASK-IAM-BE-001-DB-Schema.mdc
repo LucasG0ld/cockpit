@@ -1,0 +1,38 @@
+id: "TASK-IAM-BE-001"
+title: "FEAT(db): Prisma schema for User, Invitation, AuditEvent"
+status: "planned"
+priority: "P0"
+labels: ["backend", "prisma", "db", "iam"]
+dependencies: []
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Définir les modèles Prisma supportant IAM: utilisateurs internes, invitations (token 72h), journal d'audit (succès).
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md` (US-2, US-3, US-5, US-7).
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** AuditEvent minimum fields `{orgId, actorId, type, targetId, metadata, createdAt}`.
+-   **ASSUMPTION:** Les entités non IAM (Organization) existent déjà.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** —
+-   **Files:** `apps/backend/prisma/schema.prisma`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    -   `apps/backend/prisma/schema.prisma`
+-   **END STATE (must exist after completion):**
+    -   Prisma models: `User`, `Invitation`, `AuditEvent`
+    -   migrations générées
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **ADD** `User { id, orgId, role, status, createdAt, deactivatedAt? }`.
+2.  **ADD** `Invitation { id, orgId, email, roleOption, token, expiresAt, consumedAt?, invitedByUserId, createdAt }`.
+3.  **ADD** `AuditEvent { id, orgId, actorId, type, targetId, metadata Json, createdAt }`.
+4.  **RUN** `prisma migrate dev` et commit migrations.
+
+### 7. Acceptance Criteria
+-   [ ] Migrations appliquées sans erreur; nouveaux modèles disponibles dans le client Prisma.

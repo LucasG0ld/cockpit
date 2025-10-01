@@ -1,0 +1,37 @@
+id: "TASK-IAM-BE-007"
+title: "FEAT(config): 2FA email flows + 5-attempt lockout"
+status: "planned"
+priority: "P0"
+labels: ["backend", "frontend", "security", "iam"]
+dependencies: ["TASK-IAM-BE-002"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Configurer et implémenter la 2FA email (internes) et la vérification email (clients); gérer le verrouillage après 5 échecs avec messages.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM US-1.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Message "Code expiré. Demandez un nouveau code.".
+-   **CONSTRAINT:** Pop-up verrouillage → contacter Admin/Support.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-002`
+-   **Files:** Clerk config, front auth screens
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    -   Clerk configs
+    -   `apps/frontend/src/app/(auth)/*`
+-   **END STATE (must exist after completion):**
+    -   2FA enforced; lockout behaviour implémenté
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CONFIGURE** Clerk policies.
+2.  **HANDLE** OTP expiry + resend UI.
+3.  **IMPLEMENT** lockout counter + UI pop-up.
+
+### 7. Acceptance Criteria
+-   [ ] 2FA bloquante à la première connexion; lockout après 5 échecs.

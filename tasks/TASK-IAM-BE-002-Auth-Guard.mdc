@@ -1,0 +1,39 @@
+id: "TASK-IAM-BE-002"
+title: "FEAT(api): NestJS guard to validate Clerk JWT (orgId, role)"
+status: "planned"
+priority: "P0"
+labels: ["backend", "nest", "security", "iam"]
+dependencies: ["TASK-IAM-BE-001"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Valider les JWT Clerk, extraire `orgId` et `role`, retourner 401 si claims manquants/invalides, 403 en cas de mismatch d'organisation.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM US-1, US-6.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** `orgId` format `org_<ulid>`, `role` ∈ {Admin, CSM, Closer, Client, Temporaire}.
+-   **CONSTRAINT:** 401 si claims invalides; 403 si `orgId` ≠ ressource.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-001`
+-   **Files:** `apps/backend/src/main.ts`, `apps/backend/src/app.module.ts`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    -   `apps/backend/src/main.ts`
+    -   `apps/backend/src/app.module.ts`
+-   **END STATE (must exist after completion):**
+    -   `apps/backend/src/lib/auth/claims.guard.ts`
+    -   wired as global/per-route guard
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **IMPLEMENT** guard validation + mapping erreurs 401/403.
+2.  **INJECT** payload dans `Request.user`.
+3.  **WIRE** guard global/per-route.
+4.  **TEST** unitaires (401/403).
+
+### 7. Acceptance Criteria
+-   [ ] Endpoints protégés refusent 401/403 conformément aux cas décrits.

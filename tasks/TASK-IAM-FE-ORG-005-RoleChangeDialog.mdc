@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ORG-005"
+title: "FEAT(organism): RoleChangeDialog"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "organism"]
+dependencies: ["TASK-IAM-FE-MOL-001"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Dialogue de changement de rôle utilisant `RoleSelect`; au succès, déclencher un pop-up de déconnexion.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM US-4.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Appelle POST /users/:id/role; force pop-up de déconnexion après succès.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-MOL-001`
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/organisms/RoleChangeDialog.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/organisms/RoleChangeDialog.tsx` (compose RoleSelect).
+2.  **CALL** API role change; au succès, déclencher pop-up déconnexion.
+
+### 7. Acceptance Criteria
+-   [ ] Pop-up déconnexion affiché au succès; erreurs gérées.

@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-MOL-002"
+title: "FEAT(molecule): ConfirmationPrompt"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "molecule"]
+dependencies: []
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Boîte de dialogue de confirmation réutilisable.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM (désactivation/réactivation, changement de rôle).
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Accessibilité (focus trap, aria roles), clavier.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** —
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/molecules/ConfirmationPrompt.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/molecules/ConfirmationPrompt.tsx` (props `{ title, message, onConfirm, onCancel }`).
+2.  **STYLE** boutons/états; a11y.
+
+### 7. Acceptance Criteria
+-   [ ] Confirm/Cancel émettent les callbacks; a11y validée.

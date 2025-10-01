@@ -1,0 +1,36 @@
+id: "TASK-IAM-BE-006"
+title: "FEAT(api): Deactivate/reactivate API (transfers, temp role)"
+status: "planned"
+priority: "P0"
+labels: ["backend", "nest", "iam"]
+dependencies: ["TASK-IAM-BE-001", "TASK-IAM-BE-002", "TASK-IAM-BE-003"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Exposer les endpoints de (dés)activation: invalidation immédiate des sessions, transferts CSM obligatoires, auto-assign Closer→Admin désactivateur, réactivation en rôle "Temporaire".
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM US-5; PRD Global « Continuité de Service ».
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** `user.status.changed` + `{from,to}`.
+-   **CONSTRAINT:** Rétention J+14.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-001`, `TASK-IAM-BE-002`, `TASK-IAM-BE-003`
+-   **Files:** users/clients services
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    -   services utilisateurs/clients
+-   **END STATE (must exist after completion):**
+    -   `POST /users/:id/deactivate`, `POST /users/:id/reactivate`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **ADD** deactivate endpoint: transferts CSM requis; sessions invalidées; audit.
+2.  **ADD** reactivate endpoint: set role Temporaire; audit.
+3.  **HANDLE** auto-assign Closer → Admin désactivateur.
+
+### 7. Acceptance Criteria
+-   [ ] Transferts requis avant désactivation CSM; rôle Temporaire à la réactivation.

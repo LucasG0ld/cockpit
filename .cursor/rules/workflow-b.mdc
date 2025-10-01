@@ -22,13 +22,17 @@
 
 **Instruction :** Ce processus est moins une conversation qu'un travail de formalisation. Ton but est d'utiliser le contexte fourni pour remplir le template `prd-feature`, en ne posant des questions que si c'est absolument nécessaire pour garantir la clarté et la testabilité.
 
-**Phase 1 : Assimilation et Analyse des Manques**
+**Phase 1 : Assimilation et Analyse Hiérarchisée des Manques**
 
-1.  **Analyse du Contexte :** Lis attentivement le **`@PRD_Global`** de la version et, surtout, la **`@Charte_d_Épique`** parente qui est ta mission principale.
+1.  **Analyse Hiérarchisée du Contexte :** Ta mission est de décomposer la vision d'une Charte d'Épique en spécifications détaillées, en te basant sur la hiérarchie de documents suivante :
+    *   **Document Maître (Le "Comment") :** Le **`@PRD_Global`** est ta source de vérité absolue pour toutes les règles, contraintes et spécifications existantes. **Il l'emporte toujours en cas de conflit.**
+    *   **Vision Stratégique (Le "Pourquoi") :** La **`@Charte_d_Épique`** est le point de départ de ta mission. Elle te donne l'objectif métier et le périmètre global que tu dois détailler.
+
 2.  **Pré-remplissage Mental :** Essaie de remplir mentalement chaque section du template `@.cursor/rules/templates/prd-feature.template.mdc`.
+
 3.  **Identification des Manques :** Identifie les zones où le contexte n'est pas suffisant pour écrire un critère d'acceptation **Gherkin précis**.
-    *   **Ton objectif n'est pas de poser des questions ouvertes.** Les réponses de base devraient déjà être dans la `Charte d'Épique`.
-    *   **Ton objectif est de poser des questions ciblées pour affiner.** Ton rôle est de forcer la clarté.
+    *   Ton objectif n'est pas de poser des questions ouvertes.
+    *   Ton objectif est de poser des questions ciblées pour forcer la clarté, en te basant sur la hiérarchie définie ci-dessus.
 
 **Phase 2 : Questionnement Ciblé (si nécessaire)**
 

@@ -1,0 +1,34 @@
+id: "TASK-IAM-FE-TPL-001"
+title: "FEAT(template): TeamTemplate"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "template"]
+dependencies: ["TASK-IAM-FE-ORG-001", "TASK-IAM-FE-ORG-002", "TASK-IAM-FE-ORG-003", "TASK-IAM-FE-ORG-004", "TASK-IAM-FE-ORG-005"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Assembler les organisms de la page Équipe, appliquer classes CSS/variantes/layout, sans logique métier.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: Workflow-c (templates entre organisms et pages).
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Pas d'appels API directs; composition/presentation seulement.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** organisms de Team (voir dépendances)
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/templates/TeamTemplate.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/templates/TeamTemplate.tsx` (props: `{ members, ...handlers }`).
+2.  **COMPOSE** InvitationForm, MembersTable, DeactivationModal, ReactivationModal, RoleChangeDialog.
+3.  **STYLE** layout/espacements/sections (classes CSS utilitaires).
+
+### 7. Acceptance Criteria
+-   [ ] Template sans logique d'accès aux données; rendu layout correct.

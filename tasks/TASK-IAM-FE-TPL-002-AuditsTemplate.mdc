@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-TPL-002"
+title: "FEAT(template): AuditsTemplate"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "template"]
+dependencies: ["TASK-IAM-FE-ORG-006"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Assembler `AuditEventsTable` et appliquer la présentation/layout pour la page Audits.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: workflow-c (templates).
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Pas d'appels API directs; présentation uniquement.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-ORG-006`
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/templates/AuditsTemplate.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/templates/AuditsTemplate.tsx` (props `{}` minimal).
+2.  **COMPOSE** `AuditEventsTable` + en-têtes/sections.
+
+### 7. Acceptance Criteria
+-   [ ] Template sans logique d'accès aux données; layout correct.

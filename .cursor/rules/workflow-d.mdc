@@ -25,11 +25,17 @@
 **Instruction :** Phase de lecture et de questionnement. Ne génère aucun code d'implémentation ni de commande Git.
 
 1.  **Assimilation du Contexte :** Analyse la tâche assignée (`task.mdc`) et ses références (`PRD Feature` parent, `ADR` pertinents, code existant).
-2.  **Plan d'Action :** Rédige un plan détaillé incluant :
-    *   La liste exhaustive des fichiers à créer ou modifier.
-    *   Les `types` et `interfaces` à définir.
-    *   Une stratégie de test complète, décrivant les **scénarios de tests d'intégration réels** qui valideront les exigences de la tâche.
-    *   L'identification de tout risque potentiel.
+2.  **Plan d'Action (structuré selon l'Atomic Design) :** Rédige un plan d'action détaillé en suivant une décomposition "bottom-up" rigoureuse.
+    *   **A. Décomposition Atomique des Composants :**
+        1.  **Atomes :** Identifie et liste les composants `.tsx` de base, indivisibles et agnostiques (ex: `StatusBadge.tsx`, `ModalTitle.tsx`).
+        2.  **Molécules :** Identifie et liste les assemblages d'atomes `.tsx` formant des unités fonctionnelles simples (ex: `MemberRow.tsx`, `InviteUserForm.tsx`).
+        3.  **Organismes :** Identifie et liste les sections d'interface complexes `.tsx` assemblant molécules et atomes. Localise ici la logique métier et la récupération de données (ex: `TeamMembersTable.tsx`).
+        4.  **Templates :** Identifie le layout `.tsx` de la page qui orchestrera les organismes (ex: `DashboardLayout.tsx`).
+        5.  **Page :** Décris la page finale `.tsx` qui injectera les données dans les organismes et les passera au template (ex: `TeamPage.tsx`).
+    *   **B. Contrats de Données :**
+        *   Liste les `types` et `interfaces` (TypeScript) nécessaires pour les props des composants et les réponses d'API.
+    *   **C. Stratégie de Test :**
+        *   Décris les scénarios de tests d'intégration (`.test.tsx`) qui valideront les exigences de la tâche, en se concentrant sur les interactions au niveau des organismes et de la page.
 3.  **Clarification & Challenge :** Ajoute une section "Clarifications & Assumptions". Si une exigence est ambiguë, pose une question pour la clarifier.
 
 **[POINT DE CONTRÔLE HUMAIN N°1 - ASYNCHRONE]**
@@ -54,6 +60,7 @@
 1.  **Cycle TDD :**
     *   Écrire le Test d'Intégration qui échoue (RED).
     *   Écrire le Code d'Implémentation pour faire passer le test (GREEN).
+    *   **Contrôle de Conformité Atomique :** Pendant l'écriture du code, respecte scrupuleusement les règles de la directive Atomic Design. **Vérifie que la logique est bien placée au bon niveau** (ex: pas de logique métier dans les atomes/molécules, pas de style de positionnement dans les composants réutilisables).
     *   Refactorer le code pour améliorer sa clarté si nécessaire, en s'assurant que les tests passent toujours.
 2.  **Commit et Push Réguliers :** Après chaque avancée significative et fonctionnelle, exécute :
     *   `git add .`

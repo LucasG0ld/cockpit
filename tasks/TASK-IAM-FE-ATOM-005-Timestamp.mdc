@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ATOM-005"
+title: "FEAT(atom): Timestamp"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "atom"]
+dependencies: []
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Affichage d'un timestamp formaté (fr-FR, court).
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD Global §11.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Timezone/browser locale gérée simplement.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** —
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/atoms/Timestamp.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/atoms/Timestamp.tsx` (props `{ value: string|Date }`).
+2.  **FORMAT** via Intl.DateTimeFormat('fr-FR').
+
+### 7. Acceptance Criteria
+-   [ ] Format court lisible; tests visuels de base.

@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ORG-001"
+title: "FEAT(organism): InvitationForm"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "organism"]
+dependencies: ["TASK-IAM-FE-ATOM-003", "TASK-IAM-FE-MOL-001"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Formulaire d'invitation (email + rôle) gérant messages exacts et idempotence 24h.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM US-2.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Messages PRD (email invalide; déjà membre; idempotence 24h mention invitant initial).
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-ATOM-003`, `TASK-IAM-FE-MOL-001`
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/organisms/InvitationForm.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/organisms/InvitationForm.tsx` (compose `EmailInput` + `RoleSelect`).
+2.  **CALL** POST invitations; afficher messages PRD; supporter idempotence 24h.
+
+### 7. Acceptance Criteria
+-   [ ] Crée une invitation 72h; affiche messages PRD; idempotence OK.

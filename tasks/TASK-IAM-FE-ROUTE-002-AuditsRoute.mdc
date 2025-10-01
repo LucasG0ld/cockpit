@@ -1,0 +1,32 @@
+id: "TASK-IAM-FE-ROUTE-002"
+title: "FEAT(route): /audits"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "route", "nextjs"]
+dependencies: ["TASK-IAM-FE-PAGE-002-AuditsPage.mdc"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Créer la route Next.js minimale rendant `<AuditsPage />`.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: workflow-c (séparation route vs UI).
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Pas de logique UI ici; import/return seulement.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-PAGE-002-AuditsPage.mdc`
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/app/audits/page.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `app/audits/page.tsx` (import `AuditsPage` et return).
+
+### 7. Acceptance Criteria
+-   [ ] La route affiche la page Audits.

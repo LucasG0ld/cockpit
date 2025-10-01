@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ORG-006"
+title: "FEAT(organism): AuditEventsTable"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "ui", "atomic", "organism"]
+dependencies: ["TASK-IAM-FE-MOL-004"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Table d'événements IAM paginée, filtrée par `orgId` (via backend), affichant rows d'audit.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD Global §11; PRD IAM US-7.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Fetch serveur; gestion états loading/empty/error.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-MOL-004`
+-   **Files:** —
+
+### 5. Context Plan
+-   **BEGIN (add to model context):** —
+-   **END STATE (must exist after completion):**
+    -   `apps/frontend/src/components/organisms/AuditEventsTable.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `components/organisms/AuditEventsTable.tsx` (fetch + rendu `AuditEventRow`).
+2.  **ADD** pagination minimaliste; gestion erreurs.
+
+### 7. Acceptance Criteria
+-   [ ] Liste paginée filtrée; colonnes visibles correctes.

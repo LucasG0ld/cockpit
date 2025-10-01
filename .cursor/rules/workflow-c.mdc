@@ -25,7 +25,15 @@
 **Phase 1 : Assimilation et Analyse Structurelle**
 
 1.  **Analyse du Contexte :** Lis attentivement le **`@PRD_Feature`** fourni, ainsi que les documents techniques référencés (ADR, `types/schema.d.ts`).
-2.  **Identification des Blocs de Travail :** Identifie les grands blocs logiques de la fonctionnalité (ex: "Modification du Schéma DB", "Création de l'Endpoint API", "Mise à jour du Composant UI", "Écriture des Tests E2E").
+2.  **Identification des Domaines Techniques et Décomposition :** Identifie les grands domaines de travail (Backend, Frontend, Base de Données, etc.).
+    *   **Pour le Backend :** Identifie les actions clés (ex: "Créer l'endpoint de désactivation", "Implémenter la logique de transfert").
+    *   **Pour le Frontend :** **Décompose la fonctionnalité en suivant la hiérarchie de l'Atomic Design.** Identifie explicitement les composants nécessaires à chaque niveau :
+        *   **Atomes :** Les plus petits éléments réutilisables (ex: `Button`, `StatusBadge`).
+        *   **Molécules :** Les assemblages simples d'atomes (ex: `ConfirmationPrompt`).
+        *   **Organismes :** Les sections complexes de l'UI qui gèrent la logique (ex: `DeactivationModal`).
+        *   **Templates :** Couche de composition et de présentation entre organismes et pages. Les templates assemblent un ou plusieurs organismes, appliquent les classes CSS/variantes et le layout de section, sans logique métier orientée données (ex: `TeamTemplate`).
+        *   **Pages (Page Components) :** Composants de page qui orchestrent les templates, gèrent l'état de page (refresh, erreurs globales) et exposent l'UI prête à être montée par la route (ex: `TeamPage`).
+        *   **Routes Next.js :** Fichiers `apps/frontend/src/app/[route]/page.tsx` minimalistes qui rendent uniquement le Page Component correspondant (ex: `<TeamPage />`).
 3.  **Analyse des Dépendances :** Pour chaque bloc, identifie les prérequis. (ex: "On ne peut pas créer l'endpoint API avant que le schéma DB ne soit mis à jour").
 
 **Phase 2 : Génération du Plan Technique (IA-First)**
@@ -34,8 +42,25 @@
 2.  **Action :** Exécute les actions suivantes :
     *   Pour chaque tâche technique atomique que tu as identifiée, **crée un nouveau fichier `.mdc`** dans le dossier `/tasks/`.
     *   Utilise le template `@.cursor/rules/templates/task.template.mdc` pour chaque fichier.
-    *   Donne un **titre clair et actionnable** à chaque tâche (ex: `CREATE - API endpoint for user invitation`).
-    *   Dans le corps de chaque `task.mdc`, remplis la description et, surtout, la section **dépendances** en listant les ID des autres tâches qui doivent être complétées avant.
+    *   Donne un **titre clair, actionnable et standardisé**. Pour le frontend, **utilise un préfixe indiquant le niveau atomic** :
+        *   `FEAT(atom): StatusBadge`
+        *   `FEAT(molecule): ClientReassignmentForm`
+        *   `FEAT(organism): DeactivationModal`
+        *   `FEAT(template): TeamTemplate`
+        *   `FEAT(page): TeamPage`
+        *   `FEAT(route): /team`
+        *   (Backend exemple: `FEAT(api): deactivation endpoint`)
+    *   Dans le corps de chaque `task.mdc` frontend :
+        *   **Context Plan (obligatoire)** — lister les chemins EXACTS en fin d'état (END STATE) selon l'ordre atomic :
+            - `apps/frontend/src/components/atoms/[Nom].tsx`
+            - `apps/frontend/src/components/molecules/[Nom].tsx`
+            - `apps/frontend/src/components/organisms/[Nom].tsx`
+            - `apps/frontend/src/components/templates/[NomTemplate].tsx`
+            - `apps/frontend/src/components/page/[NomDeLaPage].tsx`
+            - `apps/frontend/src/app/[route]/page.tsx` (route minimale rendant le Page Component)
+          Et en début d'état (BEGIN), référencer en lecture seule les artefacts globaux utiles (`app/layout.tsx`, `app/globals.css`, `lib/**`).
+        *   **Low-Level Steps (bottom-up obligatoire)** — détailler les étapes dans l'ordre : atoms → molecules → organisms → templates → page → route; inclure le câblage API (401/403) et l'intégration des messages exacts PRD.
+        *   **Dépendances** — faire apparaître explicitement le graphe bottom-up FE (route → page → template → organisms → molecules → atoms) ainsi que les dépendances BE nécessaires (guards, endpoints) au niveau organisms/page (pas au niveau template).
 3.  **Génération du Rapport de Planification :** Produis une liste finale et ordonnée de toutes les tâches créées, en mettant en évidence le graphe de dépendances (ex: "Tâche A doit être faite avant B et C").
 
 **[POINT DE CONTRÔLE HUMAIN - VALIDATION DU PLAN TECHNIQUE]**
@@ -48,4 +73,9 @@
 >     *   **Couverture :** Y a-t-il au moins une tâche pour chaque critère d'acceptation du PRD ?
 >     *   **Dépendances :** Le graphe de dépendances est-il logique et correct ?
 >     *   **Clarté :** Le titre de chaque tâche est-il clair et actionnable ?
+>     *   **Conformité Architecturale (Frontend) :**
+>         - La décomposition suit-elle bien la hiérarchie Atomic Design avec la couche `templates` entre `organisms` et `pages` ?
+>         - Les responsabilités de chaque couche sont-elles respectées (templates = présentation/composition sans logique métier) ?
+>         - La séparation Route (app/[route]/page.tsx) vs UI (components/**) est-elle correctement appliquée ?
+>         - Les fichiers exacts (atoms/molecules/organisms/templates/page/route) figurent-ils bien dans le `Context Plan` ?
 > 3.  Une fois le plan validé, créez les items correspondants dans le `Centre de Travail` d'Airtable.

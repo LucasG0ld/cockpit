@@ -1,0 +1,36 @@
+id: "TASK-IAM-BE-003"
+title: "FEAT(api): Server-side orgId scoping for IAM routes"
+status: "planned"
+priority: "P0"
+labels: ["backend", "security", "iam"]
+dependencies: ["TASK-IAM-BE-002"]
+created: "2025-09-29"
+---
+
+### 1. High-Level Objective
+Appliquer systématiquement le filtrage par `orgId` côté serveur et retourner 403 en cas de mismatch sur toutes les routes IAM.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Réf: PRD IAM US-6.
+
+### 3. Assumptions & Constraints
+-   **CONSTRAINT:** Aucune dépendance sur le client pour filtrer.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-002`
+-   **Files:** `apps/backend/src/api/*`, `apps/backend/src/services/*`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    -   `apps/backend/src/api/*`
+    -   `apps/backend/src/services/*`
+-   **END STATE (must exist after completion):**
+    -   Helpers/guards enforce orgId checks
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **ADD** repository helpers avec clause `orgId`.
+2.  **ADD** vérification de ressource → 403 si mismatch.
+3.  **TEST** unitaires liste/détail.
+
+### 7. Acceptance Criteria
+-   [ ] Toutes les routes IAM filtrent par `orgId`.
