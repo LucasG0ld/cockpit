@@ -1,33 +1,33 @@
-id: "TASK-IAM-FE-MOL-002"
-title: "FEAT(molecule): ConfirmationPrompt"
+id: "TASK-IAM-FE-MOL-002-ConfirmationPrompt"
+title: "FEAT(molecule): ConfirmationPrompt (confirmations critiques)"
 status: "planned"
-priority: "P0"
-labels: ["frontend", "ui", "atomic", "molecule"]
+priority: "P1"
+labels: ["[frontend]", "[molecules]", "[modals]"]
 dependencies: []
-created: "2025-09-29"
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Boîte de dialogue de confirmation réutilisable.
+Composant générique pour confirmer les actions sensibles (désactivation, changement de rôle).
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: PRD IAM (désactivation/réactivation, changement de rôle).
+PRD US-4/US-5: confirmations et messages.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** Accessibilité (focus trap, aria roles), clavier.
+-   **ASSUMPTION:** Utiliser un modal base existant ou simple div portable.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** —
--   **Files:** —
+-   **Files:** `apps/frontend/src/app/globals.css` (read-only)
 
 ### 5. Context Plan
--   **BEGIN (add to model context):** —
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
 -   **END STATE (must exist after completion):**
-    -   `apps/frontend/src/components/molecules/ConfirmationPrompt.tsx`
+    - `apps/frontend/src/components/molecules/ConfirmationPrompt.tsx`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **CREATE** `components/molecules/ConfirmationPrompt.tsx` (props `{ title, message, onConfirm, onCancel }`).
-2.  **STYLE** boutons/états; a11y.
+1.  **CREATE** composant avec props `title`, `message`, `onConfirm`.
+2.  **STYLE** CTA clair.
 
 ### 7. Acceptance Criteria
--   [ ] Confirm/Cancel émettent les callbacks; a11y validée.
+-   [ ] Confirmations utilisables par les organismes.

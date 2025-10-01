@@ -1,39 +1,48 @@
-id: "TASK-IAM-BE-002"
-title: "FEAT(api): NestJS guard to validate Clerk JWT (orgId, role)"
+id: "TASK-IAM-BE-002-Auth-Guard"
+title: "FEAT(api): Guard JWT + 401/403 (claims orgId/role)"
 status: "planned"
 priority: "P0"
-labels: ["backend", "nest", "security", "iam"]
-dependencies: ["TASK-IAM-BE-001"]
-created: "2025-09-29"
+labels: ["[backend]", "[auth]", "[nest]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema"]
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Valider les JWT Clerk, extraire `orgId` et `role`, retourner 401 si claims manquants/invalides, 403 en cas de mismatch d'organisation.
+Ajouter un guard NestJS qui valide les sessions/JWT (Clerk) et impose la présence/validité de `orgId` et `role`, retournant 401/403 selon PRD.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: PRD IAM US-1, US-6.
+PRD US-1 et US-6: 401 si claims manquants/invalides; 403 si mismatch `orgId` avec la ressource.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** `orgId` format `org_<ulid>`, `role` ∈ {Admin, CSM, Closer, Client, Temporaire}.
--   **CONSTRAINT:** 401 si claims invalides; 403 si `orgId` ≠ ressource.
+-   **ASSUMPTION:** Intégration Clerk déjà configurée côté frontend; backend reçoit un JWT vérifiable.
+-   **CONSTRAINT:** Rôles stricts `{Admin, CSM, Closer, Client, Temporaire}`.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-BE-001`
--   **Files:** `apps/backend/src/main.ts`, `apps/backend/src/app.module.ts`
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`
+-   **Files:** `apps/backend/src/main.ts`, `apps/backend/src/api/**`, `apps/backend/src/lib/**`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
-    -   `apps/backend/src/main.ts`
-    -   `apps/backend/src/app.module.ts`
+    - `apps/backend/src/main.ts`
+    - `apps/backend/src/app.module.ts`
+    - `apps/backend/src/lib/**` (read-only)
 -   **END STATE (must exist after completion):**
-    -   `apps/backend/src/lib/auth/claims.guard.ts`
-    -   wired as global/per-route guard
+    - `apps/backend/src/lib/auth/jwt.guard.ts`
+    - `apps/backend/src/lib/auth/roles.enum.ts`
+    - `apps/backend/src/lib/auth/index.ts`
+    - tests e2e: `apps/backend/test/auth.guard.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **IMPLEMENT** guard validation + mapping erreurs 401/403.
-2.  **INJECT** payload dans `Request.user`.
-3.  **WIRE** guard global/per-route.
-4.  **TEST** unitaires (401/403).
+1.  **CREATE** `roles.enum.ts` avec l'union stricte des rôles.
+2.  **IMPLEMENT** `JwtAuthGuard` qui:
+    - Vérifie le JWT Clerk.
+    - Extrait `orgId`, `role`.
+    - Retourne 401 si absents/invalides.
+3.  **ADD** utilitaire pour vérifier le `orgId` attendu (utilisé par les handlers pour 403 sur mismatch).
+4.  **WIRE** guard global ou par routes sensibles.
+5.  **TEST** e2e: 401/403 selon cas PRD.
 
 ### 7. Acceptance Criteria
--   [ ] Endpoints protégés refusent 401/403 conformément aux cas décrits.
+-   [ ] 401 si JWT sans `orgId` ou `role`.
+-   [ ] 403 si `orgId` ≠ ressource demandée.
+-   [ ] Tests e2e passent (auth.guard.e2e-spec).

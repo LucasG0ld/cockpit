@@ -1,36 +1,49 @@
-id: "TASK-IAM-BE-006"
-title: "FEAT(api): Deactivate/reactivate API (transfers, temp role)"
+id: "TASK-IAM-BE-006-Status-API"
+title: "FEAT(api): Désactivation/Réactivation (transfert + audit + PII J+14)"
 status: "planned"
 priority: "P0"
-labels: ["backend", "nest", "iam"]
-dependencies: ["TASK-IAM-BE-001", "TASK-IAM-BE-002", "TASK-IAM-BE-003"]
-created: "2025-09-29"
+labels: ["[backend]", "[api]", "[audit]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement"]
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Exposer les endpoints de (dés)activation: invalidation immédiate des sessions, transferts CSM obligatoires, auto-assign Closer→Admin désactivateur, réactivation en rôle "Temporaire".
+Exposer les endpoints pour désactiver et réactiver un membre, avec transferts obligatoires, invalidation de sessions, et journalisation.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: PRD IAM US-5; PRD Global « Continuité de Service ».
+PRD US-5: transfert clients CSM, réassignation onboarding Closer → Admin désactivateur, rôle Temporaire à la réactivation, purge PII après J+14.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** `user.status.changed` + `{from,to}`.
--   **CONSTRAINT:** Rétention J+14.
+-   **ASSUMPTION:** Les entités "clients" existent et sont listables par propriétaire.
+-   **CONSTRAINT:** Invalidation immédiate des sessions lors de la désactivation.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-BE-001`, `TASK-IAM-BE-002`, `TASK-IAM-BE-003`
--   **Files:** users/clients services
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-003-Tenant-Enforcement`
+-   **Files:** `apps/backend/src/api/**`, `apps/backend/src/services/**`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
-    -   services utilisateurs/clients
+    - `apps/backend/src/api/**`
+    - `apps/backend/src/services/**`
 -   **END STATE (must exist after completion):**
-    -   `POST /users/:id/deactivate`, `POST /users/:id/reactivate`
+    - `apps/backend/src/api/users/status.controller.ts`
+    - `apps/backend/src/api/users/status.service.ts`
+    - `apps/backend/src/api/users/dto/change-status.dto.ts`
+    - `apps/backend/src/jobs/purge-pii.job.ts` (scheduler)
+    - tests e2e: `apps/backend/test/status.change.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **ADD** deactivate endpoint: transferts CSM requis; sessions invalidées; audit.
-2.  **ADD** reactivate endpoint: set role Temporaire; audit.
-3.  **HANDLE** auto-assign Closer → Admin désactivateur.
+1.  **PATCH** `/users/:id/disable` (Admin scope):
+    - Bloquer si CSM avec clients actifs tant que `ClientReassignmentForm` non validé.
+    - Si Closer désactivé: future conversions assignées à l'Admin désactivateur.
+    - Invalider sessions.
+    - Émettre audit `user.status.changed` `{from: Active, to: Disabled}`.
+2.  **PATCH** `/users/:id/reactivate` (Admin scope):
+    - Affecter rôle `Temporaire`.
+3.  **JOB** purge PII après J+14 (hors audit/docs légaux/financiers), configurable via scheduler.
+4.  **TESTS** e2e couvrant transferts, blocages, audit.
 
 ### 7. Acceptance Criteria
--   [ ] Transferts requis avant désactivation CSM; rôle Temporaire à la réactivation.
+-   [ ] Désactivation invalide les sessions et bloque si clients actifs non réassignés.
+-   [ ] Réactivation assigne rôle `Temporaire`.
+-   [ ] Purge PII exécutée après J+14.

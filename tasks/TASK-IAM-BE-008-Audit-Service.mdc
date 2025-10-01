@@ -1,0 +1,41 @@
+id: "TASK-IAM-BE-008-Audit-Service"
+title: "FEAT(service): Journal d'audit IAM (succès uniquement)"
+status: "planned"
+priority: "P0"
+labels: ["[backend]", "[audit]", "[service]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Créer un service d'audit centralisé pour émettre les événements IAM succès uniquement `{orgId, actorId, type, targetId, metadata, createdAt}`.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-7: tracer `user.team_member.invited`, `user.team_member.activated`, `user.role.changed`, `user.status.changed`.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Prisma pour persistance, injection NestJS dans services API.
+-   **CONSTRAINT:** Aucune écriture en cas d'échec métier.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`
+-   **Files:** `apps/backend/src/services/**`, `apps/backend/src/api/**`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `.docs/annex/db-schema/epic-1-iam.schema.md` (read-only)
+    - `apps/backend/src/services/**`
+-   **END STATE (must exist after completion):**
+    - `apps/backend/src/services/audit/audit.service.ts`
+    - `apps/backend/src/services/audit/audit.types.ts`
+    - tests unit: `apps/backend/test/audit.service.spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `AuditService` avec méthode `emit(eventType, orgId, actorId, targetId?, metadata?)`.
+2.  **PERSIST** via Prisma `AuditEvent`.
+3.  **INJECT** dans APIs Invitations/Role/Status.
+4.  **TESTS** unitaires: création d'événements, pas d'écriture sur erreurs simulées.
+
+### 7. Acceptance Criteria
+-   [ ] `AuditService` disponible et testé.
+-   [ ] APIs consomment le service pour tous événements IAM succès.

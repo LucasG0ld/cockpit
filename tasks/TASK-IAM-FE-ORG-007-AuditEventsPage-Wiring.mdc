@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ORG-007-AuditEventsPage-Wiring"
+title: "FEAT(page-wiring): Orchestration Audits (Template + Page + Route)"
+status: "planned"
+priority: "P2"
+labels: ["[frontend]", "[wiring]", "[audit]"]
+dependencies: ["TASK-IAM-FE-TPL-002-AuditsTemplate", "TASK-IAM-FE-PAGE-002-AuditsPage", "TASK-IAM-FE-ROUTE-002-AuditsRoute"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Assurer le câblage complet de la page Audits (template → page → route).
+
+### 2. Background / Context (Optionnel mais recommandé)
+Workflow-C: séparation stricte template/page/route.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Les composants existent.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** voir dépendances ci-dessus.
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/layout.tsx` (read-only)
+-   **END STATE (must exist after completion):**
+    - câblage complet fonctionnel
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  Vérifier import/exports et compilation de la route.
+2.  Vérifier navigation et rendu.
+
+### 7. Acceptance Criteria
+-   [ ] Navigation /audits rend la table d'audit.

@@ -1,37 +1,46 @@
-id: "TASK-IAM-BE-005"
-title: "FEAT(api): Role change API (invalidate sessions, reassignment)"
+id: "TASK-IAM-BE-005-Role-API"
+title: "FEAT(api): Changement de rôle (invalidate sessions + audit)"
 status: "planned"
 priority: "P0"
-labels: ["backend", "nest", "iam"]
-dependencies: ["TASK-IAM-BE-001", "TASK-IAM-BE-002", "TASK-IAM-BE-003", "TASK-IAM-BE-007"]
-created: "2025-09-29"
+labels: ["[backend]", "[api]", "[audit]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement"]
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Permettre le changement de rôle (y compris self-change), invalider les sessions, exiger réassignations des éléments de l'ancien rôle, tracer l'audit.
+Permettre à un Admin de modifier le rôle d'un membre, invalider ses sessions actives, informer le membre, et tracer `user.role.changed`.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: PRD IAM US-4.
+PRD US-4: changement de rôle, invalidation des sessions, pop-up d'information, journalisation.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** `user.role.changed` avec `metadata {from,to}`.
--   **CONSTRAINT:** Pop-up déconnexion côté UI (couvert en front).
+-   **ASSUMPTION:** API Clerk ou mécanisme disponible pour invalider les sessions.
+-   **CONSTRAINT:** Audit uniquement en cas de succès, métadonnées `{from, to}`.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-BE-001`, `TASK-IAM-BE-002`, `TASK-IAM-BE-003`, `TASK-IAM-BE-007`
--   **Files:** `apps/backend/src/api/users.controller.ts`, `apps/backend/src/services/users.service.ts`
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-003-Tenant-Enforcement`
+-   **Files:** `apps/backend/src/api/**`, `apps/backend/src/services/**`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
-    -   users controller/service
+    - `apps/backend/src/api/**`
+    - `apps/backend/src/services/**`
 -   **END STATE (must exist after completion):**
-    -   endpoint `POST /users/:id/role`
+    - `apps/backend/src/api/users/role.controller.ts`
+    - `apps/backend/src/api/users/role.service.ts`
+    - `apps/backend/src/api/users/dto/change-role.dto.ts`
+    - tests e2e: `apps/backend/test/role.change.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **ADD** endpoint role change.
-2.  **INVALIDATE** sessions du membre.
-3.  **REQUIRE** réassignations si nécessaire.
-4.  **AUDIT** event succès.
+1.  **DTO**: `ChangeRoleDto { userId, newRole }` avec validation.
+2.  **PATCH** `/users/:id/role` (Admin scope, org-scope):
+    - Vérifier appartenance à l'org.
+    - Mettre à jour `User.role`.
+    - Invalider sessions du membre.
+    - Émettre audit `user.role.changed` avec `{from, to}`.
+3.  **TESTS** e2e: succès + cas d'erreur (403 mismatch, 401 claims manquants).
 
 ### 7. Acceptance Criteria
--   [ ] Sessions invalidées; audit; réassignations forcées si applicable.
+-   [ ] Sessions invalidées après changement de rôle.
+-   [ ] Audit `user.role.changed` émis (succès seulement).
+-   [ ] Tests e2e passent.

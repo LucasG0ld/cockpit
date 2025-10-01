@@ -1,40 +1,51 @@
-id: "TASK-IAM-BE-004"
-title: "FEAT(api): Invitations API (create, resend, consume)"
+id: "TASK-IAM-BE-004-Invitations-API"
+title: "FEAT(api): API Invitations (création + acceptation + idempotence 24h)"
 status: "planned"
 priority: "P0"
-labels: ["backend", "nest", "email", "iam"]
-dependencies: ["TASK-IAM-BE-001", "TASK-IAM-BE-002", "TASK-IAM-BE-003", "TASK-IAM-BE-007"]
-created: "2025-09-29"
+labels: ["[backend]", "[api]", "[audit]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement", "TASK-IAM-BE-008-Audit-Service"]
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Exposer des endpoints d'invitation: création (token unique, 72h), idempotence anti-spam 24h (`orgId`,`email`), consommation/activation, ré-envoi.
+Exposer les endpoints d'invitation: créer, générer lien (72h, usage unique), accepter. Appliquer idempotence 24h par (`orgId`, `email`) et tracer `user.team_member.invited` (succès seulement).
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: PRD IAM US-2, US-3.
+PRD US-2 et US-3: validations email/role, messages exacts, 72h, usage unique, idempotence 24h.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** Rôle obligatoire avec option "À configurer plus tard".
--   **CONSTRAINT:** Messages d'erreur conformes au PRD.
+-   **ASSUMPTION:** Envoi d'email via provider existant; sinon stub + log.
+-   **CONSTRAINT:** Audit uniquement en cas de succès. Pas de double activation possible.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-BE-001`, `TASK-IAM-BE-002`, `TASK-IAM-BE-003`, `TASK-IAM-BE-007`
--   **Files:** `apps/backend/src/services/invitations.service.ts`, `apps/backend/src/api/invitations.controller.ts`
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-003-Tenant-Enforcement`
+-   **Files:** `apps/backend/src/api/**`, `apps/backend/src/services/**`
 
 ### 5. Context Plan
 -   **BEGIN (add to model context):**
-    -   `apps/backend/src/services/*`
-    -   `apps/backend/src/api/*`
+    - `apps/backend/src/api/**`
+    - `apps/backend/src/services/**`
 -   **END STATE (must exist after completion):**
-    -   Invitations service + controller avec validations et audit
+    - `apps/backend/src/api/invitations/invitations.controller.ts`
+    - `apps/backend/src/api/invitations/invitations.service.ts`
+    - `apps/backend/src/api/invitations/dto/*.ts`
+    - `apps/backend/src/services/audit/audit.service.ts` (si non existant)
+    - tests e2e: `apps/backend/test/invitations.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **VALIDATE** email et membre existant (same org) → erreurs PRD.
-2.  **CHECK** idempotence 24h: retourner info de l'invitant initial.
-3.  **GENERATE** token + `expiresAt=now+72h` et persister.
-4.  **SEND** email avec lien d'acceptation.
-5.  **CONSUME** token: usage unique, non expiré; créer/lier compte Clerk, statut initial.
-6.  **AUDIT** invited/activated (succès).
+1.  **CREATE** DTO: `CreateInvitationDto { email, role }` avec validation.
+2.  **POST** `/invitations` (Admin scope):
+    - Vérifier email invalide → 400 avec message PRD.
+    - Idempotence 24h par (`orgId`, `email`); renvoyer info invitant initial.
+    - Générer `token` unique, `expiresAt = now()+72h`.
+    - Persister Invitation(status=Pending) et tracer `user.team_member.invited`.
+3.  **POST** `/invitations/accept` (public avec token):
+    - Refuser si expiré (`Expired`) ou déjà consommé (`Accepted`).
+    - Créer `User` si besoin, rôle selon invitation (ou `Temporaire`).
+    - Marquer invitation `Accepted`.
+4.  **TESTS** e2e couvrant messages PRD, 72h, usage unique, idempotence 24h.
 
 ### 7. Acceptance Criteria
--   [ ] Création, consommation, ré-envoi conformes aux règles PRD.
+-   [ ] Création invitation respecte 24h idempotence et 72h d'expiration.
+-   [ ] Acceptation refuse expiré/déjà consommé; crée/associe l'utilisateur.
+-   [ ] Audit `user.team_member.invited` émis (succès seulement).

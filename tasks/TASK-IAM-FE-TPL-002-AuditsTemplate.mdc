@@ -1,33 +1,32 @@
-id: "TASK-IAM-FE-TPL-002"
-title: "FEAT(template): AuditsTemplate"
+id: "TASK-IAM-FE-TPL-002-AuditsTemplate"
+title: "FEAT(template): AuditsTemplate (composition table audit)"
 status: "planned"
-priority: "P0"
-labels: ["frontend", "ui", "atomic", "template"]
-dependencies: ["TASK-IAM-FE-ORG-006"]
-created: "2025-09-29"
+priority: "P2"
+labels: ["[frontend]", "[templates]", "[audit]"]
+dependencies: ["TASK-IAM-FE-ORG-006-AuditEventsTable"]
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Assembler `AuditEventsTable` et appliquer la présentation/layout pour la page Audits.
+Template composant la page Audits avec la table des événements.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: workflow-c (templates).
+Workflow-C: templates composent, pas de logique métier.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** Pas d'appels API directs; présentation uniquement.
+-   **ASSUMPTION:** Styles globaux disponibles.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-FE-ORG-006`
--   **Files:** —
+-   **Tasks:** `TASK-IAM-FE-ORG-006-AuditEventsTable`
 
 ### 5. Context Plan
--   **BEGIN (add to model context):** —
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
 -   **END STATE (must exist after completion):**
-    -   `apps/frontend/src/components/templates/AuditsTemplate.tsx`
+    - `apps/frontend/src/components/templates/AuditsTemplate.tsx`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **CREATE** `components/templates/AuditsTemplate.tsx` (props `{}` minimal).
-2.  **COMPOSE** `AuditEventsTable` + en-têtes/sections.
+1.  **ARRANGE** layout simple autour d'`AuditEventsTable`.
 
 ### 7. Acceptance Criteria
--   [ ] Template sans logique d'accès aux données; layout correct.
+-   [ ] Aucun accès direct aux services/données dans le template.

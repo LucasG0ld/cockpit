@@ -1,33 +1,32 @@
-id: "TASK-IAM-FE-PAGE-002"
-title: "FEAT(page): AuditsPage"
+id: "TASK-IAM-FE-PAGE-002-AuditsPage"
+title: "FEAT(page): AuditsPage (observabilité IAM succès)"
 status: "planned"
-priority: "P0"
-labels: ["frontend", "ui", "atomic", "page"]
-dependencies: ["TASK-IAM-FE-TPL-002"]
-created: "2025-09-29"
+priority: "P2"
+labels: ["[frontend]", "[page]", "[audit]"]
+dependencies: ["TASK-IAM-FE-ORG-006-AuditEventsTable"]
+created: "2025-10-01"
 ---
 
 ### 1. High-Level Objective
-Composant de page « Audits » orchestrant `AuditsTemplate` et gérant l'état global (erreurs, refresh).
+Page listant les événements d'audit IAM succès.
 
 ### 2. Background / Context (Optionnel mais recommandé)
-Réf: PRD IAM US-7.
+PRD US-7: observabilité minimale.
 
 ### 3. Assumptions & Constraints
--   **CONSTRAINT:** Gère 401/403; pagination via backend.
+-   **ASSUMPTION:** Table organisme prête.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
--   **Tasks:** `TASK-IAM-FE-TPL-002`
--   **Files:** —
+-   **Tasks:** `TASK-IAM-FE-ORG-006-AuditEventsTable`
 
 ### 5. Context Plan
--   **BEGIN (add to model context):** —
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/layout.tsx` (read-only)
 -   **END STATE (must exist after completion):**
-    -   `apps/frontend/src/components/page/AuditsPage.tsx`
+    - `apps/frontend/src/components/pages/AuditsPage.tsx`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1.  **CREATE** `components/page/AuditsPage.tsx` (utilise AuditsTemplate; fetch/handlers globaux si besoin).
-2.  **HANDLE** 401/403; erreurs; rafraîchissement.
+1.  **RENDER** `AuditEventsTable`.
 
 ### 7. Acceptance Criteria
--   [ ] Page affiche la liste paginée et gère erreurs globales.
+-   [ ] Liste affichée.
