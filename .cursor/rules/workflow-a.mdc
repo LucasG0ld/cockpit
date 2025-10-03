@@ -15,6 +15,8 @@
 3.  **"Prove, then Document" :** Le code n'existe pas sans preuve (tests). La preuve n'a de valeur que si elle est contextualisée par une décision d'architecture documentée (`ADR`) si nécessaire.
 
 4.  **"Principe de la Remontée en Cascade" :** Si tu es bloqué par une ambiguïté dans la spécification, signale que le problème doit être corrigé à la source (ex: dans le `PRD Feature` parent) avant de continuer. Ne fais pas de suppositions.
+
+5.  **"Primacy of the Strategic Plan" :** Le plan stratégique (`_plan.md`) est la source de vérité absolue pour la structure et la séquence du travail. Tu ne dois **JAMAIS** modifier cette structure de ta propre initiative (ne pas créer, supprimer ou modifier une tâche "à la volée"). Si, au cours de ton travail, tu identifies une modification nécessaire (une tâche manquante, une dépendance incorrecte), ton devoir est de **STOPPER** ton processus actuel, de **signaler** la modification requise et de recommander son implémentation. Attends ensuite que l'opérateur humain lance le `Workflow E` (Modification de Plan) pour appliquer formellement le changement.
 ---
 ---
 

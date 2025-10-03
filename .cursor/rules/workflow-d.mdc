@@ -15,47 +15,56 @@
 3.  **"Prove, then Document" :** Le code n'existe pas sans preuve (tests). La preuve n'a de valeur que si elle est contextualisée par une décision d'architecture documentée (`ADR`) si nécessaire.
 
 4.  **"Principe de la Remontée en Cascade" :** Si tu es bloqué par une ambiguïté dans la spécification, signale que le problème doit être corrigé à la source (ex: dans le `PRD Feature` parent) avant de continuer. Ne fais pas de suppositions.
+
+5.  **"Primacy of the Strategic Plan" :** Le plan stratégique (`_plan.md`) est la source de vérité absolue pour la structure et la séquence du travail. Tu ne dois **JAMAIS** modifier cette structure de ta propre initiative (ne pas créer, supprimer ou modifier une tâche "à la volée"). Si, au cours de ton travail, tu identifies une modification nécessaire (une tâche manquante, une dépendance incorrecte), ton devoir est de **STOPPER** ton processus actuel, de **signaler** la modification requise et de recommander son implémentation. Attends ensuite que l'opérateur humain lance le `Workflow E` (Modification de Plan) pour appliquer formellement le changement.
 ---
 ---
 
 ### Le Processus d'Implémentation en 7 Phases
 
-#### Phase 1 : Planification & Clarification
+#### Phase 1 : Briefing de Mission et Confirmation de l'Approche
 
-**Instruction :** Phase de lecture et de questionnement. Ne génère aucun code d'implémentation ni de commande Git.
+**Instruction :** Phase de lecture, de contextualisation et de validation de ta compréhension. Ne génère aucun code d'implémentation ni de commande Git.
 
-1.  **Assimilation du Contexte :** Analyse la tâche assignée (`task.mdc`) et ses références (`PRD Feature` parent, `ADR` pertinents, code existant).
-2.  **Plan d'Action (structuré selon l'Atomic Design) :** Rédige un plan d'action détaillé en suivant une décomposition "bottom-up" rigoureuse.
-    *   **A. Décomposition Atomique des Composants :**
-        1.  **Atomes :** Identifie et liste les composants `.tsx` de base, indivisibles et agnostiques (ex: `StatusBadge.tsx`, `ModalTitle.tsx`).
-        2.  **Molécules :** Identifie et liste les assemblages d'atomes `.tsx` formant des unités fonctionnelles simples (ex: `MemberRow.tsx`, `InviteUserForm.tsx`).
-        3.  **Organismes :** Identifie et liste les sections d'interface complexes `.tsx` assemblant molécules et atomes. Localise ici la logique métier et la récupération de données (ex: `TeamMembersTable.tsx`).
-        4.  **Templates :** Identifie le layout `.tsx` de la page qui orchestrera les organismes (ex: `DashboardLayout.tsx`).
-        5.  **Page :** Décris la page finale `.tsx` qui injectera les données dans les organismes et les passera au template (ex: `TeamPage.tsx`).
-    *   **B. Contrats de Données :**
-        *   Liste les `types` et `interfaces` (TypeScript) nécessaires pour les props des composants et les réponses d'API.
-    *   **C. Stratégie de Test :**
-        *   Décris les scénarios de tests d'intégration (`.test.tsx`) qui valideront les exigences de la tâche, en se concentrant sur les interactions au niveau des organismes et de la page.
-3.  **Clarification & Challenge :** Ajoute une section "Clarifications & Assumptions". Si une exigence est ambiguë, pose une question pour la clarifier.
+1.  **Assimilation du Contexte Stratégique et Spécifique :**
+    *   **Analyse de la Tâche Spécifique :** Analyse la tâche assignée (`@task.mdc`). Lis et assimile son objectif, ses `Low-Level Steps`, ses `Acceptance Criteria`, et les fichiers attendus en `END STATE`.
+    *   **Analyse du Plan Stratégique :** Localise et lis attentivement le plan stratégique de l'épique correspondante : `annex/[version]/[nom-de-l-epique]/_plan.md`. Ce fichier est ta feuille de route globale.
+
+2.  **Vérification de Cohérence (Action Critique) :**
+    *   Compare la tâche spécifique (`@task.mdc`) avec le plan stratégique (`_plan.md`). Valide que la tâche s'inscrit logiquement dans le graphe de dépendances global et qu'il n'y a aucune contradiction.
+
+3.  **Confirmation de l'Approche d'Exécution :**
+    *   Pour prouver que tu es prêt à passer à l'exécution (Phase 3), rédige un bref **"Résumé d'Exécution"**.
+    *   **Important :** Ne recrée pas un plan détaillé. Ton résumé doit simplement confirmer ta compréhension en synthétisant les points suivants à partir du fichier `@task.mdc` :
+        *   **Objectif Principal :** Reformule en une phrase l'objectif de la tâche.
+        *   **Livrables Clés :** Liste les 2-3 fichiers les plus importants que tu vas créer ou modifier (issus de la section `END STATE`).
+        *   **Séquence Principale :** Résume en 2-3 points les étapes majeures que tu vas suivre (issues de la section `Low-Level Steps`).
+
+4.  **Clarification & Challenge :** Ajoute une section "Clarifications & Assumptions".
+    *   Si une exigence de la tâche est ambiguë, pose une question pour la clarifier.
+    *   **Si tu as détecté une incohérence** à l'étape 2, signale-la immédiatement ici.
 
 **[POINT DE CONTRÔLE HUMAIN N°1 - ASYNCHRONE]**
-**STOP.** Soumets ton plan. Attends l'approbation humaine.
+**STOP.** Soumets ton "Résumé d'Exécution". Attends l'approbation humaine pour passer à la Phase 2.
+
 
 ---
 
-#### Phase 2 : Initialisation de l'Environnement de Travail
+#### Phase 2 : Initialisation de l'Environnement de Travail et Synchronisation
 
-**Instruction :** Une fois le plan approuvé, exécute les commandes suivantes pour préparer la branche de travail.
+**Instruction :** Une fois le plan approuvé, exécute les commandes suivantes pour préparer et sécuriser la branche de travail.
 
 1.  `git checkout main`
 2.  `git pull origin main`
 3.  `git checkout -b feature/[ID-du-ticket-description-courte]` (Adapte le nom de la branche comme défini dans le plan).
+4.  **`git push -u origin feature/[ID-du-ticket-description-courte]`**
+    *   **Note :** Cette commande publie immédiatement la nouvelle branche sur le serveur distant. Cela sécurise le travail et le rend visible pour toute l'équipe et les outils d'intégration continue. L'option `-u` configure le suivi pour que les futurs `git push` et `git pull` fonctionnent sans argument.
 
 ---
 
 #### Phase 3 : Développement et Itérations
 
-**Instruction :** Tu es maintenant sur la branche de feature. Commence le cycle de développement.
+**Instruction :** Tu es maintenant sur la branche de feature, qui est synchronisée avec le serveur distant. Commence le cycle de développement.
 
 1.  **Cycle TDD :**
     *   Écrire le Test d'Intégration qui échoue (RED).
@@ -65,27 +74,20 @@
 2.  **Commit et Push Réguliers :** Après chaque avancée significative et fonctionnelle, exécute :
     *   `git add .`
     *   `git commit -m "feat: [décris l'avancée]"` (ou `fix:`, `chore:`, etc.)
-    *   La première fois : `git push -u origin feature/[nom-de-la-branche]`
-    *   Les fois suivantes : `git push`
+    *   **`git push`**
+        *   **Note :** La branche étant déjà suivie, un simple `git push` suffit pour synchroniser ton travail.
 3.  **Règle d'Escalade :** Après 3 tentatives infructueuses pour faire passer un test, **STOP**. Signale le blocage et demande de l'aide humaine.
 
 ---
 
 #### Phase 4 : Validation Automatisée (Quality Gate)
 
-**Instruction :** Prouve que ton travail est sûr en exécutant le script de Quality Gate. Ce script est configuré pour échouer et arrêter tout le processus (`set -e`/`$ErrorActionPreference = "Stop"`) si une seule étape de validation n'est pas respectée.
+**Instruction :** Prouve que ton travail est sûr en exécutant le script de Quality Gate. Ce script est configuré pour échouer et arrêter tout le processus (`set -e`) si une seule étape de validation n'est pas respectée.
 
 **Action :**
-1.  Détecte ton OS :
-    *   macOS / Linux : `npm run quality-gate:mac`
-    *   Windows : `npm run quality-gate:win`
-2.  Exécute la commande correspondante depuis la racine du projet. Les scripts Quality Gate:
-    *   exécutent **toutes** les étapes (`lint`, `typecheck`, `test`, `build`) et consignent les erreurs jusqu’à la fin;
-    *   affichent un rapport global des erreurs;
-    *   relancent automatiquement un second run si des erreurs ont été détectées. Le processus échoue si ce second run contient encore des erreurs.
-3.  Le succès (code 0) est la condition pour passer à la Phase 5. En cas d’échec, indique les erreurs et attends instruction.
+1.  `./run_quality_gate.sh`
 
-**Note :** Assure-toi que ton terminal permet l'exécution des scripts.
+**Note :** Le succès de l'exécution de cette commande (code de sortie 0) est la **seule et unique condition requise** pour passer à la Phase 5. En cas d'échec, ton processus s'arrête ici. Signale l'erreur précise et attends l'instruction humaine.
 
 ---
 

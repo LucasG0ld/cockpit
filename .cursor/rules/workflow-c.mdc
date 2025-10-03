@@ -14,7 +14,10 @@
 
 3.  **"Prove, then Document" :** Le code n'existe pas sans preuve (tests). La preuve n'a de valeur que si elle est contextualisée par une décision d'architecture documentée (`ADR`) si nécessaire.
 
+
 4.  **"Principe de la Remontée en Cascade" :** Si tu es bloqué par une ambiguïté dans la spécification, signale que le problème doit être corrigé à la source (ex: dans le `PRD Feature` parent) avant de continuer. Ne fais pas de suppositions.
+
+5.  **"Primacy of the Strategic Plan" :** Le plan stratégique (`_plan.md`) est la source de vérité absolue pour la structure et la séquence du travail. Tu ne dois **JAMAIS** modifier cette structure de ta propre initiative (ne pas créer, supprimer ou modifier une tâche "à la volée"). Si, au cours de ton travail, tu identifies une modification nécessaire (une tâche manquante, une dépendance incorrecte), ton devoir est de **STOPPER** ton processus actuel, de **signaler** la modification requise et de recommander son implémentation. Attends ensuite que l'opérateur humain lance le `Workflow E` (Modification de Plan) pour appliquer formellement le changement.
 ---
 ---
 
@@ -36,11 +39,25 @@
         *   **Routes Next.js :** Fichiers `apps/frontend/src/app/[route]/page.tsx` minimalistes qui rendent uniquement le Page Component correspondant (ex: `<TeamPage />`).
 3.  **Analyse des Dépendances :** Pour chaque bloc, identifie les prérequis. (ex: "On ne peut pas créer l'endpoint API avant que le schéma DB ne soit mis à jour").
 
-**Phase 2 : Génération du Plan Technique (IA-First)**
+**Phase 2 : Génération du Plan Stratégique par Jalons et des Tâches Détaillées**
 
-1.  **Instruction Humaine :** Attends que le PO/Dev te donne le signal clair : "Parfait. Maintenant, décompose cette feature en tâches techniques."
-2.  **Action :** Exécute les actions suivantes :
-    *   Pour chaque tâche technique atomique que tu as identifiée, **crée un nouveau fichier `.mdc`** dans le dossier `/tasks/`.
+1.  **Instruction Humaine :** Attends que le PO/Dev te donne le signal clair : "Parfait. Maintenant, décompose cette feature en un plan de travail."
+
+2.  **Action (Étape 1 - Création du Plan Stratégique par Jalons) :**
+    *   **Identifie les grands jalons logiques** de l'épique (ex: Jalon 1: Backend & DB, Jalon 2: Composants UI, Jalon 3: Assemblage Page & Route).
+    *   **Rédige le plan stratégique** en utilisant le template `@.cursor/rules/templates/graph.template.mdc`. Ce plan doit inclure :
+        *   Le **graphe de dépendances complet** au format Mermaid. Dans le graphe, représente les jalons en utilisant des `subgraph`.
+        *   **Important :** Ne décompose en tâches détaillées (`TASK-ID-...`) que le **Jalon 1**. Les autres jalons peuvent rester des blocs conceptuels pour la vision d'ensemble.
+    *   **Auto-Vérification du Graphe (Action Critique) :** Avant de sauvegarder le plan, relis le graphe Mermaid que tu viens de générer et effectue les contrôles suivants :
+        1.  **Recherche de Dépendances Circulaires :** Confirme explicitement qu'il n'y a aucune boucle (ex: A -> B -> C -> A).
+        2.  **Recherche de Nœuds Orphelins :** Vérifie que chaque tâche est connectée au reste du graphe et qu'il n'y a pas de "branches mortes".
+        3.  **Validation du Chemin Critique :** Identifie la séquence de tâches la plus longue et confirme que sa logique est saine.
+        *Si tu trouves une erreur, corrige-la immédiatement avant de continuer.*
+    *   **Sauvegarde cet artefact** à l'emplacement suivant, en respectant la convention de nommage : `annex/[version]/[nom-de-l-epique]/_plan.md`.
+
+3.  **Action (Étape 2 - Génération des Tâches Détaillées du Jalon 1) :**
+    *   Une fois le fichier `_plan.md` créé et sauvegardé, utilise-le comme **source de vérité unique** pour générer les tâches détaillées.
+    *   Pour chaque tâche du **Jalon 1** listée dans le `_plan.md`, **crée un nouveau fichier `.mdc`** dans le dossier `/tasks/`.
     *   Utilise le template `@.cursor/rules/templates/task.template.mdc` pour chaque fichier.
     *   Donne un **titre clair, actionnable et standardisé**. Pour le frontend, **utilise un préfixe indiquant le niveau atomic** :
         *   `FEAT(atom): StatusBadge`
@@ -61,19 +78,18 @@
           Et en début d'état (BEGIN), référencer en lecture seule les artefacts globaux utiles (`app/layout.tsx`, `app/globals.css`, `lib/**`).
         *   **Low-Level Steps (bottom-up obligatoire)** — détailler les étapes dans l'ordre : atoms → molecules → organisms → templates → page → route; inclure le câblage API (401/403) et l'intégration des messages exacts PRD.
         *   **Dépendances** — faire apparaître explicitement le graphe bottom-up FE (route → page → template → organisms → molecules → atoms) ainsi que les dépendances BE nécessaires (guards, endpoints) au niveau organisms/page (pas au niveau template).
-3.  **Génération du Rapport de Planification :** Produis une liste finale et ordonnée de toutes les tâches créées, en mettant en évidence le graphe de dépendances (ex: "Tâche A doit être faite avant B et C").
 
 **[POINT DE CONTRÔLE HUMAIN - VALIDATION DU PLAN TECHNIQUE]**
-**STOP.** Le plan de travail est généré. Le processus est maintenant entre les mains du PO et du Développeur.
+**STOP.** Le plan stratégique par jalons (`_plan.md`) et les tâches détaillées du Jalon 1 (`/tasks/*.mdc`) sont générés. Le processus est maintenant entre les mains du PO et du Développeur.
 
 > **Instructions pour l'Opérateur Humain (PO & Dev) :**
 >
-> 1.  C'est le **Point de Contrôle du Chef de Projet**. Relisez ensemble la liste des `task.mdc` générés.
-> 2.  **Validez le plan** en utilisant la checklist suivante :
->     *   **Couverture :** Y a-t-il au moins une tâche pour chaque critère d'acceptation du PRD ?
->     *   **Dépendances :** Le graphe de dépendances est-il logique et correct ?
->     *   **Clarté :** Le titre de chaque tâche est-il clair et actionnable ?
->     *   **Conformité Architecturale (Frontend) :**
+> 1.  C'est le **Point de Contrôle du Chef de Projet**. Votre première action est de **relire et valider le plan stratégique** dans le fichier `annex/[version]/[nom-de-l-epique]/_plan.md`.
+> 2.  Utilisez la checklist suivante pour valider l'ensemble du plan :
+>     *   **Couverture (via `_plan.md`) :** Le plan par jalons couvre-t-il bien tous les critères d'acceptation du PRD ?
+>     *   **Dépendances (via `_plan.md`) :** Le graphe de dépendances Mermaid est-il logique et correct ?
+>     *   **Clarté (via `/tasks/`) :** Le titre de chaque tâche du Jalon 1 est-il clair et actionnable ?
+>     *   **Conformité Architecturale (Frontend) (via `/tasks/`) :**
 >         - La décomposition suit-elle bien la hiérarchie Atomic Design avec la couche `templates` entre `organisms` et `pages` ?
 >         - Les responsabilités de chaque couche sont-elles respectées (templates = présentation/composition sans logique métier) ?
 >         - La séparation Route (app/[route]/page.tsx) vs UI (components/**) est-elle correctement appliquée ?

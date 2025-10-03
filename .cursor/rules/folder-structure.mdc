@@ -12,12 +12,18 @@
 /
 ├── .cursor/                        # Cerveau IA + rules
 │   └── rules/
-│       ├── workflow.mdc
+│       ├── workflow-a.mdc
+│       ├── workflow-b.mdc
+│       ├── workflow-c.mdc
+│       ├── workflow-d.mdc
+│       ├── workflow-e.mdc
 │       ├── folder-structure.mdc
 │       ├── conventions-naming.mdc
 │       └── templates/
 │           ├── adr.template.mdc
+│           ├── graph.template.mdc
 │           ├── prd-feature.template.mdc
+│           ├── prd-global.template.mdc
 │           └── task.template.mdc
 │
 ├── .docs/                      # PORTAIL VERS LA DOCUMENTATION EXTERNE (POUR LES HUMAINS)
@@ -39,6 +45,12 @@
 │
 ├── adr/                            # Architecture Decision Records
 ├── annex/                          # Annexes (roadmap, events…)
+│   ├── db-schema/
+│   ├── epic-1-iam/
+│   ├── epic-2-iam/
+│   ├── epic-3-iam/
+│   └── epic-4-iam/
+│
 ├── prd/                            # Product Requirement Docs
 │
 ├── apps/                           # Monorepo apps
