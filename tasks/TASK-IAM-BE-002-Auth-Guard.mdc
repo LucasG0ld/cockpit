@@ -46,3 +46,4 @@ PRD US-1 et US-6: 401 si claims manquants/invalides; 403 si mismatch `orgId` ave
 -   [ ] 401 si JWT sans `orgId` ou `role`.
 -   [ ] 403 si `orgId` ≠ ressource demandée.
 -   [ ] Tests e2e passent (auth.guard.e2e-spec).
+-   [ ] Le guard renseigne `req.auth = { userId, orgId, role }` pour les handlers consommateurs.

@@ -97,6 +97,9 @@
 │   │   └── docker-compose.yml
 │   └── k8s/ (optionnel futur)
 │
+├── reports/
+│   └── quality-gate/               # Rapports markdown quality gate (ex: TASK-XXX-quality-gate-report.md)
+│
 ├── .github/workflows/              # CI/CD GitHub Actions
 ├── run_quality_gate.sh
 ├── .env.local

@@ -111,7 +111,7 @@ Sécuriser l'accès au Cockpit et poser les fondations d'IAM multi-tenant: authe
 ---
 
 ### 4. Contraintes Techniques et Non-Fonctionnelles
-*   Authentification/Autorisation: Clerk (sessions/2FA email), JWT vérifié côté NestJS; claims minimales: `orgId`, `role`. Voir PRD Global §4 et §10.
+*   Authentification/Autorisation: Clerk (sessions/2FA email), guard NestJS global vérifiant le JWT HS256 fourni par Clerk; claims minimales: `sub`, `orgId`, `role`. Le guard renseigne `req.auth = {userId, orgId, role}` et renvoie 401 si claims absents/invalides, 403 si `orgId` ≠ ressource. Voir PRD Global §4 et §10.
 *   Multi-tenant: toutes les données scoppées strictement par `orgId`. Voir PRD Global §4 et §10.
 *   2FA: email obligatoire pour internes (et clients côté portail) ; 5 tentatives → verrouillage compte jusqu'à déblocage manuel. Messages exacts définis en US-1. Voir PRD Global §5.
 *   Invitations: lien à usage unique, expiration 72h; idempotence anti-spam 24h par (`orgId`, `email`) avec attribution de l'invitant initial dans le message. Voir US-2.

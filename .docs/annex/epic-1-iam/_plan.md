@@ -13,7 +13,7 @@ graph TD
         direction LR %% Optionnel : pour une meilleure lisibilité des tâches internes
         subgraph Backend
             BE001[TASK-IAM-BE-001-DB-Schema]
-            BE002[TASK-IAM-BE-002-Auth-Guard]
+            BE002[TASK-IAM-BE-002-Auth-Guard\n(note: JWT Clerk HS256, req.auth, 401/403)]
             BE003[TASK-IAM-BE-003-Tenant-Enforcement]
             BE008[TASK-IAM-BE-008-Audit-Service]
             BE004[TASK-IAM-BE-004-Invitations-API]
