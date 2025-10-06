@@ -1,0 +1,32 @@
+id: "TASK-IAM-FE-ORG-006-AuditEventsTable"
+title: "FEAT(organism): AuditEventsTable (liste événements IAM)"
+status: "planned"
+priority: "P2"
+labels: ["[frontend]", "[organisms]", "[audit]"]
+dependencies: ["TASK-IAM-BE-008-Audit-Service", "TASK-IAM-FE-MOL-004-AuditEventRow"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Tableau listant les événements IAM succès avec pagination simple.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-7: observabilité minimale côté page Audits.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Endpoint audit paginé disponible.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-008-Audit-Service`, `TASK-IAM-FE-MOL-004-AuditEventRow`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/components/organisms/AuditEventsTable.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **FETCH** audit events et **RENDER** avec `AuditEventRow`.
+
+### 7. Acceptance Criteria
+-   [ ] Liste paginée affichée.

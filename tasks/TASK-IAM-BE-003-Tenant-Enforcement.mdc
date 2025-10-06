@@ -1,0 +1,40 @@
+id: "TASK-IAM-BE-003-Tenant-Enforcement"
+title: "FEAT(api): Enforcement multi-tenant (filtrage orgId serveur)"
+status: "planned"
+priority: "P0"
+labels: ["[backend]", "[multi-tenant]", "[prisma]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Forcer le filtrage par `orgId` côté serveur pour toutes les listes/ressources IAM.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-6: Toutes les données scoppées par `orgId` extrait du JWT; 403 sur mismatch.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Les handlers reçoivent `orgId` via le guard.
+-   **CONSTRAINT:** Aucun endpoint IAM ne doit retourner de données hors `orgId` de l'utilisateur.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`
+-   **Files:** `apps/backend/src/services/**`, `apps/backend/src/api/**`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/backend/src/services/**`
+    - `apps/backend/src/api/**`
+-   **END STATE (must exist after completion):**
+    - `apps/backend/src/lib/tenant/tenant.interceptor.ts`
+    - `apps/backend/src/lib/tenant/index.ts`
+    - tests e2e: `apps/backend/test/tenant.enforcement.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **IMPLEMENT** un interceptor ou service helper injectant `orgId` dans les requêtes Prisma.
+2.  **REFACTOR** les services IAM pour toujours joindre `where: { organizationId: orgId }`.
+3.  **ADD** tests e2e prouvant que les listes sont filtrées par `orgId`.
+
+### 7. Acceptance Criteria
+-   [ ] Toute liste/lecture IAM côté backend applique `organizationId = orgId`.
+-   [ ] Tests e2e démontrent l'étanchéité cross-org.

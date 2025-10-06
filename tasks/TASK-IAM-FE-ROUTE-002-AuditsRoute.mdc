@@ -1,0 +1,32 @@
+id: "TASK-IAM-FE-ROUTE-002-AuditsRoute"
+title: "FEAT(route): /audits (rend AuditsPage)"
+status: "planned"
+priority: "P2"
+labels: ["[frontend]", "[route]", "[nextjs]"]
+dependencies: ["TASK-IAM-FE-PAGE-002-AuditsPage"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Créer la route Next.js minimale rendant `AuditsPage`.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-7: Page Audits.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** App Router Next.js en place.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-PAGE-002-AuditsPage`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/layout.tsx` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/app/audits/page.tsx` (rend `<AuditsPage />`)
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `apps/frontend/src/app/audits/page.tsx` et rendre `<AuditsPage />`.
+
+### 7. Acceptance Criteria
+-   [ ] Navigation affiche la page Audits.

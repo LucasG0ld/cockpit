@@ -1,0 +1,112 @@
+# Structure des Fichiers du Projet ClientFlow v1.0
+
+# À L'AGENT IA : 
+# Ta source de vérité principale pour le développement est le dossier de contexte de la version active (ex: `alpha-v1-context/`).
+# Les règles qui régissent ton travail se trouvent dans `.cursor/rules/`.
+# Ne fais JAMAIS référence aux fichiers dans le dossier `.docs/` pour l'exécution d'une tâche.
+
+---
+
+### Arborescence du Projet
+
+/
+├── .cursor/                        # Cerveau IA + rules
+│   └── rules/
+│       ├── workflow-a.mdc
+│       ├── workflow-b.mdc
+│       ├── workflow-c.mdc
+│       ├── workflow-d.mdc
+│       ├── workflow-e.mdc
+│       ├── folder-structure.mdc
+│       ├── conventions-naming.mdc
+│       └── templates/
+│           ├── adr.template.mdc
+│           ├── graph.template.mdc
+│           ├── prd-feature.template.mdc
+│           ├── prd-global.template.mdc
+│           └── task.template.mdc
+│
+├── .docs/                      # PORTAIL VERS LA DOCUMENTATION EXTERNE (POUR LES HUMAINS)
+│   └── README.md               # Ce fichier contient les liens vers la documentation stratégique sur Google Drive.
+│
+├── alpha-v1-context/           # LE DOSSIER DE MISSION POUR L'ALPHA V1
+│   ├── 1_Context_Input_Alpha_v1.md
+│   ├── 2_Plan_de_Release_Alpha_v1.md
+│   ├── 3_PRD_Global_Alpha_v1.md
+│   ├── 4_Epiques_Alpha_v1/
+│   │   ├── Charte_Epique_1_IAM.md
+│   │   └── ... (les autres chartes de l'Alpha v1)
+│   └── 5_PRD_Features_Alpha_v1/
+│       ├── PRD_Feature_Login.md
+│       └── ...
+│
+├── alpha-v2-context/           # Le dossier de mission pour la v2 (créé plus tard)
+│   └── ...
+│
+├── adr/                            # Architecture Decision Records
+├── annex/                          # Annexes (roadmap, events…)
+│   ├── db-schema/
+│   ├── epic-1-iam/
+│   │   ├── _plan.md
+│   │   ├── events.md
+│   ├── epic-2-iam/
+│   ├── epic-3-iam/
+│   └── epic-4-iam/
+│
+├── prd/                            # Product Requirement Docs
+│
+├── apps/                           # Monorepo apps
+│   ├── frontend/                   # Next.js + Atomic Design
+│   │   ├── src/                    # Tout le code frontend
+│   │   │   ├── app/                # Routes Next.js (App Router)
+│   │   │   ├── components/         # Atomic Design
+│   │   │   │   ├── atoms/
+│   │   │   │   ├── molecules/
+│   │   │   │   ├── organisms/
+│   │   │   │   ├── templates/
+│   │   │   │   └── pages/
+│   │   │   ├── hooks/
+│   │   │   ├── contexts/
+│   │   │   ├── lib/
+│   │   │   └── assets/             # images, icônes, fonts
+│   │   ├── public/                 # Fichiers statiques
+│   │   ├── next.config.js
+│   │   └── tsconfig.json
+│   │
+│   └── backend/                    # NestJS + Prisma
+│       ├── src/                    # Tout le code backend
+│       │   ├── api/                # Modules / routes (controllers)
+│       │   ├── services/           # Logique métier
+│       │   ├── lib/                # Utils backend (logger, middlewares)
+│       │   ├── jobs/               # Cron jobs / workers
+│       │   └── observability/      # Logs, monitoring, sécurité
+│       ├── prisma/                 # schema + migrations + seeds
+│       ├── nest-cli.json           # Config NestJS
+│       ├── tsconfig.json
+│       └── package.json
+│
+├── packages/                       # Packages partagés
+│   ├── ui/                         # Design system partagé (shadcn/ui customisé)
+│   └── config/                     # Config ESLint, Prettier, tsconfig, Tailwind
+│
+├── tasks/                          # Tâches IA
+├── tests/                          # Tests unit/integration/e2e
+│
+├── infra/                          # Infra & Docker
+│   ├── docker/
+│   │   ├── frontend.Dockerfile
+│   │   ├── backend.Dockerfile
+│   │   └── docker-compose.yml
+│   └── k8s/ (optionnel futur)
+│
+├── reports/
+│   └── quality-gate/               # Rapports markdown quality gate (ex: TASK-XXX-quality-gate-report.md)
+│
+├── .github/workflows/              # CI/CD GitHub Actions
+├── run_quality_gate.sh
+├── .env.local
+├── middleware.ts
+├── next.config.js
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconf

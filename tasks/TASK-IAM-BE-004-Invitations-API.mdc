@@ -1,0 +1,52 @@
+id: "TASK-IAM-BE-004-Invitations-API"
+title: "FEAT(api): API Invitations (création + acceptation + idempotence 24h)"
+status: "planned"
+priority: "P0"
+labels: ["[backend]", "[api]", "[audit]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement", "TASK-IAM-BE-008-Audit-Service"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Exposer les endpoints d'invitation: créer, générer lien (72h, usage unique), accepter. Appliquer idempotence 24h par (`orgId`, `email`) et tracer `user.team_member.invited` (succès seulement).
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-2 et US-3: validations email/role, messages exacts, 72h, usage unique, idempotence 24h. Événements autorisés (cf. `.docs/annex/epic-1-iam/events.md`): `user.team_member.invited`, `user.team_member.activated`.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Envoi d'email via provider existant; sinon stub + log.
+-   **CONSTRAINT:** Audit uniquement en cas de succès. Pas de double activation possible.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** listées ci-dessus.
+-   **Files:** `apps/backend/src/api/**`, `apps/backend/src/services/**`, `.docs/annex/epic-1-iam/events.md`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/backend/src/api/**`
+    - `apps/backend/src/services/**`
+    - `.docs/annex/epic-1-iam/events.md` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/backend/src/api/invitations/invitations.controller.ts`
+    - `apps/backend/src/api/invitations/invitations.service.ts`
+    - `apps/backend/src/api/invitations/dto/*.ts`
+    - `apps/backend/src/services/audit/audit.service.ts`
+    - tests e2e: `apps/backend/test/invitations.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** DTO: `CreateInvitationDto { email, role }` avec validation.
+2.  **POST** `/invitations` (Admin scope):
+    - Vérifier email invalide → 400 avec message PRD.
+    - Idempotence 24h par (`orgId`, `email`); renvoyer info invitant initial.
+    - Générer `token` unique, `expiresAt = now()+72h`.
+    - Persister Invitation(status=Pending) et tracer `user.team_member.invited`.
+3.  **POST** `/invitations/accept` (public avec token):
+    - Refuser si expiré (`Expired`) ou déjà consommé (`Accepted`).
+    - Créer `User` si besoin, rôle selon invitation (ou `Temporaire`).
+    - Marquer invitation `Accepted` et tracer `user.team_member.activated`.
+4.  **TESTS** e2e couvrant messages PRD, 72h, usage unique, idempotence 24h.
+
+### 7. Acceptance Criteria
+-   [ ] Création invitation respecte 24h idempotence et 72h d'expiration.
+-   [ ] Acceptation refuse expiré/déjà consommé; crée/associe l'utilisateur.
+-   [ ] Audit `user.team_member.invited` et `user.team_member.activated` émis (succès seulement).

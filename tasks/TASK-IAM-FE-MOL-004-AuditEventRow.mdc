@@ -1,0 +1,32 @@
+id: "TASK-IAM-FE-MOL-004-AuditEventRow"
+title: "FEAT(molecule): AuditEventRow (ligne d\'audit)"
+status: "planned"
+priority: "P2"
+labels: ["[frontend]", "[molecules]", "[audit]"]
+dependencies: ["TASK-IAM-FE-ATOM-004-EventTypeBadge", "TASK-IAM-FE-ATOM-005-Timestamp"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Affichage d\'une ligne d\'audit `{eventType, actor, target, createdAt}`.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-7 et `.docs/annex/epic-1-iam/events.md`.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Données fournies par API audit.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-ATOM-004-EventTypeBadge`, `TASK-IAM-FE-ATOM-005-Timestamp`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/components/molecules/AuditEventRow.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **COMPOSE** avec `EventTypeBadge` + `Timestamp` + libellés actor/target.
+
+### 7. Acceptance Criteria
+-   [ ] Ligne lisible et accessible.

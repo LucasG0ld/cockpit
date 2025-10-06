@@ -1,0 +1,32 @@
+id: "TASK-IAM-FE-TPL-002-AuditsTemplate"
+title: "FEAT(template): AuditsTemplate (composition table audit)"
+status: "planned"
+priority: "P2"
+labels: ["[frontend]", "[templates]", "[audit]"]
+dependencies: ["TASK-IAM-FE-ORG-006-AuditEventsTable"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Template composant la page Audits avec la table des événements.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Workflow-C: templates composent, pas de logique métier.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Styles globaux disponibles.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-FE-ORG-006-AuditEventsTable`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/components/templates/AuditsTemplate.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **ARRANGE** layout simple autour d'`AuditEventsTable`.
+
+### 7. Acceptance Criteria
+-   [ ] Aucun accès direct aux services/données dans le template.

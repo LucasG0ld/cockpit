@@ -1,0 +1,46 @@
+id: "TASK-IAM-BE-001-DB-Schema"
+title: "FEAT(db): Implémenter le schéma IAM — Épique 1"
+status: "planned"
+priority: "P0"
+labels: ["[backend]", "[db]", "[prisma]", "[migrations]", "[tests]"]
+dependencies: []
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Mettre en place le schéma de base de données IAM (Organization, User, Invitation, AuditEvent + enums) tel que défini par `.docs/annex/db-schema/epic-1-iam.schema.md`, prêt pour usage API et UI.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Se conformer strictement au PRD `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md` et au schéma validé `.docs/annex/db-schema/epic-1-iam.schema.md`. En cas de conflit PRD vs schéma, le PRD prévaut.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Postgres accessible via `DATABASE_URL`.
+-   **CONSTRAINT:** Utiliser Prisma; produire une migration traçable unique.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** N/A (tâche initiale)
+-   **Files:**
+    - `.docs/annex/db-schema/epic-1-iam.schema.md`
+    - `apps/backend/prisma/schema.prisma`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `.docs/annex/db-schema/epic-1-iam.schema.md` (read-only)
+    - `apps/backend/prisma/schema.prisma`
+    - `apps/backend/README.md`
+-   **END STATE (must exist after completion):**
+    - `apps/backend/prisma/schema.prisma` (aligné)
+    - `apps/backend/prisma/migrations/*/migration.sql`
+    - client Prisma généré
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  Aligner `schema.prisma` sur l'annexe (enums `UserRole`, `UserStatus`, `InvitationStatus`; modèles `Organization`, `User`, `Invitation`, `AuditEvent`).
+2.  `pnpm prisma generate` dans `apps/backend` et corriger divergences.
+3.  `pnpm prisma migrate dev --name iam_epic1_init`.
+4.  Vérifier tables/contraintes via Prisma Studio ou `psql`.
+5.  Documenter commandes dans `apps/backend/README.md`.
+
+### 7. Acceptance Criteria
+-   [ ] `prisma validate` passe; client généré.
+-   [ ] Migration crée tables/enums/indices/unicités attendus.
+-   [ ] Types Prisma exploitables côté NestJS.

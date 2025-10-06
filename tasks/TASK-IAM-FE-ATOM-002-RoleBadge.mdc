@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ATOM-002-RoleBadge"
+title: "FEAT(atom): RoleBadge (Admin/CSM/Closer/Client/Temporaire)"
+status: "planned"
+priority: "P1"
+labels: ["[frontend]", "[atoms]", "[ui]"]
+dependencies: []
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Afficher un badge de rôle pour les rôles stricts définis par le PRD.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD §4 et US-6: rôles {Admin, CSM, Closer, Client, Temporaire}.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Styles via Tailwind/PostCSS existants.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Files:** `apps/frontend/src/app/globals.css` (read-only)
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/components/atoms/RoleBadge.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `RoleBadge` props `{ role: 'Admin'|'CSM'|'Closer'|'Client'|'Temporaire' }`.
+2.  **STYLE** variantes et libellés.
+
+### 7. Acceptance Criteria
+-   [ ] Badge affiche un style et libellé par rôle.

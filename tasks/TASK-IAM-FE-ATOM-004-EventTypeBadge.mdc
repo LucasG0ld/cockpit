@@ -1,0 +1,32 @@
+id: "TASK-IAM-FE-ATOM-004-EventTypeBadge"
+title: "FEAT(atom): EventTypeBadge (audit IAM)"
+status: "planned"
+priority: "P2"
+labels: ["[frontend]", "[atoms]", "[audit]"]
+dependencies: ["TASK-IAM-BE-008-Audit-Service"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Badge pour types d'événements IAM listés (invited, activated, role.changed, status.changed).
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-7 et `.docs/annex/epic-1-iam/events.md`.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Mapping type → style défini localement.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-008-Audit-Service`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/components/atoms/EventTypeBadge.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `EventTypeBadge` avec mapping basé sur `events.md`.
+
+### 7. Acceptance Criteria
+-   [ ] Rendu lisible des 4 types IAM.

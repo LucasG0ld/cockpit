@@ -1,0 +1,33 @@
+id: "TASK-IAM-FE-ATOM-003-EmailInput"
+title: "FEAT(atom): EmailInput (validation et messages PRD)"
+status: "planned"
+priority: "P1"
+labels: ["[frontend]", "[atoms]", "[forms]"]
+dependencies: ["TASK-IAM-BE-004-Invitations-API"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Champ email avec validation stricte et message "Adresse email invalide." (US-2).
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-2: message exact en cas de format invalide.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Utilisation de `react-hook-form` ou équivalent.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Files:** `apps/frontend/src/app/globals.css` (read-only)
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/frontend/src/app/globals.css` (read-only)
+-   **END STATE (must exist after completion):**
+    - `apps/frontend/src/components/atoms/EmailInput.tsx`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **CREATE** `EmailInput` avec validation regexp RFC raisonnable.
+2.  **SHOW** message exact sur invalidité.
+
+### 7. Acceptance Criteria
+-   [ ] Message exact rendu sur format invalide.

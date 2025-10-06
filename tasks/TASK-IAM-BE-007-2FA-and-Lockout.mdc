@@ -1,0 +1,43 @@
+id: "TASK-IAM-BE-007-2FA-and-Lockout"
+title: "FEAT(auth): 2FA email obligatoire + verrouillage 5 tentatives"
+status: "planned"
+priority: "P0"
+labels: ["[backend]", "[auth]", "[clerk]", "[tests]"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard"]
+created: "2025-10-01"
+---
+
+### 1. High-Level Objective
+Forcer la 2FA email pour les internes et mettre en place le verrouillage de compte après 5 tentatives 2FA infructueuses avec messages PRD.
+
+### 2. Background / Context (Optionnel mais recommandé)
+PRD US-1: 2FA obligatoire, message "Code expiré. Demandez un nouveau code." et verrouillage à 5 tentatives jusqu'à déblocage manuel.
+
+### 3. Assumptions & Constraints
+-   **ASSUMPTION:** Clerk supporte les flows email OTP et lockout via API.
+-   **CONSTRAINT:** Déblocage uniquement par Admin/Support.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+-   **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`
+-   **Files:** `apps/backend/src/services/**`, `apps/backend/src/api/**`
+
+### 5. Context Plan
+-   **BEGIN (add to model context):**
+    - `apps/backend/src/services/**`
+    - `apps/backend/src/api/**`
+-   **END STATE (must exist after completion):**
+    - `apps/backend/src/services/auth/2fa.service.ts`
+    - `apps/backend/src/api/auth/admin-unlock.controller.ts`
+    - tests e2e: `apps/backend/test/2fa.lockout.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1.  **IMPLEMENT** politique: internes doivent configurer 2FA à première connexion.
+2.  **HANDLE** erreurs OTP expiré → message exact PRD.
+3.  **COUNT** tentatives 2FA et verrouiller au 5e échec via Clerk API.
+4.  **ADD** endpoint Admin pour déverrouiller un compte.
+5.  **TESTS** e2e: succès 2FA, expiré, 5 échecs → lockout, déverrouillage.
+
+### 7. Acceptance Criteria
+-   [ ] 2FA requise pour internes; clients portail vérifiés email.
+-   [ ] Message d'expiration conforme.
+-   [ ] Lockout au 5e échec; déverrouillage admin possible.
