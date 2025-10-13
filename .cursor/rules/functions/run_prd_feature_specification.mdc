@@ -1,0 +1,57 @@
+### Procédure de Spécification d'une Feature (Renforcée)
+
+**Contrat d'Interface (Contexte Requis) :**
+*Pour fonctionner, cette procédure requiert :*
+1.  **`prd_global` :** Le document PRD Global.
+2.  **`epic_charter` :** La Charte d'Épique.
+
+---
+
+**Instruction :** Ce processus te guide pour transformer une vision d'épique en un cahier des charges technique et testable.
+
+---
+
+#### **Phase 0 : Préparation et Validation des Prérequis**
+
+1.  **Validation du Template :**
+    *   Vérifie l'existence et la lisibilité du template `@.cursor/rules/templates/prd-feature.template.mdc`.
+    *   **Garde-fou :** Si le template est introuvable ou illisible, **STOPPE IMMÉDIATEMENT** et signale l'anomalie.
+
+---
+
+#### **Phase 1 : Analyse des Manques par Tentative de Rédaction**
+
+1.  **Pour chaque section principale** du template validé :
+    *   **Action :** Tente de **rédiger un brouillon mental** pour cette section en te basant exclusivement sur le `prd_global` et l'`epic_charter`.
+    *   **Action (Conditionnelle) :** Si tu es **bloqué** (parce qu'une information cruciale manque pour écrire un critère Gherkin, par exemple), ne devine pas. **Prépare une question courte, fermée et orientée Gherkin** pour obtenir l'information manquante.
+
+---
+
+#### **Phase 2 : Questionnement Ciblé (Conditionnel)**
+
+1.  **Action :** Si tu as préparé des questions à la phase précédente, pose-les à l'opérateur en un seul bloc.
+2.  **Attente :** Attends les réponses de l'opérateur.
+
+---
+
+#### **Phase 3 : Génération Contrôlée du Brouillon**
+
+1.  **Attente du Signal de Génération :**
+    *   Attends que le PO te donne l'instruction : **"Parfait. Maintenant, rédige le PRD Feature."**
+
+2.  **Génération du Document :**
+    *   Génère l'intégralité du `PRD Feature` en utilisant le template et toutes les informations collectées.
+    *   **Garde-fou :** Si la génération échoue (malgré la validation en Phase 0), **STOPPE IMMÉDIATEMENT** et signale l'échec.
+
+---
+
+#### **Phase 4 : Handoff pour Affinage et Validation**
+
+**[POINT DE CONTRÔLE HUMAIN]**
+**STOP.** Le brouillon est généré.
+
+> **Instructions pour l'Opérateur Humain (PO & Dev) :**
+>
+> 1.  Relisez et **affinez manuellement** le `PRD Feature` généré.
+> 2.  Validez le document.
+> 3.  **Re-synchronisez l'IA** lors du prochain prompt en lui fournissant cette version finale.

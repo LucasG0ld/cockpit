@@ -1,0 +1,56 @@
+# Micro-Workflow D.3 : Validation Finale et Durcissement (Renforcé)
+
+**Objectif :** Ce protocole orchestre le pipeline de validation. Il est conçu comme une machine à états qui s'exécute jusqu'à ce que le code soit prouvé, de qualité validée et sécurisé, ou jusqu'à ce qu'une intervention humaine soit requise.
+
+---
+
+### **Phase 1 : Assimilation des Procédures**
+
+**Instruction :** Lis et assimile intégralement le contenu des fichiers suivants.
+
+*   `.cursor/rules/functions/run_quality_gate.mdc`
+*   `.cursor/rules/workflows/H.1-Plan_Security_Audit.mdc`
+*   `.cursor/rules/workflows/H.2-Execute_Audit_Lot.mdc`
+*   `.cursor/rules/functions/run_security_remediation_cycle.mdc`
+* `.cursor/rules/functions/request_human_review_for_merge.mdc`
+
+---
+
+### **Phase 2 : Exécution de la Machine à États de Validation**
+
+**Instruction :** Tu vas maintenant entrer dans le pipeline de validation. Tu exécuteras cette séquence d'étapes en entier. Si une étape de remédiation est nécessaire, tu recommenceras automatiquement cette séquence depuis le début après avoir appliqué les corrections.
+
+1.  **Validation du Contexte Doctrinal :**
+    *   Exécute la validation opportuniste du contexte doctrinal au début de cette mission.
+
+2.  **DÉBUT DE LA BOUCLE DE VALIDATION**
+
+    a. **ÉTAPE A : QUALITY GATE**
+        * Exécute `run_quality_gate.mdc`.
+        * **Garde-fou :** Si le Quality Gate échoue, **STOPPE** et signale l'échec.
+
+    b. **ÉTAPE B : PLANIFICATION DE L'AUDIT DE SÉCURITÉ**
+        * Exécute `H.1-Plan_Security_Audit.mdc`.
+        * Attends la validation du plan par l'opérateur.
+
+    c. **ÉTAPE C : EXÉCUTION DE L'AUDIT DE SÉCURITÉ**
+        * Sur instruction de l'opérateur, exécute `H.2-Execute_Audit_Lot.mdc` pour chaque lot.
+
+3.  **POINT DE DÉCISION STRATÉGIQUE**
+    *   Après l'analyse du dernier lot, évalue le rapport d'audit.
+    *   **SI** aucune vulnérabilité critique n'a été trouvée :
+        *   **Action :** Passe directement à l'**ÉTAPE FINALE : HANDOFF**.
+    *   **SI** des vulnérabilités critiques ont été trouvées :
+        *   **Action :** Présente à l'opérateur le **"Briefing de Décision de Remédiation"** (avec les Options 1 et 2).
+        *   **STOPPE** et attends la décision de l'opérateur.
+
+4.  **GESTION DE LA REMÉDIATION (Conditionnel)**
+    *   **SI** l'opérateur choisit l'Option 1 (Lancer la remédiation) :
+        *   Exécute la fonction `run_security_remediation_cycle.mdc` avec les informations fournies.
+        *   Une fois la fonction terminée avec succès, **annonce à l'opérateur que tu relances le cycle de validation complet**, puis **recommence l'exécution de ce workflow depuis "DÉBUT DE LA BOUCLE DE VALIDATION"**.
+    *   **SI** l'opérateur choisit l'Option 2 (Nouveau Chat) :
+        *   Ta mission dans ce chat est terminée. **STOPPE**.
+
+5.  **ÉTAPE FINALE : HANDOFF POUR REVUE DE FUSION**
+    *   Exécute la procédure `request_human_review_for_merge.mdc`.
+    *   **Fin de Workflow :** Ce micro-workflow est terminé. **STOPPE**.

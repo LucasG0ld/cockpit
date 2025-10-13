@@ -1,0 +1,62 @@
+### Procédure de Préparation d'Audit de Sécurité (Renforcée)
+
+**Contrat d'Interface (Contexte Requis) :**
+*Pour fonctionner, cette procédure requiert :*
+1.  **`merged_branch_name` :** Le nom de la branche à auditer.
+
+---
+
+**Instruction :** Cette procédure prépare l'environnement et planifie un audit de sécurité.
+
+---
+
+#### **Phase 1 : Synchronisation de l'Environnement**
+
+1.  **Accusation de Réception :**
+    *   *Message : "Mission d'audit de sécurité initiée. J'endosse mon rôle d'**Auditeur de Sécurité Statique**..."*
+
+2.  **Mise à Jour de `main` :**
+    *   **Commandes :** `git checkout main`, puis `git pull origin main`.
+    *   **Garde-fou :** En cas d'échec d'une commande, **STOPPE IMMÉDIATEMENT**.
+
+---
+
+#### **Phase 2 : Cadrage Automatisé du Périmètre**
+
+1.  **Identification des Fichiers Modifiés :**
+    *   **Commande :** `git diff --name-only origin/main...origin/[merged_branch_name]`
+    *   **Garde-fou (Branche Inexistante) :** Si la commande échoue car la branche est introuvable, **STOPPE** et affiche le message d'erreur standard.
+
+2.  **Validation du Périmètre (Action Critique) :**
+    *   **Action :** Vérifie si la liste de fichiers retournée par la commande `git diff` est vide.
+    *   **Garde-fou (Périmètre Vide) :** Si la liste est vide, la procédure ne peut pas continuer. **STOPPE IMMÉDIATEMENT** et informe l'opérateur avec le message suivant : "Fin de la procédure. Aucun fichier modifié n'a été trouvé pour la branche `[merged_branch_name]`. Il n'y a rien à auditer."
+
+3.  **Planification de l'Audit en Lots :**
+    *   Regroupe la liste de fichiers non vide par répertoire de premier niveau.
+    *   Présente le **Plan d'Audit** (liste numérotée des lots) à l'opérateur.
+
+---
+
+#### **Phase 3 : Initialisation du Rapport**
+
+1.  **Création du Fichier de Rapport :**
+    *   Crée un nouveau fichier : `reports/security/SECURITY_AUDIT_REPORT_[merged_branch_name]_[YYYY-MM-DD].md`.
+    *   **Garde-fou :** En cas d'échec, **STOPPE IMMÉDIATEMENT**.
+
+2.  **Écriture de l'En-tête (Mécanique) :**
+    *   Écris l'en-tête suivant dans le fichier, en remplaçant les placeholders :
+        ```markdown
+        # Rapport d'Audit de Sécurité
+        - **Date:** [YYYY-MM-DD]
+        - **Périmètre Audité:** Branche `[merged_branch_name]`
+        
+        ## Résumé des Vulnérabilités
+        *(Cette section sera remplie ultérieurement.)*
+        
+        ## Résultats Détaillés
+        ---
+        ```
+    *   **Garde-fou :** En cas d'échec, **STOPPE IMMÉDIATEMENT**.
+
+3.  **Confirmation Finale :**
+    *   *Message : "Préparation de l'audit terminée. Le plan a été défini et le rapport a été initialisé à `[chemin/vers/le/rapport.md]`. J'attends votre instruction pour commencer l'analyse du premier lot."*

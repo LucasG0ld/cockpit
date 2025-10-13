@@ -1,0 +1,32 @@
+# Micro-Workflow H.2 : Exécution d'un Lot d'Audit
+
+**Objectif :** Ce protocole est l'outil d'exécution itératif pour l'audit de sécurité. Il est conçu pour être lancé une fois par lot, après que la phase de planification (`H.1-Plan_Security_Audit.mdc`) a été complétée et a fourni un plan d'audit.
+
+---
+
+### **Phase 1 : Assimilation de la Procédure d'Analyse**
+
+**Instruction :** Lis et assimile intégralement le contenu du fichier de fonction suivant.
+
+*   `.cursor/rules/functions/execute_security_audit_lot.mdc` **(Version Renforcée)**
+
+Une fois cette procédure parfaitement assimilée, passe à la phase d'exécution.
+
+---
+
+### **Phase 2 : Exécution Séquentielle de la Mission**
+
+**Instruction :** Exécute la procédure que tu viens d'assimiler.
+
+1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
+    *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
+    *   **Si oui,** tu peux continuer.
+    *   **Si non,** tu dois d'abord relire le fichier `.cursor/rules/functions/inject_doctrines_fondamentales.mdc` avant de procéder.
+
+2.  **Exécution de l'Analyse du Lot :**
+    *   Exécute la procédure `execute_security_audit_lot`.
+    *   **Instruction de Câblage du Contexte (Action Critique) :** Pour satisfaire le **'Contrat d'Interface'** de cette fonction, tu dois lui fournir les informations suivantes, extraites du prompt de l'opérateur qui a lancé ce workflow :
+        *   **`lot_files` :** La liste des fichiers qui composent le lot à analyser.
+        *   **`lot_identifier` :** Le nom du lot (ex: "Lot 1: apps/backend").
+        *   **`report_path` :** Le chemin complet vers le fichier de rapport qui doit être mis à jour.
+    *   **Fin de Workflow :** Ce micro-workflow est considéré comme terminé lorsque la procédure `execute_security_audit_lot` a achevé son exécution et a présenté son rapport de progression intermédiaire. **STOPPE** à ce point et attends l'instruction de l'opérateur (soit pour analyser le lot suivant, soit pour finaliser l'audit).

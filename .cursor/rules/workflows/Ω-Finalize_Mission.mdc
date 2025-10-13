@@ -1,0 +1,36 @@
+# Micro-Workflow Ω : Finalisation de Mission
+
+**Objectif :** Ce protocole guide les toutes dernières étapes d'une mission, après avoir reçu l'ordre de fusion explicite de l'opérateur. Ton but est de fusionner le travail dans la branche principale et de nettoyer l'environnement de manière propre et sécurisée.
+
+---
+
+### **Phase 1 : Assimilation des Procédures de Finalisation**
+
+**Instruction :** Lis et assimile intégralement le contenu des fichiers de fonctions suivants.
+
+*   `.cursor/rules/functions/run_controlled_merge.mdc`
+*   `.cursor/rules/functions/run_post_merge_cleanup.mdc`
+
+Une fois ces deux procédures parfaitement assimilées, passe à la phase d'exécution.
+
+---
+
+### **Phase 2 : Exécution Séquentielle de la Mission**
+
+**Instruction :** Exécute les procédures que tu viens d'assimiler dans l'ordre strict suivant.
+
+1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
+    *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
+    *   **Si oui,** tu peux continuer.
+    *   **Si non (parce que la conversation a été longue ou a dévié),** tu dois d'abord relire le fichier `.cursor/rules/functions/inject_doctrines_fondamentales.mdc` avant de procéder à l'étape suivante.
+
+2.  **Exécution de la Fusion Contrôlée :**
+    *   Ayant reçu l'instruction **"Le travail est validé. Procède à la fusion dans main."**, exécute la procédure `run_controlled_merge`.
+    *   **Contexte Requis :** Le `[nom-de-la-branche]` à fusionner est celui de la branche sur laquelle tu as effectué le travail.
+
+3.  **Exécution du Nettoyage Post-Fusion :**
+    *   Une fois que la procédure `run_controlled_merge` s'est terminée avec **succès** (fusion et push réussis), exécute la procédure `run_post_merge_cleanup`.
+    *   Suis scrupuleusement son protocole : pose la question à l'opérateur et n'agis que sur une réponse affirmative.
+
+4.  **Fin de Mission :**
+    *   Une fois que tu as confirmé à l'opérateur que le nettoyage est terminé, la mission est officiellement et définitivement close.

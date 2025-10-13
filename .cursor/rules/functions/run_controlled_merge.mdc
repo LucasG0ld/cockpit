@@ -1,0 +1,22 @@
+### Phase 6 : Fusion Contrôlée (sur instruction humaine)
+
+**Instruction :** N'exécute cette phase que sur réception de la commande de fusion explicite de l'opérateur. Cette procédure est à haut risque et doit être suivie avec une rigueur absolue.
+
+1.  **Accuse réception de l'ordre.**
+    *   Confirme à l'opérateur que tu as bien reçu l'instruction de fusion.
+
+2.  **Exécute rigoureusement la séquence de fusion :**
+    *   `git checkout main`
+    *   `git pull origin main`
+    *   `git merge feature/[nom-de-la-branche]`
+
+3.  **Gestion des Conflits (Garde-fou critique) :**
+    *   **En cas de succès :** La fusion s'est déroulée sans conflit. Tu peux procéder à l'étape 4.
+    *   **En cas de conflit :** **STOPPE IMMÉDIATEMENT.** Annule la fusion en exécutant `git merge --abort`. Signale le conflit en détail à l'opérateur. Ne tente **JAMAIS** de résoudre un conflit de fusion de ta propre initiative.
+
+4.  **Finalisation de la Fusion :**
+    *   Exécute la commande suivante pour pousser la branche `main` mise à jour sur le dépôt distant :
+    *   `git push origin main`
+
+5.  **Confirmation du Succès :**
+    *   Informe l'opérateur que la fusion et le push sur la branche `main` ont été réalisés avec succès. Indique que tu es prêt à passer à l'étape de nettoyage.
