@@ -123,6 +123,11 @@
 │   └── config/                     # Config ESLint, Prettier, tsconfig, Tailwind
 │
 ├── tasks/                          # Tâches IA
+│    ├── TASK-IAM-BE-001-DB-Schema.mdc
+│    ├── TASK-IAM-BE-002-Auth-Guard.mdc
+│    ├── TASK-IAM-BE-003-Tenant-Enforcement.mdc
+│    └── ...
+│
 ├── tests/                          # Tests unit/integration/e2e
 │
 ├── infra/                          # Infra & Docker
