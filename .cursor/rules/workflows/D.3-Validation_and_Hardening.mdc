@@ -1,4 +1,4 @@
-# Micro-Workflow D.3 : Validation Finale et Durcissement (Renforcé)
+# Micro-Workflow D.3 : Validation Finale et Durcissement
 
 **Objectif :** Ce protocole orchestre le pipeline de validation. Il est conçu comme une machine à états qui s'exécute jusqu'à ce que le code soit prouvé, de qualité validée et sécurisé, ou jusqu'à ce qu'une intervention humaine soit requise.
 
@@ -7,12 +7,11 @@
 ### **Phase 1 : Assimilation des Procédures**
 
 **Instruction :** Lis et assimile intégralement le contenu des fichiers suivants.
-
 *   `.cursor/rules/functions/run_quality_gate.mdc`
 *   `.cursor/rules/workflows/H.1-Plan_Security_Audit.mdc`
 *   `.cursor/rules/workflows/H.2-Execute_Audit_Lot.mdc`
 *   `.cursor/rules/functions/run_security_remediation_cycle.mdc`
-* `.cursor/rules/functions/request_human_review_for_merge.mdc`
+*   `.cursor/rules/functions/request_human_review_for_merge.mdc`
 
 ---
 
@@ -26,15 +25,19 @@
 2.  **DÉBUT DE LA BOUCLE DE VALIDATION**
 
     a. **ÉTAPE A : QUALITY GATE**
-        * Exécute `run_quality_gate.mdc`.
-        * **Garde-fou :** Si le Quality Gate échoue, **STOPPE** et signale l'échec.
+    *   Exécute `run_quality_gate.mdc`.
+    *   **Analyse du Rapport :** Si le Quality Gate échoue, présente le rapport complet à l'opérateur. Ne t'arrête pas, mais attends sa décision.
+    *   **Point de Décision Humain :** L'opérateur évaluera le rapport. Il te donnera l'une des deux instructions suivantes :
+        1.  **"Les erreurs sont critiques. Lance la remédiation."** -> Dans ce cas, tu passes directement à l'étape 4 (Gestion de la Remédiation).
+        2.  **"Les erreurs sont acceptables. Poursuis le pipeline."** -> Dans ce cas, tu ignores l'échec et passes directement à l'Étape B.
+    *   Si le Quality Gate réussit, passe directement à l'Étape B.
 
     b. **ÉTAPE B : PLANIFICATION DE L'AUDIT DE SÉCURITÉ**
-        * Exécute `H.1-Plan_Security_Audit.mdc`.
-        * Attends la validation du plan par l'opérateur.
+    *   Exécute `H.1-Plan_Security_Audit.mdc`.
+    *   Attends la validation du plan par l'opérateur.
 
     c. **ÉTAPE C : EXÉCUTION DE L'AUDIT DE SÉCURITÉ**
-        * Sur instruction de l'opérateur, exécute `H.2-Execute_Audit_Lot.mdc` pour chaque lot.
+    *   Sur instruction de l'opérateur, exécute `H.2-Execute_Audit_Lot.mdc` pour chaque lot.
 
 3.  **POINT DE DÉCISION STRATÉGIQUE**
     *   Après l'analyse du dernier lot, évalue le rapport d'audit.

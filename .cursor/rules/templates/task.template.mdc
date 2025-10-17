@@ -1,3 +1,17 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+# Clé utilisée par l'agent pour router vers le bon cycle d'exécution.
+# Valeurs possibles : 'development', 'migration'.
+task_type: '[development|migration]'
+
+# Nom de la migration (UNIQUEMENT si task_type est 'migration').
+# Sera utilisé pour la commande `prisma migrate dev --name "..."`.
+# Exemple : 'add-user-profile-table'
+migration_name: '[nom-de-la-migration]'
+---
+
 id: "TASK-[ID_UNIQUE_OU_TICKET]"
 title: "[Titre court et actionnable de la tâche]"
 status: "planned"
@@ -6,7 +20,6 @@ labels: ["[backend]", "[frontend]", "[types]", "[tests]", "[CI]"]
 dependencies: ["[TASK-ID_DEPENDANCE_1]", "[TASK-ID_DEPENDANCE_2]"]
 created: "[YYYY-MM-DD]"
 ---
-
 ### 1. High-Level Objective
 <!-- Une phrase qui décrit l'état final observable. Éviter le jargon technique. -->
 
@@ -15,23 +28,23 @@ created: "[YYYY-MM-DD]"
 
 ### 3. Assumptions & Constraints
 <!-- Lister toute information manquante ou contrainte à respecter. -->
--   **ASSUMPTION:** [Si une info manque, énoncez ici l'hypothèse pragmatique.]
--   **CONSTRAINT:** [Ex: "Utiliser uniquement les dépendances listées dans package.json."]
+- **ASSUMPTION:** [Si une info manque, énoncez ici l'hypothèse pragmatique.]
+- **CONSTRAINT:** [Ex: "Utiliser uniquement les dépendances listées dans package.json."]
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
 <!-- Lister les fichiers qui doivent être lus ou les tâches qui doivent être terminées avant. -->
--   **Tasks:** `[ID de la tâche]`
--   **Files:** `[chemin/vers/fichier/requis]`
+- **Tasks:** `[ID de la tâche]`
+- **Files:** `[chemin/vers/fichier/requis]`
 
 ### 5. Context Plan
 <!-- **Instruction à l'IA :** Lister ici tous les fichiers que tu dois lire pour compléter cette tâche. Marquer les dépendances en lecture seule (read-only). -->
--   **BEGIN (add to model context):**
-    -   `src/main.ts`
-    -   `src/types.ts`
-    -   `tests/main.test.ts`
--   **END STATE (must exist after completion):**
-    -   `src/new-feature.ts`
-    -   `tests/new-feature.test.ts`
+- **BEGIN (add to model context):**
+    - `src/main.ts`
+    - `src/types.ts`
+    - `tests/main.test.ts`
+- **END STATE (must exist after completion):**
+    - `src/new-feature.ts`
+    - `tests/new-feature.test.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
 <!-- Étapes concrètes et atomiques. Utiliser des mots-clés denses et des chemins de fichiers. -->
@@ -41,5 +54,10 @@ created: "[YYYY-MM-DD]"
 
 ### 7. Acceptance Criteria
 <!-- Critères testables et non-ambigus. -->
--   [ ] Le test d'intégration `test_new_feature_e2e` passe avec succès.
--   [ ] Le code est conforme aux linters.
+- [ ] Le test d'intégration `test_new_feature_e2e` passe avec succès.
+- [ ] Le code est conforme aux linters.
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** Toutes les entrées externes sont validées.
+- [ ] **Gestion des Secrets :** Aucun secret n'est codé en dur.
+- [ ] **Performance :** Aucun goulot d'étranglement de performance évident (ex: requêtes N+1) n'a été introduit.

@@ -1,17 +1,17 @@
-# Micro-Workflow D : Cycle d'Exécution du Développement
+# Micro-Workflow D.2 : Cycle d'Exécution du Développement
 
-**Objectif :** Ce protocole guide l'exécution de la phase de développement. Tu commences cette mission après avoir reçu l'approbation humaine suite au workflow `α-Start_Mission`. Ton but est de produire le code nécessaire pour accomplir la tâche, en suivant un cycle TDD rigoureux et des commits réguliers.
+**Objectif :** Ce protocole guide l'exécution de la phase de développement. Il agit comme un routeur qui sélectionne le cycle d'exécution approprié (TDD ou Migration) en fonction de la nature de la tâche.
 
 ---
 
 ### **Phase 1 : Assimilation des Procédures de Développement**
 
-**Instruction :** Lis et assimile intégralement le contenu des fichiers de fonctions suivants. Ils constituent les procédures que tu exécuteras séquentiellement.
-
+**Instruction :** Lis et assimile intégralement le contenu des fichiers de fonctions suivants.
 *   `.cursor/rules/functions/run_environment_initialization.mdc`
 *   `.cursor/rules/functions/run_development_cycle.mdc`
+*   `.cursor/rules/functions/run_migration_cycle.mdc`
 
-Une fois ces deux procédures parfaitement assimilées, passe à la phase d'exécution.
+Une fois ces trois procédures parfaitement assimilées, passe à la phase d'exécution.
 
 ---
 
@@ -24,16 +24,24 @@ Une fois ces deux procédures parfaitement assimilées, passe à la phase d'exé
     *   **Si oui,** tu peux continuer.
     *   **Si non (parce que la conversation a été longue ou a dévié),** tu dois d'abord relire le fichier `.cursor/rules/functions/inject_doctrines_fondamentales.mdc` avant de procéder à l'étape suivante.
 
-2.  **Exécution de l'Initialisation de l'Environnement :**
+2.  **Pré-vérification de l'Environnement (Garde-fou Critique)**
+    *   **Instruction :** Avant d'exécuter `run_environment_initialization`, confirme que tu es bien sur la branche `main` et que le répertoire de travail est propre (`git status`).
+    *   **Garde-fou :** Si l'une de ces conditions n'est pas remplie, **STOPPE IMMÉDIATEMENT** et signale l'anomalie à l'opérateur. Ne procède pas tant que l'environnement n'est pas sain.
+
+3.  **Exécution de l'Initialisation de l'Environnement :**
     *   Exécute la procédure `run_environment_initialization`.
-    *   **Contexte Requis :** Le cas à appliquer (`Cas A` ou `Cas B`) est directement déterminé par le scénario qui a été validé lors de l'exécution de la procédure `run_pre_flight_check` dans le workflow `α-Start_Mission`.
+    *   **Contexte Requis :** Le cas à appliquer (`Cas A` ou `Cas B`) est directement déterminé par le scénario qui a été validé lors de l'exécution de la procédure `run_pre_flight_check` dans le workflow `a-Start_Mission`.
     *   **Contexte Requis :** Pour le `Cas A`, le nom de la branche (`feature/[ID-du-ticket-description-courte]`) doit être créé en utilisant les informations spécifiques à la tâche, typiquement trouvées dans le fichier `@task.mdc` ou le briefing de mission.
 
-3.  **Exécution du Cycle de Développement :**
-    *   Une fois l'environnement correctement initialisé sur la branche de feature, commence l'exécution de la procédure `run_development_cycle`.
-    *   Suis le cycle TDD et les instructions de commit jusqu'à ce que tous les `Low-Level Steps` et les `Acceptance Criteria` du fichier `@task.mdc` soient satisfaits.
-    *   **Fin de Workflow et Rapport de Tests :** Ce micro-workflow est considéré comme terminé lorsque tu as écrit le code et que tous les tests d'intégration locaux passent avec succès. Une fois cette condition remplie, tu dois **STOPPER** et présenter un **'Rapport de Tests Locaux'** à l'opérateur. Ce rapport doit inclure :
-        1.  **La confirmation du succès :** "Tous les tests locaux passent avec succès."
-        2.  **La liste des fichiers de test** que tu as créés ou modifiés.
-        3.  **Un résumé de la couverture de test :** "J'ai écrit [nombre] tests qui couvrent les critères d'acceptation suivants du `@task.mdc` : [lister les critères qui sont maintenant testés]."
-        Attends l'instruction de l'opérateur pour lancer le workflow suivant.
+4.  **Point de Décision : Sélection du Cycle d'Exécution**
+    *   **Instruction :** Analyse le fichier `@task.mdc` de la mission pour déterminer la nature du travail.
+    *   **Garde-fou (Validation du Contrat de Tâche) :** Vérifie que la clé `task_type` existe dans le fichier `@task.mdc`. Si elle est absente, **STOPPE IMMÉDIATEMENT** et signale à l'opérateur : "Le fichier @task.mdc est invalide. La clé 'task_type' est obligatoire pour continuer."
+    *   **SI** le `task_type` est `migration` :
+        *   **Garde-fou :** Vérifie que la clé `migration_name` est également présente et non vide. Si ce n'est pas le cas, **STOPPE** et signale l'erreur.
+        *   Exécute la procédure `run_migration_cycle`.
+    *   **SINON (si le `task_type` est `development`) :**
+        *   Exécute la procédure `run_development_cycle`.
+
+5.  **Fin de Workflow et Rapport**
+    *   **Fin de Workflow et Rapport de Tests :** Ce micro-workflow est considéré comme terminé lorsque le cycle d'exécution choisi s'est terminé avec succès et a produit son rapport final.
+    *   Présente le rapport de fin de cycle à l'opérateur et attends ses instructions.

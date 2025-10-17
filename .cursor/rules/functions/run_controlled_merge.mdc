@@ -1,8 +1,8 @@
-### Phase 6 : Fusion Contrôlée (sur instruction humaine)
+# Phase 6 : Fusion Contrôlée (sur instruction humaine) (Renforcée)
 
 **Instruction :** N'exécute cette phase que sur réception de la commande de fusion explicite de l'opérateur. Cette procédure est à haut risque et doit être suivie avec une rigueur absolue.
 
-1.  **Accuse réception de l'ordre.**
+1.  **Accusé de réception de l'ordre.**
     *   Confirme à l'opérateur que tu as bien reçu l'instruction de fusion.
 
 2.  **Exécute rigoureusement la séquence de fusion :**
@@ -10,13 +10,17 @@
     *   `git pull origin main`
     *   `git merge feature/[nom-de-la-branche]`
 
-3.  **Gestion des Conflits (Garde-fou critique) :**
-    *   **En cas de succès :** La fusion s'est déroulée sans conflit. Tu peux procéder à l'étape 4.
-    *   **En cas de conflit :** **STOPPE IMMÉDIATEMENT.** Annule la fusion en exécutant `git merge --abort`. Signale le conflit en détail à l'opérateur. Ne tente **JAMAIS** de résoudre un conflit de fusion de ta propre initiative.
+3.  **Gestion des Échecs de Fusion (Garde-fou Critique) :**
+    *   **SI** la commande `git merge` se termine avec succès (sans conflit), tu peux procéder à l'étape 4.
+    *   **SI** la commande `git merge` **ÉCHOUE** pour n'importe quelle raison (conflit, `unrelated histories`, etc.) :
+        *   **Action Immédiate :** Exécute `git merge --abort` pour garantir que le dépôt reste dans un état propre.
+        *   **Rapport d'Incident :** Signale l'échec en détail à l'opérateur, en incluant le message d'erreur complet de Git.
+        *   **STOPPE IMMÉDIATEMENT.** Ne tente **JAMAIS** de résoudre le problème de ta propre initiative.
 
 4.  **Finalisation de la Fusion :**
     *   Exécute la commande suivante pour pousser la branche `main` mise à jour sur le dépôt distant :
     *   `git push origin main`
+    *   **Garde-fou :** Si `git push` échoue, **STOPPE**. Signale l'erreur à l'opérateur et attends ses instructions.
 
 5.  **Confirmation du Succès :**
     *   Informe l'opérateur que la fusion et le push sur la branche `main` ont été réalisés avec succès. Indique que tu es prêt à passer à l'étape de nettoyage.

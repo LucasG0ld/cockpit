@@ -1,62 +1,44 @@
-### Procédure de Préparation d'Audit de Sécurité (Renforcée)
+# Procédure de Préparation d'un Audit de Sécurité (Renforcée)
 
 **Contrat d'Interface (Contexte Requis) :**
 *Pour fonctionner, cette procédure requiert :*
-1.  **`merged_branch_name` :** Le nom de la branche à auditer.
+1.  **`merged_branch_name` :** Le nom de la branche qui doit être auditée.
+
+**Contrat de Sortie (Résultat) :**
+*Cette procédure produit et expose les informations suivantes :*
+1.  **`report_path` :** Le chemin complet vers le fichier de rapport nouvellement créé.
+2.  **`audit_plan` :** La liste des lots de fichiers à analyser.
 
 ---
 
-**Instruction :** Cette procédure prépare l'environnement et planifie un audit de sécurité.
+### **Phase 0 : Préparation de l'Environnement de Rapport**
 
----
+1.  **Création du Répertoire de Rapports :**
+    *   Vérifie si le répertoire `reports/security/` existe à la racine du projet.
+    *   **Garde-fou :** S'il n'existe pas, crée-le.
 
-#### **Phase 1 : Synchronisation de l'Environnement**
+2.  **Génération du Chemin du Fichier de Rapport :**
+    *   Construis un nom de fichier unique basé sur le nom de la branche et la date/heure actuelle pour éviter les écrasements.
+    *   Exemple de nom : `SECURITY_AUDIT_REPORT_[nom-de-la-branche]_[YYYY-MM-DD_HH-mm-ss].md`.
+    *   Le `report_path` complet sera donc `reports/security/[nom-du-fichier]`.
 
-1.  **Accusation de Réception :**
-    *   *Message : "Mission d'audit de sécurité initiée. J'endosse mon rôle d'**Auditeur de Sécurité Statique**..."*
-
-2.  **Mise à Jour de `main` :**
-    *   **Commandes :** `git checkout main`, puis `git pull origin main`.
-    *   **Garde-fou :** En cas d'échec d'une commande, **STOPPE IMMÉDIATEMENT**.
-
----
-
-#### **Phase 2 : Cadrage Automatisé du Périmètre**
-
-1.  **Identification des Fichiers Modifiés :**
-    *   **Commande :** `git diff --name-only origin/main...origin/[merged_branch_name]`
-    *   **Garde-fou (Branche Inexistante) :** Si la commande échoue car la branche est introuvable, **STOPPE** et affiche le message d'erreur standard.
-
-2.  **Validation du Périmètre (Action Critique) :**
-    *   **Action :** Vérifie si la liste de fichiers retournée par la commande `git diff` est vide.
-    *   **Garde-fou (Périmètre Vide) :** Si la liste est vide, la procédure ne peut pas continuer. **STOPPE IMMÉDIATEMENT** et informe l'opérateur avec le message suivant : "Fin de la procédure. Aucun fichier modifié n'a été trouvé pour la branche `[merged_branch_name]`. Il n'y a rien à auditer."
-
-3.  **Planification de l'Audit en Lots :**
-    *   Regroupe la liste de fichiers non vide par répertoire de premier niveau.
-    *   Présente le **Plan d'Audit** (liste numérotée des lots) à l'opérateur.
-
----
-
-#### **Phase 3 : Initialisation du Rapport**
-
-1.  **Création du Fichier de Rapport :**
-    *   Crée un nouveau fichier : `reports/security/SECURITY_AUDIT_REPORT_[merged_branch_name]_[YYYY-MM-DD].md`.
-    *   **Garde-fou :** En cas d'échec, **STOPPE IMMÉDIATEMENT**.
-
-2.  **Écriture de l'En-tête (Mécanique) :**
-    *   Écris l'en-tête suivant dans le fichier, en remplaçant les placeholders :
+3.  **Création et Initialisation du Fichier de Rapport :**
+    *   Crée un fichier vide à l'emplacement `report_path`.
+    *   **Garde-fou :** Si la création du fichier échoue, **STOPPE IMMÉDIATEMENT** et signale une erreur de permissions système.
+    *   Écris un en-tête initial dans le fichier, par exemple :
         ```markdown
         # Rapport d'Audit de Sécurité
-        - **Date:** [YYYY-MM-DD]
-        - **Périmètre Audité:** Branche `[merged_branch_name]`
-        
-        ## Résumé des Vulnérabilités
-        *(Cette section sera remplie ultérieurement.)*
-        
-        ## Résultats Détaillés
+        **Branche Auditée :** `[merged_branch_name]`
+        **Date de Génération :** `[date/heure actuelle]`
         ---
         ```
-    *   **Garde-fou :** En cas d'échec, **STOPPE IMMÉDIATEMENT**.
 
-3.  **Confirmation Finale :**
-    *   *Message : "Préparation de l'audit terminée. Le plan a été défini et le rapport a été initialisé à `[chemin/vers/le/rapport.md]`. J'attends votre instruction pour commencer l'analyse du premier lot."*
+### **Phase 1 : Cadrage du Périmètre et Plan d'Audit**
+
+1.  **Identification des Fichiers Modifiés :**
+    *   Exécute une commande `git diff` pour lister tous les fichiers modifiés entre `main` et `merged_branch_name`.
+
+2.  **Présentation du Plan d'Audit :**
+    *   **SI** aucun fichier n'a été modifié, signale-le à l'opérateur et termine la procédure.
+    *   **SINON**, groupe les fichiers en lots logiques (ex: par dossier, par type) et présente ce plan à l'opérateur.
+    *   **Message :** "Plan d'audit généré. Le rapport a été créé à l'emplacement `[report_path]`. Voici les lots à analyser : [liste des lots]. Attends votre instruction pour lancer l'analyse du premier lot via le workflow H.2."

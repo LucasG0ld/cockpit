@@ -1,4 +1,4 @@
-### Procédure d'Exécution d'un Lot d'Audit de Sécurité (Renforcée)
+# Procédure d'Exécution d'un Lot d'Audit de Sécurité (Renforcée)
 
 **Contrat d'Interface (Contexte Requis) :**
 *Pour fonctionner, cette procédure requiert :*
@@ -6,32 +6,28 @@
 2.  **`lot_identifier` :** Le nom du lot en cours d'analyse.
 3.  **`report_path` :** Le chemin complet vers le fichier de rapport.
 
----
-
 **Instruction :** Cette procédure analyse un lot de fichiers et met à jour le rapport.
 
 ---
 
-#### **Phase 0 : Validation des Prérequis**
+### **Phase 0 : Validation des Prérequis**
 
 1.  **Vérification des Fichiers Source :**
     *   Pour chaque fichier dans la liste `lot_files`, vérifie qu'il existe.
-    *   **Garde-fou :** Si un ou plusieurs fichiers sont introuvables, **STOPPE IMMÉDIATEMENT** et signale une erreur de périmètre : "Impossible de trouver les fichiers suivants du lot `[lot_identifier]` : [liste des fichiers manquants]".
+    *   **Garde-fou :** Si un ou plusieurs fichiers sont introuvables, **STOPPE IMMÉDIATEMENT** et signale une erreur de périmètre : "Impossible de trouver les fichiers suivants du lot `[lot_identifier]`: [liste des fichiers manquants]".
 
-2.  **Vérification du Fichier de Rapport :**
-    *   Vérifie que le fichier spécifié par `report_path` existe.
-    *   **Garde-fou :** Si le fichier de rapport est introuvable, **STOPPE IMMÉDIATEMENT** et signale l'erreur : "Le fichier de rapport `[report_path]` est introuvable. La phase de préparation a-t-elle été exécutée correctement ?".
+<!-- SUPPRESSION : Le garde-fou sur l'existence du fichier de rapport est supprimé. La procédure de préparation (setup_security_audit) garantit désormais son existence. -->
 
 ---
 
-#### **Phase 1 : Analyse Résiliente du Lot**
+### **Phase 1 : Analyse Résiliente du Lot**
 
 1.  **Analyse Fichier par Fichier :**
-    *   Pour chaque fichier de `lot_files` :
+    *   Pour chaque fichier de `lot_files`:
         *   **Tente de lire le contenu du fichier.**
         *   **Garde-fou (Erreur de Lecture) :** Si la lecture échoue, ne t'arrête pas. Consigne une erreur spécifique pour ce fichier (ex: "ERREUR : Impossible de lire le fichier `[chemin/du/fichier]`") et passe au fichier suivant.
         *   Si la lecture réussit, analyse le contenu en utilisant la **Check-list d'Audit Inquisitoriale**.
-    *   Consigne toutes les vulnérabilités et erreurs de lecture identifiées.
+        *   Consigne toutes les vulnérabilités et erreurs de lecture identifiées.
 
 2.  **Check-list d'Audit Inquisitoriale :**
     *   **Validation des Entrées (OWASP A03:2021 - Injection) :**
@@ -50,7 +46,7 @@
 
 ---
 
-#### **Phase 2 : Mise à Jour Standardisée du Rapport**
+### **Phase 2 : Mise à Jour Standardisée du Rapport**
 
 1.  **Mise à Jour du Rapport :**
     *   Ouvre le fichier `report_path` en mode "ajout" (append).
@@ -63,10 +59,9 @@
         **Type de Vulnérabilité :** [ex: OWASP A01 - Broken Access Control]
         **Question d'Audit :** [ex: Q6 - La logique vérifie-t-elle le rôle ET l'orgId ?]
         **Description :** [Description claire et concise de la faille identifiée.]
-        ---
         ```
     *   **Garde-fou :** Si l'écriture dans le fichier échoue, **STOPPE IMMÉDIATEMENT**.
 
 2.  **Rapport de Progression Intermédiaire :**
     *   Informe l'opérateur de la fin de l'analyse du lot.
-    *   *Message : "Analyse du `[lot_identifier]` terminée. J'ai identifié [nombre] vulnérabilité(s) et j'ai mis à jour le rapport `[report_path]`. J'attends votre instruction pour continuer."*
+    *   **Message :** "Analyse du `[lot_identifier]` terminée. J'ai identifié [nombre] vulnérabilité(s) et j'ai mis à jour le rapport `[report_path]`. J'attends votre instruction pour continuer."
