@@ -1,0 +1,58 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-005-Invitations-API"
+title: "Développer l'API Invitations (Team Page)"
+status: "planned"
+priority: "P0"
+labels: ["backend", "types", "tests"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement", "TASK-IAM-BE-004-Audit-Service"]
+created: "2025-10-17"
+---
+### 1. High-Level Objective
+Fournir un ensemble d'API REST pour inviter des membres, gérer l'idempotence 24h, générer des tokens à usage unique 72h et enregistrer les événements d'audit requis.
+
+### 2. Background / Context (Optionnel mais recommandé)
+US-2 et US-3 détaillent les interactions d'invitation/acceptation. L'API doit gérer validation email/role, création d'invitations, expiration, notifications et déclenchement des événements `user.team_member.invited`.
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** L'envoi d'email (mailer) est stubé ou délégué à un service existant.
+- **CONSTRAINT:** Les tokens doivent être non-prévisibles et invalidés après usage. `status` doit suivre `Pending -> Accepted/Expired`.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-003-Tenant-Enforcement`, `TASK-IAM-BE-004-Audit-Service`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `annex/epic-1-iam/events.md`
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `apps/backend/src/invitations/invitations.controller.ts`
+    - `apps/backend/src/invitations/invitations.service.ts`
+    - `apps/backend/src/invitations/dto/*`
+    - `apps/backend/src/audit/audit.service.ts`
+    - `apps/backend/test/invitations.e2e-spec.ts`
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/invitations/*`
+    - `apps/backend/test/invitations.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1. **DEFINE** DTOs avec validations (email format, rôle requis sauf "À configurer plus tard").
+2. **IMPLEMENT** `POST /invitations` gérant idempotence (24h), token unique 72h, audit log.
+3. **IMPLEMENT** `GET /invitations/:token` + `POST /invitations/:token/accept` couvrant expiration, usage unique, création membership.
+4. **HANDLE** verrous : 5 tentatives 2FA échouées lors de l'activation (interaction avec Task 009).
+5. **TEST** e2e incluant cas invalides (email, déjà membre, invitation existante) et success.
+
+### 7. Acceptance Criteria
+- [ ] `POST /invitations` respecte toutes les validations et renvoie un token valide 72h.
+- [ ] Acceptation d'invitation crée membership selon rôle ou "Temporaire".
+- [ ] Audit `user.team_member.invited` & `user.team_member.activated` émis avec metadata.
+- [ ] Tests e2e couvrent success/erreurs (email invalide, déjà membre, token expiré/consommé).
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** DTOs + guards garantissent format email/role/token.
+- [ ] **Gestion des Secrets :** Tokens signés/stockés en base; aucun secret exposé.
+- [ ] **Performance :** Requêtes indexées sur `(orgId, email)` pour idempotence (utiliser unique composite ou contrainte logique).

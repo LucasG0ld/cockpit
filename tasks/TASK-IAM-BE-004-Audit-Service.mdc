@@ -1,0 +1,58 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-004-Audit-Service"
+title: "Implémenter le service d'audit IAM (succès)"
+status: "planned"
+priority: "P0"
+labels: ["backend", "types", "tests"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard"]
+created: "2025-10-17"
+---
+### 1. High-Level Objective
+Mettre en place un service NestJS capable d'enregistrer les événements IAM réussis (`user.team_member.invited`, etc.) dans la table `AuditEvent` avec métadonnées conformes au PRD.
+
+### 2. Background / Context (Optionnel mais recommandé)
+L'épique impose une traçabilité stricte pour toutes les actions IAM réussies. Le dictionnaire `events.md` définit le format et les métadonnées attendues.
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Les événements IAM concernent uniquement les succès de routes managées par cette épique.
+- **CONSTRAINT:** Aucun événement d'échec ne doit être persisté (contrainte PRD).
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`
+- **Files:** `annex/epic-1-iam/events.md`, `annex/db-schema/epic-1-iam.schema.md`
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `annex/epic-1-iam/events.md`
+    - `apps/backend/src/audit/audit.service.ts`
+    - `apps/backend/src/audit/audit.module.ts`
+    - `apps/backend/src/**/` (controllers appelant l'audit)
+    - `apps/backend/test/audit.service.spec.ts`
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/audit/audit.service.ts`
+    - `apps/backend/src/audit/audit.module.ts`
+    - `apps/backend/test/audit.service.spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1. **CREATE** module/service `AuditModule` avec méthodes `recordEvent(type, targetId, metadata)`.
+2. **INJECT** Prisma pour persister dans `AuditEvent` avec `organizationId`, `actorId` (depuis `req.auth.userId`).
+3. **EXPOSE** helpers pour les événements listés (ex: `recordTeamMemberInvited`).
+4. **INTEGRATE** le service dans les controllers IAM pour tracer les succès.
+5. **TEST** unitaire du service (injection Prisma mock) + test d'intégration sur un endpoint.
+
+### 7. Acceptance Criteria
+- [ ] Les événements listés dans `events.md` sont persistés avec les champs requis.
+- [ ] `metadata` contient les clés attendues par événement (ex: `{from, to}` pour `user.role.changed`).
+- [ ] Les erreurs du service d'audit n'interrompent pas l'action principale (log de warning, pas d'échec silencieux).
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** Vérifier le format des métadonnées avant d'écrire en base.
+- [ ] **Gestion des Secrets :** Aucun secret supplémentaire.
+- [ ] **Performance :** Écriture audit non bloquante (utiliser async/await mais éviter les transactions longues).

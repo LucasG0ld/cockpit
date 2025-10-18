@@ -1,0 +1,55 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-003-Tenant-Enforcement"
+title: "Appliquer le filtrage serveur strict par orgId"
+status: "planned"
+priority: "P0"
+labels: ["backend", "types", "tests"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard"]
+created: "2025-10-17"
+---
+### 1. High-Level Objective
+Garantir que toutes les routes IAM backend filtrent leurs accès et requêtes Prisma par `orgId` issu du guard, renvoyant 403 sur mismatch comme défini dans le PRD.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Le PRD impose un cloisonnement strict multi-tenant. Chaque requête doit limiter l'accès aux données de l'organisation associée au JWT. Le schéma Prisma expose `organizationId` sur les modèles principaux.
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Les routes IAM seront regroupées dans des modules dédiés (ex: `MembershipController`).
+- **CONSTRAINT:** Aucune requête Prisma ne doit rester sans clause `where: { organizationId: req.auth.orgId }`.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `apps/backend/src/**/` (read-only pour identifier les routes concernées)
+    - `apps/backend/src/app.module.ts`
+    - `apps/backend/src/common/prisma.service.ts`
+    - `apps/backend/test/app.e2e-spec.ts`
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/**/` (controllers/services IAM avec filtrage `orgId`)
+    - `apps/backend/test/app.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1. **AUDIT** des routes IAM ciblées et identifier chaque requête Prisma.
+2. **INJECT** `orgId` via `req.auth` dans les services pour appliquer `where: { organizationId }` ou `findUnique` composite.
+3. **RETURN** 403 immédiatement si la ressource récupérée ne correspond pas à `orgId`.
+4. **TEST** e2e/unit couvrant accès autorisé vs organisation étrangère.
+
+### 7. Acceptance Criteria
+- [ ] Toutes les routes IAM multi-tenant appliquent un filtre `orgId` côté serveur.
+- [ ] Requête cross-org renvoie 403 conformément au PRD.
+- [ ] Tests automatisés démontrent l'étanchéité (au moins un test positif et un test négatif).
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** Vérifier que `orgId` correspond au format attendu avant usage.
+- [ ] **Gestion des Secrets :** Pas de secret supplémentaire exposé.
+- [ ] **Performance :** Les requêtes Prisma utilisent les index sur `organizationId` pour éviter les scans globaux.
