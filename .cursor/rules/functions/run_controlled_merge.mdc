@@ -2,25 +2,30 @@
 
 **Instruction :** N'exécute cette phase que sur réception de la commande de fusion explicite de l'opérateur. Cette procédure est à haut risque et doit être suivie avec une rigueur absolue.
 
-1.  **Accusé de réception de l'ordre.**
+1.  **Garde-fou Pré-Fusion :**
+    *   **Action :** Exécute `git status` depuis la branche de feature.
+    *   **Condition :** Le répertoire de travail doit être propre ("working tree clean").
+    *   **Garde-fou :** Si le répertoire n'est pas propre, **STOPPE IMMÉDIATEMENT**. Signale l'anomalie à l'opérateur et attends les instructions avant de changer de branche.
+
+2.  **Accusé de réception de l'ordre.**
     *   Confirme à l'opérateur que tu as bien reçu l'instruction de fusion.
 
-2.  **Exécute rigoureusement la séquence de fusion :**
+3.  **Exécute rigoureusement la séquence de fusion :**
     *   `git checkout main`
     *   `git pull origin main`
     *   `git merge feature/[nom-de-la-branche]`
 
-3.  **Gestion des Échecs de Fusion (Garde-fou Critique) :**
-    *   **SI** la commande `git merge` se termine avec succès (sans conflit), tu peux procéder à l'étape 4.
+4.  **Gestion des Échecs de Fusion (Garde-fou Critique) :**
+    *   **SI** la commande `git merge` se termine avec succès (sans conflit), tu peux procéder à l'étape 5.
     *   **SI** la commande `git merge` **ÉCHOUE** pour n'importe quelle raison (conflit, `unrelated histories`, etc.) :
         *   **Action Immédiate :** Exécute `git merge --abort` pour garantir que le dépôt reste dans un état propre.
         *   **Rapport d'Incident :** Signale l'échec en détail à l'opérateur, en incluant le message d'erreur complet de Git.
         *   **STOPPE IMMÉDIATEMENT.** Ne tente **JAMAIS** de résoudre le problème de ta propre initiative.
 
-4.  **Finalisation de la Fusion :**
+5.  **Finalisation de la Fusion :**
     *   Exécute la commande suivante pour pousser la branche `main` mise à jour sur le dépôt distant :
     *   `git push origin main`
     *   **Garde-fou :** Si `git push` échoue, **STOPPE**. Signale l'erreur à l'opérateur et attends ses instructions.
 
-5.  **Confirmation du Succès :**
+6.  **Confirmation du Succès :**
     *   Informe l'opérateur que la fusion et le push sur la branche `main` ont été réalisés avec succès. Indique que tu es prêt à passer à l'étape de nettoyage.
