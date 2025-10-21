@@ -13,3 +13,94 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum UserRole {
+  Admin
+  CSM
+  Closer
+  Temporaire
+}
+
+enum UserStatus {
+  Active
+  Disabled
+}
+
+enum InvitationStatus {
+  Pending
+  Accepted
+  Expired
+}
+
+model Organization {
+  id          String        @id @default(cuid())
+  externalId  String        @unique
+  name        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  memberships Membership[]
+  invitations Invitation[]
+  auditEvents AuditEvent[]
+}
+
+model Identity {
+  id          String        @id @default(cuid())
+  clerkId     String        @unique
+  email       String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  memberships Membership[]
+  sentInvites Invitation[]  @relation("Inviter")
+  auditEvents AuditEvent[]  @relation("Actor")
+}
+
+model Invitation {
+  id             String           @id @default(cuid())
+  email          String
+  role           UserRole
+  status         InvitationStatus @default(Pending)
+  token          String           @unique
+  expiresAt      DateTime
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id])
+
+  invitedById    String
+  invitedBy      Identity         @relation("Inviter", fields: [invitedById], references: [id])
+}
+
+model AuditEvent {
+  id             String       @id @default(cuid())
+  eventType      String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  actorId        String
+  actor          Identity     @relation("Actor", fields: [actorId], references: [id])
+
+  targetId       String?
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  role           UserRole
+  status         UserStatus   @default(Active)
+  disabledAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  identityId     String
+  identity       Identity     @relation(fields: [identityId], references: [id])
+
+  @@unique([organizationId, identityId])
+}
