@@ -22,13 +22,22 @@
 1.  **Validation du Contexte Doctrinal :**
     *   Exécute la validation opportuniste du contexte doctrinal au début de cette mission.
 
-2.  **DÉBUT DE LA BOUCLE DE VALIDATION**
+2.  **Garde-fou de Confinement de Branche (Action Critique) :**
+    *   **Contexte Requis :** Le nom de la "branche à auditer" fourni par l'opérateur.
+    *   **Action :** Exécute `git rev-parse --abbrev-ref HEAD`.
+    *   **Condition :** Le résultat DOIT correspondre exactement à la branche à auditer.
+    *   **Garde-fou :** Si la branche actuelle n'est pas la bonne, **STOPPE IMMÉDIATEMENT** et signale l'anomalie.
 
-    a. **ÉTAPE A : QUALITY GATE**
+3.  **DÉBUT DE LA BOUCLE DE VALIDATION**
+
+    a. **ÉTAPE A : QUALITY GATE (SÉCURISÉ)**
+    *   **Garde-fou (Pré-Exécution) :** Exécute `git status`. Le répertoire de travail DOIT être propre. Si ce n'est pas le cas, **STOPPE** et signale une anomalie d'état.
     *   Exécute `run_quality_gate.mdc`.
-    *   **Analyse du Rapport :** Si le Quality Gate échoue, présente le rapport complet à l'opérateur. Ne t'arrête pas, mais attends sa décision.
+    *   **Analyse du Rapport et de l'État Post-Exécution :** Exécute `git status` à nouveau.
+        *   **Si le Quality Gate échoue,** présente le rapport d'erreurs.
+        *   **Si des modifications ont été générées** (par `lint --fix`), signale-le explicitement à l'opérateur en listant les fichiers modifiés.
     *   **Point de Décision Humain :** L'opérateur évaluera le rapport. Il te donnera l'une des deux instructions suivantes :
-        1.  **"Les erreurs sont critiques. Lance la remédiation."** -> Dans ce cas, tu passes directement à l'étape 4 (Gestion de la Remédiation).
+        1.  **"Les erreurs sont critiques. Lance la remédiation."** -> Dans ce cas, tu passes directement à l'étape 5 (Gestion de la Remédiation).
         2.  **"Les erreurs sont acceptables. Poursuis le pipeline."** -> Dans ce cas, tu ignores l'échec et passes directement à l'Étape B.
     *   Si le Quality Gate réussit, passe directement à l'Étape B.
 
@@ -39,7 +48,7 @@
     c. **ÉTAPE C : EXÉCUTION DE L'AUDIT DE SÉCURITÉ**
     *   Sur instruction de l'opérateur, exécute `H.2-Execute_Audit_Lot.mdc` pour chaque lot.
 
-3.  **POINT DE DÉCISION STRATÉGIQUE**
+4.  **POINT DE DÉCISION STRATÉGIQUE**
     *   Après l'analyse du dernier lot, évalue le rapport d'audit.
     *   **SI** aucune vulnérabilité critique n'a été trouvée :
         *   **Action :** Passe directement à l'**ÉTAPE FINALE : HANDOFF**.
@@ -47,13 +56,18 @@
         *   **Action :** Présente à l'opérateur le **"Briefing de Décision de Remédiation"** (avec les Options 1 et 2).
         *   **STOPPE** et attends la décision de l'opérateur.
 
-4.  **GESTION DE LA REMÉDIATION (Conditionnel)**
+5.  **GESTION DE LA REMÉDIATION (SÉCURISÉE ET ATOMIQUE)**
     *   **SI** l'opérateur choisit l'Option 1 (Lancer la remédiation) :
-        *   Exécute la fonction `run_security_remediation_cycle.mdc` avec les informations fournies.
-        *   Une fois la fonction terminée avec succès, **annonce à l'opérateur que tu relances le cycle de validation complet**, puis **recommence l'exécution de ce workflow depuis "DÉBUT DE LA BOUCLE DE VALIDATION"**.
+        *   Exécute la fonction de correction (`run_security_remediation_cycle.mdc` ou une passe de `lint --fix`).
+        *   **Garde-fou (Post-Correction) :** Exécute `git status` pour identifier tous les fichiers modifiés par la remédiation.
+        *   **Commit Atomique de Correction :**
+            *   `git add [liste des fichiers modifiés]`
+            *   `git commit -m "fix(quality): application des corrections post-quality gate"`
+        *   **Information :** Informe l'opérateur que les corrections ont été committées sur la branche de feature.
+        *   **annonce à l'opérateur que tu relances le cycle de validation complet**, puis **recommence l'exécution de ce workflow depuis "DÉBUT DE LA BOUCLE DE VALIDATION"**.
     *   **SI** l'opérateur choisit l'Option 2 (Nouveau Chat) :
         *   Ta mission dans ce chat est terminée. **STOPPE**.
 
-5.  **ÉTAPE FINALE : HANDOFF POUR REVUE DE FUSION**
+6.  **ÉTAPE FINALE : HANDOFF POUR REVUE DE FUSION**
     *   Exécute la procédure `request_human_review_for_merge.mdc`.
     *   **Fin de Workflow :** Ce micro-workflow est terminé. **STOPPE**.
