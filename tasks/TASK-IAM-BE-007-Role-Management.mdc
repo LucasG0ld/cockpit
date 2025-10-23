@@ -11,7 +11,7 @@ title: "Construire l'API de changement de rôle (Membership)"
 status: "planned"
 priority: "P0"
 labels: ["backend", "types", "tests"]
-dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-003-Tenant-Enforcement", "TASK-IAM-BE-004-Audit-Service"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-004-Audit-Service"]
 created: "2025-10-17"
 ---
 ### 1. High-Level Objective
@@ -25,8 +25,8 @@ US-4 du PRD détaille les exigences de changement de rôle, notamment l'invalida
 - **CONSTRAINT:** L'opération doit être atomique côté backend (transaction Prisma) pour mettre à jour la membership et enregistrer l'audit.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
-- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-003-Tenant-Enforcement`, `TASK-IAM-BE-004-Audit-Service`
-- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `annex/epic-1-iam/events.md`
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-004-Audit-Service`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `annex/epic-1-iam/events.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.mdc`
 
 ### 5. Context Plan
 - **BEGIN (add to model context):**
@@ -41,12 +41,13 @@ US-4 du PRD détaille les exigences de changement de rôle, notamment l'invalida
     - `apps/backend/test/roles.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1. **CREATE** DTO `UpdateRoleDto` avec enum `UserRole`.
-2. **IMPLEMENT** route `PATCH /memberships/:id/role` vérifiant autorisation Admin.
-3. **HANDLE** réassignations : placeholder ou intégration avec workflow client (bloquer tant que non réassigné si exigé).
-4. **CALL** Clerk pour invalider sessions puis notifier via pop-up (réponse API) que l'utilisateur doit se reconnecter.
-5. **EMIT** audit `user.role.changed` avec `metadata: {from, to}`.
-6. **TEST**: cas rôle identique (no-op), rôle différent succès, rôle invalide (400), mismatch org (403).
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **CREATE** DTO `UpdateRoleDto` avec enum `UserRole`.
+3. **IMPLEMENT** route `PATCH /memberships/:id/role` vérifiant autorisation Admin.
+4. **HANDLE** réassignations : placeholder ou intégration avec workflow client (bloquer tant que non réassigné si exigé).
+5. **CALL** Clerk pour invalider sessions puis notifier via pop-up (réponse API) que l'utilisateur doit se reconnecter.
+6. **EMIT** audit `user.role.changed` avec `metadata: {from, to}`.
+7. **TEST**: cas rôle identique (no-op), rôle différent succès, rôle invalide (400), mismatch org (403).
 
 ### 7. Acceptance Criteria
 - [ ] Changement de rôle interdit si l'opérateur n'est pas Admin.

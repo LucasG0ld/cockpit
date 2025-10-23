@@ -2,16 +2,15 @@
 
 ## Méta-données (OBLIGATOIRE)
 ---
-task_type: 'development'
+task_type: 'policy'
 migration_name: ''
 ---
 
 id: "TASK-IAM-BE-003-Tenant-Enforcement"
-title: "Appliquer le filtrage serveur strict par orgId"
-status: "planned"
+title: "POLICY: Appliquer le filtrage serveur strict par orgId sur toutes les routes IAM"
+status: "archived"
 priority: "P0"
 labels: ["backend", "types", "tests"]
-dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard"]
 created: "2025-10-17"
 ---
 ### 1. High-Level Objective

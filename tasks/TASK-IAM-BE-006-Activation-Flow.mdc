@@ -26,7 +26,7 @@ Après l'acceptation du lien, l'utilisateur doit créer/associer son `Identity`,
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
 - **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-005-Invitations-API`
-- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.mdc`
 
 ### 5. Context Plan
 - **BEGIN (add to model context):**
@@ -42,11 +42,12 @@ Après l'acceptation du lien, l'utilisateur doit créer/associer son `Identity`,
     - `apps/backend/test/activation.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1. **INTEGRATE** Clerk pour créer ou lier une `Identity` lors de l'acceptation (`clerkId`, email vérifié).
-2. **CREATE** la `Membership` associée avec rôle ou statut "Temporaire" si option différée.
-3. **FORCE** la confirmation 2FA : marquer le compte comme bloqué tant que 2FA non activée.
-4. **EMIT** audit `user.team_member.activated` et envoyer réponse conforme PRD.
-5. **TEST** e2e couvrant token expiré, déjà utilisé, succès rôles Admin/CSM/Closer/Temporaire.
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **INTEGRATE** Clerk pour créer ou lier une `Identity` lors de l'acceptation (`clerkId`, email vérifié).
+3. **CREATE** la `Membership` associée avec rôle ou statut "Temporaire" si option différée.
+4. **FORCE** la confirmation 2FA : marquer le compte comme bloqué tant que 2FA non activée.
+5. **EMIT** audit `user.team_member.activated` et envoyer réponse conforme PRD.
+6. **TEST** e2e couvrant token expiré, déjà utilisé, succès rôles Admin/CSM/Closer/Temporaire.
 
 ### 7. Acceptance Criteria
 - [ ] Invitation expirée -> message "Invitation expirée..." sans activation.

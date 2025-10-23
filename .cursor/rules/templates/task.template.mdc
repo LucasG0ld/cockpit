@@ -3,8 +3,8 @@
 ## Méta-données (OBLIGATOIRE)
 ---
 # Clé utilisée par l'agent pour router vers le bon cycle d'exécution.
-# Valeurs possibles : 'development', 'migration'.
-task_type: '[development|migration]'
+# Valeurs possibles : 'development', 'migration', 'policy' (exigence transversale non exécutable).
+task_type: '[development|migration|policy]'
 
 # Nom de la migration (UNIQUEMENT si task_type est 'migration').
 # Sera utilisé pour la commande `prisma migrate dev --name "..."`.

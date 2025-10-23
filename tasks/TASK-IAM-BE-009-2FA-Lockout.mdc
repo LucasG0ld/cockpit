@@ -26,7 +26,7 @@ US-1 décrit l'obligation de 2FA pour tous les utilisateurs internes et la méca
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
 - **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-006-Activation-Flow`
-- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.mdc`
 
 ### 5. Context Plan
 - **BEGIN (add to model context):**
@@ -41,11 +41,12 @@ US-1 décrit l'obligation de 2FA pour tous les utilisateurs internes et la méca
     - `apps/backend/test/auth.e2e-spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1. **ENFORCE** via Clerk API que les membres internes doivent activer 2FA à la première connexion (flag et redirection backend si nécessaire).
-2. **TRACK** tentatives 2FA (via Clerk ou table dédiée) et incrémenter à chaque échec.
-3. **LOCK** compte à la 5e tentative : marquer statut `Locked` ou flag dans Clerk, renvoyer pop-up "contactez Admin".
-4. **HANDLE** codes expirés : message "Code expiré. Demandez un nouveau code." et endpoint pour renvoi.
-5. **TEST** e2e couvrant succès, code expiré, 5 échecs -> lock, déblocage manuel (placeholder).
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **ENFORCE** via Clerk API que les membres internes doivent activer 2FA à la première connexion (flag et redirection backend si nécessaire).
+3. **TRACK** tentatives 2FA (via Clerk ou table dédiée) et incrémenter à chaque échec.
+4. **LOCK** compte à la 5e tentative : marquer statut `Locked` ou flag dans Clerk, renvoyer pop-up "contactez Admin".
+5. **HANDLE** codes expirés : message "Code expiré. Demandez un nouveau code." et endpoint pour renvoi.
+6. **TEST** e2e couvrant succès, code expiré, 5 échecs -> lock, déblocage manuel (placeholder).
 
 ### 7. Acceptance Criteria
 - [ ] Les utilisateurs internes ne peuvent pas accéder au cockpit sans 2FA activée.

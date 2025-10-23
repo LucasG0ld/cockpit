@@ -26,7 +26,7 @@ L'épique impose une traçabilité stricte pour toutes les actions IAM réussies
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
 - **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`
-- **Files:** `annex/epic-1-iam/events.md`, `annex/db-schema/epic-1-iam.schema.md`
+- **Files:** `annex/epic-1-iam/events.md`, `annex/db-schema/epic-1-iam.schema.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.mdc`
 
 ### 5. Context Plan
 - **BEGIN (add to model context):**
@@ -41,11 +41,12 @@ L'épique impose une traçabilité stricte pour toutes les actions IAM réussies
     - `apps/backend/test/audit.service.spec.ts`
 
 ### 6. Low-Level Steps (Ordonnés et denses en information)
-1. **CREATE** module/service `AuditModule` avec méthodes `recordEvent(type, targetId, metadata)`.
-2. **INJECT** Prisma pour persister dans `AuditEvent` avec `organizationId`, `actorId` (depuis `req.auth.userId`).
-3. **EXPOSE** helpers pour les événements listés (ex: `recordTeamMemberInvited`).
-4. **INTEGRATE** le service dans les controllers IAM pour tracer les succès.
-5. **TEST** unitaire du service (injection Prisma mock) + test d'intégration sur un endpoint.
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **CREATE** module/service `AuditModule` avec méthodes `recordEvent(type, targetId, metadata)`.
+3. **INJECT** Prisma pour persister dans `AuditEvent` avec `organizationId`, `actorId` (depuis `req.auth.userId`).
+4. **EXPOSE** helpers pour les événements listés (ex: `recordTeamMemberInvited`).
+5. **INTEGRATE** le service dans les controllers IAM pour tracer les succès.
+6. **TEST** unitaire du service (injection Prisma mock) + test d'intégration sur un endpoint.
 
 ### 7. Acceptance Criteria
 - [ ] Les événements listés dans `events.md` sont persistés avec les champs requis.

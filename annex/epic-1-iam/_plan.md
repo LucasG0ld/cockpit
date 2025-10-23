@@ -13,7 +13,6 @@ graph TD
         subgraph Backend
             BE001[TASK-IAM-BE-001-DB-Schema]
             BE002[TASK-IAM-BE-002-Auth-Guard]
-            BE003[TASK-IAM-BE-003-Tenant-Enforcement]
             BE004[TASK-IAM-BE-004-Audit-Service]
             BE005[TASK-IAM-BE-005-Invitations-API]
             BE006[TASK-IAM-BE-006-Activation-Flow]
@@ -40,23 +39,17 @@ graph TD
 
     %% Dépendances internes au Jalon 1
     BE001 --> BE002
-    BE001 --> BE003
     BE001 --> BE004
     BE001 --> BE005
     BE001 --> BE006
     BE001 --> BE007
     BE001 --> BE008
     BE001 --> BE009
-    BE002 --> BE003
     BE002 --> BE005
     BE002 --> BE006
     BE002 --> BE007
     BE002 --> BE008
     BE002 --> BE009
-    BE003 --> BE005
-    BE003 --> BE006
-    BE003 --> BE007
-    BE003 --> BE008
     BE004 --> BE005
     BE004 --> BE006
     BE004 --> BE007
