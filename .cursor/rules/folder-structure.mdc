@@ -22,6 +22,7 @@
 │       │   ├── run_development_cycle.mdc
 │       │   ├── run_environment_initialization.mdc
 │       │   ├── run_feature_decomposition_and_planning.mdc
+│       │   ├── run_migration_cycle.mdc
 │       │   ├── run_mission_briefing_and_validation.mdc
 │       │   ├── run_post_merge_cleanup.mdc
 │       │   ├── run_prd_feature_specification.mdc
@@ -32,6 +33,7 @@
 │       │   ├── run_simple_pre_flight_check.mdc
 │       │   ├── run_strategic_plan_modification.mdc
 │       │   ├── run_tech_debt_audit.mdc
+│       │   ├── run_update_task_status.mdc
 │       │   └── setup_security_audit.mdc
 │       │
 │       ├── workflows/              # Orchestrateurs légers. Séquencent les `functions` pour exécuter les processus.
@@ -54,6 +56,7 @@
 │       │   ├── graph.template.mdc
 │       │   ├── prd-feature.template.mdc
 │       │   ├── prd-global.template.mdc
+│       │   ├── task-report.template.mdc
 │       │   └── task.template.mdc
 │       │
 │       ├── folder-structure.mdc    # Source de vérité pour la structure des dossiers du projet. À utiliser pour la localisation de fichiers.
@@ -80,6 +83,7 @@
 │
 ├── annex/                          # Annexes (roadmap, events…)
 │   ├── db-schema/
+│   │   └── epic-1-iam.schema.md
 │   ├── epic-1-iam/
 │   │   ├── _plan.md
 │   │   └── events.md
@@ -139,7 +143,14 @@
 │   └── k8s/ (optionnel futur)
 │
 ├── reports/
-│   └── quality-gate/               # Rapports markdown quality gate (ex: TASK-XXX-quality-gate-report.md)
+│   ├── execution/
+│   │   └── alpha-v1/
+│   │       └── EXECUTION_REPORT_TASK-IAM-BE-002-Auth-Guard.mdc
+│   ├── quality-gate/               # Rapports markdown quality gate (ex: TASK-XXX-quality-gate-report.md)
+│   │   └── feature-task-iam-be-002-auth-guard-quality-gate-report.md
+│   └──security/
+│      └── alpha-v1
+│          └── SECURITY_AUDIT_REPORT_feature-TASK-IAM-BE-002-auth-guard_2025-10-21_14-05-51.md
 │
 ├── .github/workflows/              # CI/CD GitHub Actions
 ├── run_quality_gate.sh
