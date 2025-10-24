@@ -11,7 +11,7 @@ title: "Finaliser le flux d'activation du compte invité"
 status: "planned"
 priority: "P0"
 labels: ["backend", "types", "tests"]
-dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-005-Invitations-API"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-005-A-Resend-Integration"]
 created: "2025-10-17"
 ---
 ### 1. High-Level Objective
@@ -25,7 +25,7 @@ Après l'acceptation du lien, l'utilisateur doit créer/associer son `Identity`,
 - **CONSTRAINT:** Le lien d'invitation est à usage unique; l'API doit verrouiller l'invitation après activation ou expiration.
 
 ### 4. Dependencies (Autres Tâches ou Artefacts)
-- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-005-Invitations-API`
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-005-A-Resend-Integration`
 - **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.mdc`
 
 ### 5. Context Plan

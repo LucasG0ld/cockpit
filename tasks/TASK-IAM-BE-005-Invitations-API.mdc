@@ -7,7 +7,7 @@ migration_name: ''
 ---
 
 id: "TASK-IAM-BE-005-Invitations-API"
-title: "Développer l'API Invitations (Team Page)"
+title: "Développer la logique API des Invitations (sans envoi d'email)"
 status: "planned"
 priority: "P0"
 labels: ["backend", "types", "tests"]
@@ -15,7 +15,7 @@ dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-
 created: "2025-10-17"
 ---
 ### 1. High-Level Objective
-Fournir un ensemble d'API REST pour inviter des membres, gérer l'idempotence 24h, générer des tokens à usage unique 72h et enregistrer les événements d'audit requis.
+Fournir la logique d'API REST pour gérer le cycle de vie des invitations (création, validation, idempotence, génération de token). L'envoi effectif de l'email est géré par une tâche dépendante.
 
 ### 2. Background / Context (Optionnel mais recommandé)
 US-2 et US-3 détaillent les interactions d'invitation/acceptation. L'API doit gérer validation email/role, création d'invitations, expiration, notifications et déclenchement des événements `user.team_member.invited`.

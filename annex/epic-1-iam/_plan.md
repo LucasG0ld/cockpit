@@ -15,6 +15,7 @@ graph TD
             BE002[TASK-IAM-BE-002-Auth-Guard]
             BE004[TASK-IAM-BE-004-Audit-Service]
             BE005[TASK-IAM-BE-005-Invitations-API]
+            BE005A[TASK-IAM-BE-005-A-Resend-Integration]
             BE006[TASK-IAM-BE-006-Activation-Flow]
             BE007[TASK-IAM-BE-007-Role-Management]
             BE008[TASK-IAM-BE-008-Status-Lifecycle]
@@ -55,10 +56,13 @@ graph TD
     BE004 --> BE007
     BE004 --> BE008
     BE004 --> BE009
-    BE005 --> BE006
-    BE005 --> BE007
-    BE005 --> BE008
-    BE005 --> BE009
+
+    %% Nouvelle chaîne de dépendance via l'intégration email
+    BE005 --> BE005A
+    BE005A --> BE006
+    BE005A --> BE007
+    BE005A --> BE008
+    BE005A --> BE009
 
     %% Dépendances entre les Jalons
     %% Connecte la ou les dernières tâches du Jalon 1 au nœud conceptuel du Jalon 2
