@@ -44,6 +44,7 @@ describe('AuditService', () => {
 
     await service.recordEvent(event);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(prisma.auditEvent.create).toHaveBeenCalledWith({
       data: event,
     });
