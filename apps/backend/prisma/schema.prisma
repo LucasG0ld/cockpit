@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -75,7 +75,7 @@ model Invitation {
 
 model AuditEvent {
   id             String       @id @default(cuid())
-  eventType      String
+  type           String
   metadata       Json?
   createdAt      DateTime     @default(now())
 
