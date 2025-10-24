@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditService } from './audit.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../../prisma/generated/client';
 
 describe('AuditService', () => {
   let service: AuditService;
@@ -29,12 +30,16 @@ describe('AuditService', () => {
   });
 
   it('should record an event', async () => {
-    const event = {
-      organizationId: 'org_123',
-      actorId: 'user_123',
+    const event: Prisma.AuditEventCreateInput = {
       type: 'user.team_member.invited',
       targetId: 'user_456',
       metadata: { email: 'test@example.com' },
+      organization: {
+        connect: { id: 'org_123' },
+      },
+      actor: {
+        connect: { id: 'user_123' },
+      },
     };
 
     await service.recordEvent(event);
