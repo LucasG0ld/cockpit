@@ -8,7 +8,7 @@ migration_name: ''
 
 id: "TASK-IAM-BE-004-Audit-Service"
 title: "Implémenter le service d'audit IAM (succès)"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["backend", "types", "tests"]
 dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard"]

@@ -68,6 +68,18 @@
     *   **SI** l'opérateur choisit l'Option 2 (Nouveau Chat) :
         *   Ta mission dans ce chat est terminée. **STOPPE**.
 
-6.  **ÉTAPE FINALE : HANDOFF POUR REVUE DE FUSION**
-    *   Exécute la procédure `request_human_review_for_merge.mdc`.
+6.  **ÉTAPE FINALE : HANDOFF, FUSION ET FINALISATION**
+    *   **Action 1 : Handoff pour Revue Humaine**
+        *   Exécute la procédure `request_human_review_for_merge.mdc`.
+        *   Attends l'instruction de fusion de l'opérateur.
+
+    *   **Action 2 : Fusion et Finalisation (sur instruction)**
+        *   Une fois l'instruction **"Le travail est validé. Procède à la fusion dans main."** reçue, exécute les procédures suivantes dans l'ordre :
+            1.  `run_controlled_merge.mdc`
+            2.  `run_update_task_status.mdc` (avec le statut "completed")
+            3.  `run_post_merge_cleanup.mdc`
+
+    *   **Action 3 : Rapport d'Exécution**
+        *   Après le nettoyage, exécute la procédure de génération de rapport de la mission (création du fichier `EXECUTION_REPORT` et commit sur `main`).
+
     *   **Fin de Workflow :** Ce micro-workflow est terminé. **STOPPE**.
