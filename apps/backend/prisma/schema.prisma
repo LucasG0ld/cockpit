@@ -75,7 +75,7 @@ model Invitation {
 
 model AuditEvent {
   id             String       @id @default(cuid())
-  eventType      String
+  type           String
   metadata       Json?
   createdAt      DateTime     @default(now())
 
