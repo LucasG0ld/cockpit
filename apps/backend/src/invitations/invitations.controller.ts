@@ -2,6 +2,7 @@ import { Controller, Post, HttpCode, HttpStatus, Body, Get, Param, NotFoundExcep
 import { Public } from '../guards/public.decorator';
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
+import { AcceptInvitationDto } from './dto/accept-invitation.dto';
 import { AuthContext } from '../guards/auth-context.decorator';
 import type { ClerkAuthContext } from '../guards/clerk-auth.guard';
 
@@ -27,5 +28,16 @@ export class InvitationsController {
     }
     return invitation;
   }
+
+  @Public()
+  @Post(':token/accept')
+  @HttpCode(HttpStatus.CREATED)
+  accept(
+    @Param('token') token: string,
+    @Body() acceptInvitationDto: AcceptInvitationDto,
+  ) {
+    return this.invitationsService.accept(token, acceptInvitationDto);
+  }
 }
+
 

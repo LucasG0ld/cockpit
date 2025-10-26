@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
+import { AcceptInvitationDto } from './dto/accept-invitation.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as crypto from 'crypto';
 
@@ -42,6 +43,42 @@ export class InvitationsService {
       expiresAt: invitation.expiresAt,
     };
   }
+
+  async accept(token: string, acceptInvitationDto: AcceptInvitationDto) {
+    return this.prisma.$transaction(async (tx) => {
+      const invitation = await tx.invitation.findUnique({
+        where: { token },
+      });
+
+      if (!invitation) {
+        throw new NotFoundException('Invitation not found');
+      }
+
+      if (invitation.status !== 'Pending') {
+        throw new ConflictException('Invitation has already been accepted or has expired');
+      }
+
+      if (invitation.expiresAt < new Date()) {
+        throw new ConflictException('Invitation has expired');
+      }
+
+      await tx.membership.create({
+        data: {
+          organizationId: invitation.organizationId,
+          identityId: acceptInvitationDto.acceptingUserId,
+          role: invitation.role,
+        },
+      });
+
+      const updatedInvitation = await tx.invitation.update({
+        where: { id: invitation.id },
+        data: { status: 'Accepted' },
+      });
+
+      return updatedInvitation;
+    });
+  }
 }
+
 
 

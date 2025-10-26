@@ -125,4 +125,48 @@ describe('InvitationsController (e2e)', () => {
         });
     });
   });
+
+  describe('POST /invitations/:token/accept', () => {
+    it('should accept an invitation and create a membership', async () => {
+      const invitation = await prisma.invitation.create({
+        data: {
+          email: 'acceptable@example.com',
+          role: UserRole.Admin,
+          organizationId: ORG_ID,
+          invitedById: verifiedTokenClaims.sub,
+          token: 'acceptable-token',
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        },
+      });
+
+            const acceptingUser = await prisma.identity.create({
+        data: {
+          clerkId: 'clerk-new-user-123',
+          email: invitation.email, // Use the invited email
+        },
+      });
+
+      const acceptPayload = {
+        acceptingUserId: acceptingUser.id,
+      };
+
+      await request(app.getHttpServer())
+        .post(`/invitations/${invitation.token}/accept`)
+        .send(acceptPayload)
+        .expect(201);
+
+      const membership = await prisma.membership.findFirst({
+        where: {
+          identityId: acceptPayload.acceptingUserId,
+          organizationId: ORG_ID,
+        },
+      });
+
+      expect(membership).not.toBeNull();
+      expect(membership?.role).toBe(invitation.role);
+
+      const usedInvitation = await prisma.invitation.findUnique({ where: { id: invitation.id } });
+      expect(usedInvitation?.status).toBe('Accepted');
+    });
+  });
 });
