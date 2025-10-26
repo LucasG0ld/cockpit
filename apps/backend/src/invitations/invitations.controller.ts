@@ -1,4 +1,13 @@
-import { Controller, Post, HttpCode, HttpStatus, Body, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  HttpCode,
+  HttpStatus,
+  Body,
+  Get,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { Public } from '../guards/public.decorator';
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
@@ -39,5 +48,3 @@ export class InvitationsController {
     return this.invitationsService.accept(token, acceptInvitationDto);
   }
 }
-
-

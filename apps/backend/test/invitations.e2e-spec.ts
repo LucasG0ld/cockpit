@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, UnauthorizedException } from '@nestjs/common';
 import request from 'supertest';
+import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
-import { UserRole } from '../prisma/generated/client';
+import { Invitation, UserRole } from '../prisma/generated/client';
 import { CLERK_TOKEN_VERIFIER } from '../src/guards/clerk-auth.guard';
 
 const VALID_TOKEN = 'valid.token.example';
@@ -11,7 +12,7 @@ const ORG_ID = 'org_0123456789abcdefghijklmnop';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('InvitationsController (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<App>;
   let prisma: PrismaService;
 
   const verifiedTokenClaims = {
@@ -84,16 +85,21 @@ describe('InvitationsController (e2e)', () => {
         .set('x-org-id', ORG_ID)
         .send(invitationPayload)
         .expect(201)
-        .expect(({ body }) => {
+        .expect(({ body }: { body: Invitation }) => {
           expect(body).toEqual({
             ...invitationPayload,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             id: expect.any(String),
             organizationId: ORG_ID,
             invitedById: verifiedTokenClaims.sub,
             status: 'Pending',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             token: expect.any(String),
-            expiresAt: expect.any(String),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            expiresAt: expect.any(String), // Dates are serialized to strings
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             createdAt: expect.any(String),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             updatedAt: expect.any(String),
           });
         });
@@ -116,7 +122,7 @@ describe('InvitationsController (e2e)', () => {
       return request(app.getHttpServer())
         .get(`/invitations/${invitation.token}`)
         .expect(200)
-        .expect(({ body }) => {
+        .expect(({ body }: { body: Partial<Invitation> }) => {
           expect(body).toEqual({
             email: invitation.email,
             role: invitation.role,
@@ -139,7 +145,7 @@ describe('InvitationsController (e2e)', () => {
         },
       });
 
-            const acceptingUser = await prisma.identity.create({
+      const acceptingUser = await prisma.identity.create({
         data: {
           clerkId: 'clerk-new-user-123',
           email: invitation.email, // Use the invited email
@@ -165,7 +171,9 @@ describe('InvitationsController (e2e)', () => {
       expect(membership).not.toBeNull();
       expect(membership?.role).toBe(invitation.role);
 
-      const usedInvitation = await prisma.invitation.findUnique({ where: { id: invitation.id } });
+      const usedInvitation = await prisma.invitation.findUnique({
+        where: { id: invitation.id },
+      });
       expect(usedInvitation?.status).toBe('Accepted');
     });
   });

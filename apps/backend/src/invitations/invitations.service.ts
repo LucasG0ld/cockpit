@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { AcceptInvitationDto } from './dto/accept-invitation.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -55,7 +59,9 @@ export class InvitationsService {
       }
 
       if (invitation.status !== 'Pending') {
-        throw new ConflictException('Invitation has already been accepted or has expired');
+        throw new ConflictException(
+          'Invitation has already been accepted or has expired',
+        );
       }
 
       if (invitation.expiresAt < new Date()) {
@@ -79,6 +85,3 @@ export class InvitationsService {
     });
   }
 }
-
-
-

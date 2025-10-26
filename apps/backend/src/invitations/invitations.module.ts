@@ -9,6 +9,3 @@ import { PrismaModule } from '../prisma/prisma.module';
   providers: [InvitationsService],
 })
 export class InvitationsModule {}
-
-
-
