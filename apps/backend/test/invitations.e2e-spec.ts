@@ -99,4 +99,30 @@ describe('InvitationsController (e2e)', () => {
         });
     });
   });
+
+  describe('GET /invitations/:token', () => {
+    it('should return an invitation by token', async () => {
+      const invitation = await prisma.invitation.create({
+        data: {
+          email: 'retrievable@example.com',
+          role: UserRole.Admin,
+          organizationId: ORG_ID,
+          invitedById: verifiedTokenClaims.sub,
+          token: 'a-valid-token',
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
+        },
+      });
+
+      return request(app.getHttpServer())
+        .get(`/invitations/${invitation.token}`)
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toEqual({
+            email: invitation.email,
+            role: invitation.role,
+            expiresAt: invitation.expiresAt.toISOString(),
+          });
+        });
+    });
+  });
 });

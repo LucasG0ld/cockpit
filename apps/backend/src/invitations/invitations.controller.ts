@@ -1,4 +1,5 @@
-import { Controller, Post, HttpCode, HttpStatus, Body } from '@nestjs/common';
+import { Controller, Post, HttpCode, HttpStatus, Body, Get, Param, NotFoundException } from '@nestjs/common';
+import { Public } from '../guards/public.decorator';
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { AuthContext } from '../guards/auth-context.decorator';
@@ -16,4 +17,15 @@ export class InvitationsController {
   ) {
     return this.invitationsService.create(createInvitationDto, orgId, userId);
   }
+
+  @Public()
+  @Get(':token')
+  async findOneByToken(@Param('token') token: string) {
+    const invitation = await this.invitationsService.findOneByToken(token);
+    if (!invitation) {
+      throw new NotFoundException('Invitation not found');
+    }
+    return invitation;
+  }
 }
+

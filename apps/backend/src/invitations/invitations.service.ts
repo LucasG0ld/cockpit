@@ -26,5 +26,22 @@ export class InvitationsService {
       },
     });
   }
+
+  async findOneByToken(token: string) {
+    const invitation = await this.prisma.invitation.findUnique({
+      where: { token },
+    });
+
+    if (!invitation) {
+      return null;
+    }
+
+    return {
+      email: invitation.email,
+      role: invitation.role,
+      expiresAt: invitation.expiresAt,
+    };
+  }
 }
+
 

@@ -6,6 +6,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from './public.decorator';
 import type { Request } from 'express';
 import { clerkClient } from '@clerk/clerk-sdk-node';
 
@@ -42,11 +44,20 @@ export class ClerkAuthGuard implements CanActivate {
   private static readonly ORG_ID_PATTERN = /^org_[0-9a-z]{26,32}$/;
 
   constructor(
+    private reflector: Reflector,
     @Inject(CLERK_TOKEN_VERIFIER)
     private readonly tokenVerifier: ClerkTokenVerifier,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
+
     const request = context
       .switchToHttp()
       .getRequest<Request & { auth?: ClerkAuthContext }>();
