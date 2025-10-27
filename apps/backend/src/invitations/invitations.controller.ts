@@ -12,6 +12,7 @@ import { Public } from '../guards/public.decorator';
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { AcceptInvitationDto } from './dto/accept-invitation.dto';
+import { ActivateInvitationDto } from './dto/activate-invitation.dto';
 import { AuthContext } from '../guards/auth-context.decorator';
 import type { ClerkAuthContext } from '../guards/clerk-auth.guard';
 
@@ -46,5 +47,15 @@ export class InvitationsController {
     @Body() acceptInvitationDto: AcceptInvitationDto,
   ) {
     return this.invitationsService.accept(token, acceptInvitationDto);
+  }
+
+  @Public()
+  @Post(':token/activate')
+  @HttpCode(HttpStatus.CREATED)
+  activate(
+    @Param('token') token: string,
+    @Body() activateInvitationDto: ActivateInvitationDto,
+  ) {
+    return this.invitationsService.activate(token, activateInvitationDto);
   }
 }
