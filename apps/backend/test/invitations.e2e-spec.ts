@@ -39,8 +39,6 @@ describe('InvitationsController (e2e)', () => {
     })
       .overrideProvider(CLERK_TOKEN_VERIFIER)
       .useValue(mockVerifier)
-      .overrideProvider(EmailService)
-      .useValue({ sendInvitationEmail: jest.fn() })
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -78,11 +76,15 @@ describe('InvitationsController (e2e)', () => {
   });
 
   describe('POST /invitations', () => {
-     it('should create an invitation and send an email', async () => {
+    it('should create an invitation and send an email', async () => {
       const invitationPayload = {
         email: 'new.user@example.com',
         role: UserRole.Admin,
       };
+
+      const sendInvitationEmailSpy = jest
+        .spyOn(emailService, 'sendInvitationEmail')
+        .mockImplementation(async () => {});
 
       await request(app.getHttpServer())
         .post('/invitations')
@@ -91,7 +93,7 @@ describe('InvitationsController (e2e)', () => {
         .send(invitationPayload)
         .expect(201);
 
-      expect(emailService.sendInvitationEmail).toHaveBeenCalledWith(
+      expect(sendInvitationEmailSpy).toHaveBeenCalledWith(
         invitationPayload.email,
         expect.any(String),
       );
