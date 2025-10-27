@@ -6,11 +6,15 @@ import {
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { AcceptInvitationDto } from './dto/accept-invitation.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class InvitationsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
   async create(
     createInvitationDto: CreateInvitationDto,
@@ -21,7 +25,7 @@ export class InvitationsService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 3); // Expires in 3 days
 
-    return this.prisma.invitation.create({
+    const invitation = await this.prisma.invitation.create({
       data: {
         ...createInvitationDto,
         organizationId,
@@ -30,6 +34,10 @@ export class InvitationsService {
         invitedById,
       },
     });
+
+    await this.emailService.sendInvitationEmail(invitation.email, token);
+
+    return invitation;
   }
 
   async findOneByToken(token: string) {
