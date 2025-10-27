@@ -9,11 +9,10 @@ export interface IEmailService {
 
 @Injectable()
 export class EmailService implements IEmailService {
-  private readonly resend = new Resend(process.env.RESEND_API_KEY);
-
   async sendInvitationEmail(to: string, token: string): Promise<void> {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     try {
-      await this.resend.emails.send({
+      await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: to,
         subject: 'You have been invited!',
