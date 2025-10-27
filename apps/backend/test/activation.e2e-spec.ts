@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, UnauthorizedException } from '@nestjs/common';
+import { App } from 'supertest/types';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UserRole } from '../prisma/generated/client';
@@ -10,7 +11,7 @@ const VALID_TOKEN = 'valid.token.example';
 const ORG_ID = 'org_0123456789abcdefghijklmnop';
 
 describe('Activation (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<App>;
   let prisma: PrismaService;
 
   const verifiedTokenClaims = {

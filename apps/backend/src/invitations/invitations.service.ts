@@ -98,7 +98,7 @@ export class InvitationsService {
     });
   }
 
-    async activate(token: string, activateInvitationDto: ActivateInvitationDto) {
+  async activate(token: string, activateInvitationDto: ActivateInvitationDto) {
     return this.prisma.$transaction(async (tx) => {
       const invitation = await tx.invitation.findUnique({
         where: { token },

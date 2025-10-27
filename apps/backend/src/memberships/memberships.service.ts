@@ -6,7 +6,11 @@ import { UserRole } from '../../prisma/generated/client';
 export class MembershipsService {
   constructor(private prisma: PrismaService) {}
 
-  async createMembership(identityId: string, organizationId: string, role: UserRole) {
+  async createMembership(
+    identityId: string,
+    organizationId: string,
+    role: UserRole,
+  ) {
     return this.prisma.membership.create({
       data: {
         identityId,

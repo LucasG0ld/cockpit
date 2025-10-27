@@ -15,7 +15,14 @@ import { MembershipsModule } from './memberships/memberships.module';
 import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [PrismaModule, AuditModule, InvitationsModule, EmailModule, ClerkModule, MembershipsModule],
+  imports: [
+    PrismaModule,
+    AuditModule,
+    InvitationsModule,
+    EmailModule,
+    ClerkModule,
+    MembershipsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
