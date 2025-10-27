@@ -5,6 +5,7 @@ import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { Invitation, UserRole } from '../prisma/generated/client';
 import { CLERK_TOKEN_VERIFIER } from '../src/guards/clerk-auth.guard';
+import { EmailService, IEmailService } from '../src/email/email.service';
 
 const VALID_TOKEN = 'valid.token.example';
 const ORG_ID = 'org_0123456789abcdefghijklmnop';
@@ -14,6 +15,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 describe('InvitationsController (e2e)', () => {
   let app: INestApplication<App>;
   let prisma: PrismaService;
+  let emailService: IEmailService;
 
   const verifiedTokenClaims = {
     sub: 'user_123',
@@ -37,10 +39,13 @@ describe('InvitationsController (e2e)', () => {
     })
       .overrideProvider(CLERK_TOKEN_VERIFIER)
       .useValue(mockVerifier)
+      .overrideProvider(EmailService)
+      .useValue({ sendInvitationEmail: jest.fn() })
       .compile();
 
     app = moduleFixture.createNestApplication();
     prisma = moduleFixture.get<PrismaService>(PrismaService);
+    emailService = moduleFixture.get<IEmailService>(EmailService);
 
     // Clean up database before each test
     await prisma.invitation.deleteMany();
@@ -73,6 +78,25 @@ describe('InvitationsController (e2e)', () => {
   });
 
   describe('POST /invitations', () => {
+     it('should create an invitation and send an email', async () => {
+      const invitationPayload = {
+        email: 'new.user@example.com',
+        role: UserRole.Admin,
+      };
+
+      await request(app.getHttpServer())
+        .post('/invitations')
+        .set('Authorization', `Bearer ${VALID_TOKEN}`)
+        .set('x-org-id', ORG_ID)
+        .send(invitationPayload)
+        .expect(201);
+
+      expect(emailService.sendInvitationEmail).toHaveBeenCalledWith(
+        invitationPayload.email,
+        expect.any(String),
+      );
+    });
+
     it('should create an invitation for a new user', async () => {
       const invitationPayload = {
         email: 'new.user@example.com',

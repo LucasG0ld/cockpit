@@ -10,9 +10,10 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuditModule } from './audit/audit.module';
 import { InvitationsModule } from './invitations/invitations.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [PrismaModule, AuditModule, InvitationsModule],
+  imports: [PrismaModule, AuditModule, InvitationsModule, EmailModule],
   controllers: [AppController],
   providers: [
     AppService,
