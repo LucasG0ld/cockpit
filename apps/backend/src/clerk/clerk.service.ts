@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { createClerkClient } from '@clerk/backend';
 
@@ -8,6 +8,8 @@ const clerkClient = createClerkClient({
 
 @Injectable()
 export class ClerkService {
+  private readonly logger = new Logger(ClerkService.name);
+
   constructor(private prisma: PrismaService) {}
 
   // Placeholder for user creation logic
@@ -27,9 +29,14 @@ export class ClerkService {
           clerkId,
         },
       });
-    } catch {
-      // Handle the error
-      // Handle the error
+    } catch (error) {
+      this.logger.error(
+        'Failed to find or create identity in clerk.service.ts',
+        error,
+      );
+      throw new InternalServerErrorException(
+        'Could not find or create identity.',
+      );
     }
     return this.prisma.identity.create({
       data: {
