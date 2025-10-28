@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { users } from '@clerk/clerk-sdk-node';
+import { createClerkClient } from '@clerk/backend';
+
+const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
 @Injectable()
 export class ClerkService {
@@ -8,14 +10,25 @@ export class ClerkService {
 
   // Placeholder for user creation logic
   async findOrCreateIdentity(email: string, clerkId: string) {
-    const existingIdentity = await this.prisma.identity.findUnique({
-      where: { clerkId },
-    });
+    try {
+      const existingIdentity = await this.prisma.identity.findUnique({
+        where: { clerkId },
+      });
 
-    if (existingIdentity) {
-      return existingIdentity;
+      if (existingIdentity) {
+        return existingIdentity;
+      }
+
+      return this.prisma.identity.create({
+        data: {
+          email,
+          clerkId,
+        },
+      });
+    } catch {
+      // Handle the error
+      // Handle the error
     }
-
     return this.prisma.identity.create({
       data: {
         email,
@@ -25,6 +38,6 @@ export class ClerkService {
   }
 
   async banUser(clerkId: string): Promise<void> {
-    await users.banUser(clerkId);
+    await clerkClient.users.banUser(clerkId);
   }
 }

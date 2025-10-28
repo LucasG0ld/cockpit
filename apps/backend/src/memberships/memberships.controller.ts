@@ -1,9 +1,10 @@
 import { Controller, Patch, Param, Body, UseGuards, Req } from '@nestjs/common';
+import type { AuthedRequest } from '../guards/authed-request';
 import { MembershipsService } from './memberships.service';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ClerkAuthGuard } from '../guards/clerk-auth.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRole } from '../../prisma/generated/client';
+import { ClerkAuthGuard } from '../guards/clerk-auth.guard';
 
 @Controller('memberships')
 @UseGuards(ClerkAuthGuard)
@@ -15,7 +16,7 @@ export class MembershipsController {
   async updateRole(
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
-    @Req() req: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    @Req() req: AuthedRequest,
   ) {
     const { orgId, sub: actorId } = req.auth;
     return this.membershipsService.updateRole(

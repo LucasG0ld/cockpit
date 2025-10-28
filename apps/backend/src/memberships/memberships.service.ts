@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserRole } from '../../prisma/generated/client';
+import { ClerkService } from '../clerk/clerk.service';
 
 @Injectable()
 export class MembershipsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private clerkService: ClerkService,
+  ) {}
 
   async createMembership(
     identityId: string,
@@ -47,31 +51,28 @@ export class MembershipsService {
       return membership;
     }
 
-    const updatedMembership = await this.prisma.membership.update({
-      where: { id: membershipId },
-      data: { role: newRole },
-    });
-
-    await this.prisma.auditEvent.create({
-      data: {
-        type: 'user.role.changed',
-        actorId,
-        targetId: membership.id,
-        organizationId: orgId,
-        metadata: {
-          from: membership.role,
-          to: newRole,
-          identityId: membership.identityId,
+    const [updatedMembership] = await this.prisma.$transaction([
+      this.prisma.membership.update({
+        where: { id: membershipId },
+        data: { role: newRole },
+      }),
+      this.prisma.auditEvent.create({
+        data: {
+          type: 'user.role.changed',
+          actorId,
+          targetId: membership.id,
+          organizationId: orgId,
+          metadata: {
+            from: membership.role,
+            to: newRole,
+            identityId: membership.identityId,
+          },
         },
-      },
-    });
+      }),
+    ]);
 
-    // [TECH_DEBT] - [2025-10-28] - [MAJOR]
-    // Description: Session invalidation is not implemented due to issues with Clerk SDK.
-    // Impact: User sessions are not invalidated after a role change, which is a security risk.
-    // Suggestion: Revisit Clerk SDK documentation to implement session invalidation correctly.
     if (membership.identity.clerkId) {
-      // await this.clerkService.invalidateAllSessionsForUser(membership.identity.clerkId);
+      await this.clerkService.banUser(membership.identity.clerkId);
     }
 
     return updatedMembership;
