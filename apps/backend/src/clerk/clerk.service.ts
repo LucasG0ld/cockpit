@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { users } from '@clerk/clerk-sdk-node';
 
 @Injectable()
 export class ClerkService {
@@ -21,5 +22,9 @@ export class ClerkService {
         clerkId,
       },
     });
+  }
+
+  async banUser(clerkId: string): Promise<void> {
+    await users.banUser(clerkId);
   }
 }
