@@ -1,7 +1,7 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import type { Request } from 'express';
 import { AppService } from './app.service';
-import type { ClerkAuthContext } from './guards/clerk-auth.guard';
+import type { ClerkAuthContext } from './guards/clerk-auth-context';
 
 @Controller()
 export class AppController {

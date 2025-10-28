@@ -14,7 +14,7 @@ import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { AcceptInvitationDto } from './dto/accept-invitation.dto';
 import { ActivateInvitationDto } from './dto/activate-invitation.dto';
 import { AuthContext } from '../guards/auth-context.decorator';
-import type { ClerkAuthContext } from '../guards/clerk-auth.guard';
+import type { ClerkAuthContext } from '../guards/clerk-auth-context';
 
 @Controller('invitations')
 export class InvitationsController {

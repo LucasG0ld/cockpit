@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
+import { execSync } from 'child_process';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
@@ -38,6 +40,7 @@ describe('MembershipsController (e2e) - With Auth', () => {
         },
       })
       .overrideProvider(ClerkService)
+
       .useValue({ banUser: jest.fn() })
       .compile();
 
@@ -46,7 +49,6 @@ describe('MembershipsController (e2e) - With Auth', () => {
 
     prisma = moduleFixture.get<PrismaService>(PrismaService);
 
-    const { execSync } = require('child_process');
     execSync('pnpm prisma migrate reset --force', {
       cwd: 'f:/dev/cockpit/apps/backend',
       stdio: 'inherit',
