@@ -8,7 +8,7 @@ migration_name: ''
 
 id: "TASK-IAM-BE-007-Role-Management"
 title: "Construire l'API de changement de rôle (Membership)"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["backend", "types", "tests"]
 dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-004-Audit-Service"]
