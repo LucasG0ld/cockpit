@@ -1,0 +1,47 @@
+### Procédure de Co-création du PRD Global (Renforcée)
+
+**Contrat d'Interface (Contexte Requis) :**
+*Pour fonctionner, cette procédure requiert :*
+1.  **`context_input` :** Le document de contexte initial de la version.
+2.  **`release_plan` :** Le plan de release de la version.
+
+---
+
+**Instruction :** Ce processus te guide pour co-créer un `PRD Global` avec le PO. Ton objectif est de remplir méthodiquement chaque section du template en posant des questions ciblées.
+
+---
+
+#### **Phase 1 : Investigation Structurée**
+
+1.  **Chargement du Modèle :**
+    *   Charge en mémoire la structure du template `@.windsurf/rules/templates/prd-global.template.md`.
+
+2.  **Validation Itérative des Sections :**
+    *   Pour **chaque section principale** du template (ex: "1. Problème", "2. Solution Proposée", etc.) :
+        *   **Action :** Analyse le `context_input` et le `release_plan` pour déterminer si tu as assez d'informations pour remplir cette section.
+        *   **Action (Conditionnelle) :** Si les informations sont incomplètes ou ambiguës pour cette section, **formule et pose les questions précises** à l'opérateur pour obtenir les informations manquantes.
+    *   Continue ce cycle de "valider une section -> poser des questions si nécessaire" jusqu'à ce que tu aies parcouru **toutes les sections** du template.
+
+---
+
+#### **Phase 2 : Génération Contrôlée du Brouillon**
+
+1.  **Attente du Signal de Génération :**
+    *   Une fois que tu as terminé l'investigation de toutes les sections, attends que le PO te donne l'instruction : **"Parfait. Maintenant, rédige le contenu complet du PRD Global."**
+
+2.  **Génération du Document :**
+    *   Génère l'intégralité du `PRD Global` en utilisant le template et les informations collectées.
+    *   **Garde-fou (Échec de Génération) :** Si, pour une raison quelconque (template introuvable, corrompu, erreur interne), la génération du contenu échoue, **STOPPE IMMÉDIATEMENT** et signale l'échec à l'opérateur.
+
+---
+
+#### **Phase 3 : Handoff pour Affinage et Validation**
+
+**[POINT DE CONTRÔLE HUMAIN]**
+**STOP.** Le brouillon est généré.
+
+> **Instructions pour l'Opérateur Humain (PO) :**
+>
+> 1.  Relisez et **affinez manuellement** le `PRD Global` généré.
+> 2.  Validez le document final.
+> 3.  **Re-synchronisez l'IA** lors du prochain prompt en lui fournissant cette version finale.

@@ -1,0 +1,60 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-009-2FA-Lockout"
+title: "Imposer la 2FA email et le verrouillage après 5 échecs"
+status: "planned"
+priority: "P0"
+labels: ["backend", "types", "tests"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-006-Activation-Flow"]
+created: "2025-10-17"
+---
+### 1. High-Level Objective
+Forcer la configuration 2FA email à la première connexion, gérer l'expiration de code, verrouiller le compte après 5 échecs et fournir les messages exacts prévus par le PRD.
+
+### 2. Background / Context (Optionnel mais recommandé)
+US-1 décrit l'obligation de 2FA pour tous les utilisateurs internes et la mécanique de verrouillage sans délai de déverrouillage automatique. L'expérience doit refléter les messages "Code expiré..." et le pop-up de contact Admin.
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Clerk permet de gérer la 2FA email, les tentatives et le verrouillage via API ou webhooks.
+- **CONSTRAINT:** Le backend doit empêcher tout accès tant que la 2FA n'est pas configurée ou que le compte est verrouillé.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-006-Activation-Flow`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.md`
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `apps/backend/src/clerk/clerk.service.ts`
+    - `apps/backend/src/auth/auth.controller.ts`
+    - `apps/backend/src/auth/auth.service.ts`
+    - `apps/backend/test/auth.e2e-spec.ts`
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/clerk/clerk.service.ts`
+    - `apps/backend/src/auth/auth.controller.ts`
+    - `apps/backend/src/auth/auth.service.ts`
+    - `apps/backend/test/auth.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **ENFORCE** via Clerk API que les membres internes doivent activer 2FA à la première connexion (flag et redirection backend si nécessaire).
+3. **TRACK** tentatives 2FA (via Clerk ou table dédiée) et incrémenter à chaque échec.
+4. **LOCK** compte à la 5e tentative : marquer statut `Locked` ou flag dans Clerk, renvoyer pop-up "contactez Admin".
+5. **HANDLE** codes expirés : message "Code expiré. Demandez un nouveau code." et endpoint pour renvoi.
+6. **TEST** e2e couvrant succès, code expiré, 5 échecs -> lock, déblocage manuel (placeholder).
+
+### 7. Acceptance Criteria
+- [ ] Les utilisateurs internes ne peuvent pas accéder au cockpit sans 2FA activée.
+- [ ] Le message "Code expiré..." est renvoyé lorsque requis.
+- [ ] À la 5e tentative échouée, le compte est bloqué et un message invite à contacter l'Admin.
+- [ ] Tests automatisés couvrent la logique 2FA/lockout.
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** Vérifier format/email lors des requêtes 2FA.
+- [ ] **Gestion des Secrets :** Clés Clerk stockées en env secure.
+- [ ] **Performance :** Ne pas multiplier les calls Clerk; utiliser caches/batching si nécessaire.

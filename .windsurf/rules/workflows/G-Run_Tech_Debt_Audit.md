@@ -1,0 +1,32 @@
+# Micro-Workflow G : Lancement d'un Audit de la Dette Technique
+
+**Objectif :** Ce protocole est un outil tactique autonome pour lancer un scan de la dette technique, analyser les résultats et présenter une synthèse à l'opérateur.
+
+---
+
+### **Phase 1 : Assimilation des Procédures d'Audit**
+
+**Instruction :** Lis et assimile intégralement le contenu des fichiers de fonctions suivants.
+
+*   `.windsurf/rules/functions/run_simple_pre_flight_check.md` **(Version Renforcée)**
+*   `.windsurf/rules/functions/run_tech_debt_audit.md` **(Version Renforcée)**
+
+Une fois ces deux procédures parfaitement assimilées, passe à la phase d'exécution.
+
+---
+
+### **Phase 2 : Exécution Séquentielle de la Mission**
+
+**Instruction :** Exécute les procédures que tu viens d'assimiler dans l'ordre strict suivant.
+
+1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
+    *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
+    *   **Si oui,** tu peux continuer.
+    *   **Si non,** tu dois d'abord relire le fichier `.windsurf/rules/functions/inject_doctrines_fondamentales.md` avant de procéder.
+
+2.  **Exécution de la Pré-vérification Simplifiée :**
+    *   Exécute la procédure `run_simple_pre_flight_check`.
+
+3.  **Exécution de l'Audit de la Dette Technique :**
+    *   Une fois la pré-vérification réussie, exécute la procédure `run_tech_debt_audit`.
+    *   **Fin de Workflow :** Ce micro-workflow est considéré comme terminé lorsque la procédure `run_tech_debt_audit` a achevé son exécution et s'est mise en attente à son point de contrôle humain final. Suis scrupuleusement son point d'arrêt.

@@ -1,0 +1,57 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-005-A-Resend-Integration"
+title: "Intégrer Resend pour l'envoi des emails d'invitation"
+status: "completed"
+priority: "P0"
+labels: ["backend", "integration", "email"]
+dependencies: ["TASK-IAM-BE-005-Invitations-API"]
+created: "2025-10-24"
+---
+### 1. High-Level Objective
+Implémenter un service d'email transactionnel en utilisant l'API de Resend pour envoyer les emails d'invitation générés par `TASK-IAM-BE-005`. Remplacer le service simulé existant par cette implémentation réelle.
+
+### 2. Background / Context
+Conformément à l'ADR-0008, Resend a été choisi comme fournisseur d'email. Ce service sera responsable de l'envoi de tous les emails transactionnels, en commençant par les invitations.
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Les clés d'API de Resend sont disponibles dans les variables d'environnement (`RESEND_API_KEY`).
+- **CONSTRAINT:** Le service doit être encapsulé dans un module `EmailModule` réutilisable et doit implémenter une interface `IEmailService` pour faciliter les tests et les futures migrations.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-005-Invitations-API`
+- **Files:** [adr/ADR-0008-email-provider-decision.md](cci:7://file:///f:/dev/cockpit/adr/ADR-0008-email-provider-decision.md:0:0-0:0)
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `apps/backend/src/email/email.service.ts` (le service simulé à remplacer)
+    - `apps/backend/src/invitations/invitations.service.ts` (le service qui consomme le mailer)
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/email/email.module.ts`
+    - `apps/backend/src/email/email.service.ts` (implémentation Resend)
+    - `apps/backend/src/email/templates/invitation-template.tsx` (template d'email avec React)
+    - `apps/backend/test/email.e2e-spec.ts`
+
+### 6. Low-Level Steps
+1. **CREATE** un `EmailModule` et une interface `IEmailService` avec une méthode `sendInvitationEmail(to: string, token: string)`.
+2. **INSTALL** le SDK de Resend (`npm install resend`).
+3. **IMPLEMENT** `EmailService` en utilisant le SDK de Resend pour envoyer l'email. Gérer les erreurs d'API.
+4. **CREATE** un template d'email simple avec React (ex: `invitation-template.tsx`) comme supporté par Resend.
+5. **INJECT** le `EmailService` dans `InvitationsService` et remplacer l'appel au service simulé.
+6. **TEST** e2e pour vérifier que l'API de Resend est bien appelée avec les bons paramètres (en utilisant un mock de l'API Resend pour ne pas envoyer de vrais emails pendant les tests).
+
+### 7. Acceptance Criteria
+- [ ] Un appel à `POST /invitations` déclenche un appel à l'API de Resend.
+- [ ] Le corps de l'email envoyé contient bien le lien d'invitation avec le token.
+- [ ] Les erreurs de l'API Resend sont correctement interceptées et journalisées.
+- [ ] Les tests e2e valident l'intégration sans dépendre de la disponibilité réelle de l'API Resend.
+
+### 8. Sécurité et Conformité Qualité
+- [ ] **Gestion des Secrets :** La clé d'API de Resend est chargée depuis les variables d'environnement et n'est jamais exposée dans le code.
+- [ ] **Validation des Entrées :** Les adresses email sont validées avant d'être passées au service.

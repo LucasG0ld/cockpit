@@ -1,0 +1,61 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-007-Role-Management"
+title: "Construire l'API de changement de rôle (Membership)"
+status: "completed"
+priority: "P0"
+labels: ["backend", "types", "tests"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-004-Audit-Service"]
+created: "2025-10-17"
+---
+### 1. High-Level Objective
+Permettre aux Admins de modifier les rôles des membres en invalidant les sessions actives, en déclenchant les réassignations nécessaires et en journalisant `user.role.changed`.
+
+### 2. Background / Context (Optionnel mais recommandé)
+US-4 du PRD détaille les exigences de changement de rôle, notamment l'invalidation des sessions et la gestion des responsabilités associées lors d'un changement (ex: transferts de clients).
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Les sessions sont gérées via Clerk; une API pour invalider les sessions est disponible.
+- **CONSTRAINT:** L'opération doit être atomique côté backend (transaction Prisma) pour mettre à jour la membership et enregistrer l'audit.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-004-Audit-Service`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `annex/epic-1-iam/events.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.md`
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `apps/backend/src/memberships/memberships.controller.ts`
+    - `apps/backend/src/memberships/memberships.service.ts`
+    - `apps/backend/src/audit/audit.service.ts`
+    - `apps/backend/src/clerk/clerk.service.ts`
+    - `apps/backend/test/roles.e2e-spec.ts`
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/memberships/memberships.controller.ts`
+    - `apps/backend/src/memberships/memberships.service.ts`
+    - `apps/backend/test/roles.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **CREATE** DTO `UpdateRoleDto` avec enum `UserRole`.
+3. **IMPLEMENT** route `PATCH /memberships/:id/role` vérifiant autorisation Admin.
+4. **HANDLE** réassignations : placeholder ou intégration avec workflow client (bloquer tant que non réassigné si exigé).
+5. **CALL** Clerk pour invalider sessions puis notifier via pop-up (réponse API) que l'utilisateur doit se reconnecter.
+6. **EMIT** audit `user.role.changed` avec `metadata: {from, to}`.
+7. **TEST**: cas rôle identique (no-op), rôle différent succès, rôle invalide (400), mismatch org (403).
+
+### 7. Acceptance Criteria
+- [ ] Changement de rôle interdit si l'opérateur n'est pas Admin.
+- [ ] Sessions actives invalidées et utilisateur notifié (champ réponse ou event).
+- [ ] Audit `user.role.changed` persisté.
+- [ ] Tests couvrent success/failure.
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** Enum `UserRole` et ID membership valides.
+- [ ] **Gestion des Secrets :** Utiliser l'API Clerk via env vars.
+- [ ] **Performance :** Utiliser transaction Prisma pour éviter des requêtes multiples incohérentes.

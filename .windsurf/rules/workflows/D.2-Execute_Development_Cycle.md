@@ -1,0 +1,47 @@
+# Micro-Workflow D.2 : Cycle d'Exécution du Développement
+
+**Objectif :** Ce protocole guide l'exécution de la phase de développement. Il agit comme un routeur qui sélectionne le cycle d'exécution approprié (TDD ou Migration) en fonction de la nature de la tâche.
+
+---
+
+### **Phase 1 : Assimilation des Procédures de Développement**
+
+**Instruction :** Lis et assimile intégralement le contenu des fichiers de fonctions suivants.
+*   `.windsurf/rules/functions/run_environment_initialization.md`
+*   `.windsurf/rules/functions/run_development_cycle.md`
+*   `.windsurf/rules/functions/run_migration_cycle.md`
+
+Une fois ces trois procédures parfaitement assimilées, passe à la phase d'exécution.
+
+---
+
+### **Phase 2 : Exécution Séquentielle de la Mission**
+
+**Instruction :** Exécute les procédures que tu viens d'assimiler dans l'ordre strict suivant.
+
+1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
+    *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
+    *   **Si oui,** tu peux continuer.
+    *   **Si non (parce que la conversation a été longue ou a dévié),** tu dois d'abord relire le fichier `.windsurf/rules/functions/inject_doctrines_fondamentales.md` avant de procéder à l'étape suivante.
+
+2.  **Pré-vérification de l'Environnement (Garde-fou Critique)**
+    *   **Instruction :** Avant d'exécuter `run_environment_initialization`, confirme que tu es bien sur la branche `main` et que le répertoire de travail est propre (`git status`).
+    *   **Garde-fou :** Si l'une de ces conditions n'est pas remplie, **STOPPE IMMÉDIATEMENT** et signale l'anomalie à l'opérateur. Ne procède pas tant que l'environnement n'est pas sain.
+
+3.  **Exécution de l'Initialisation de l'Environnement :**
+    *   Exécute la procédure `run_environment_initialization`.
+    *   **Contexte Requis :** Le cas à appliquer (`Cas A` ou `Cas B`) est directement déterminé par le scénario qui a été validé lors de l'exécution de la procédure `run_pre_flight_check` dans le workflow `a-Start_Mission`.
+    *   **Contexte Requis :** Pour le `Cas A`, le nom de la branche (`feature/[ID-du-ticket-description-courte]`) doit être créé en utilisant les informations spécifiques à la tâche, typiquement trouvées dans le fichier `@task.md` ou le briefing de mission.
+
+4.  **Point de Décision : Sélection du Cycle d'Exécution**
+    *   **Instruction :** Analyse le fichier `@task.md` de la mission pour déterminer la nature du travail.
+    *   **Garde-fou (Validation du Contrat de Tâche) :** Vérifie que la clé `task_type` existe dans le fichier `@task.md`. Si elle est absente, **STOPPE IMMÉDIATEMENT** et signale à l'opérateur : "Le fichier @task.md est invalide. La clé 'task_type' est obligatoire pour continuer."
+    *   **SI** le `task_type` est `migration` :
+        *   **Garde-fou :** Vérifie que la clé `migration_name` est également présente et non vide. Si ce n'est pas le cas, **STOPPE** et signale l'erreur.
+        *   Exécute la procédure `run_migration_cycle`.
+    *   **SINON (si le `task_type` est `development`) :**
+        *   Exécute la procédure `run_development_cycle`.
+
+5.  **Fin de Workflow et Rapport**
+    *   **Fin de Workflow et Rapport de Tests :** Ce micro-workflow est considéré comme terminé lorsque le cycle d'exécution choisi s'est terminé avec succès et a produit son rapport final.
+    *   Présente le rapport de fin de cycle à l'opérateur et attends ses instructions.

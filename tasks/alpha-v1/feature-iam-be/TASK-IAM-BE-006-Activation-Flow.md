@@ -1,0 +1,61 @@
+# Template de Tâche Atomique (Version "Keystone")
+
+## Méta-données (OBLIGATOIRE)
+---
+task_type: 'development'
+migration_name: ''
+---
+
+id: "TASK-IAM-BE-006-Activation-Flow"
+title: "Finaliser le flux d'activation du compte invité"
+status: "completed"
+priority: "P0"
+labels: ["backend", "types", "tests"]
+dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-005-A-Resend-Integration"]
+created: "2025-10-17"
+---
+### 1. High-Level Objective
+Permettre à un invité d'accepter son invitation, créer son identité via Clerk, initialiser sa membership et forcer la configuration 2FA conformément aux critères US-3.
+
+### 2. Background / Context (Optionnel mais recommandé)
+Après l'acceptation du lien, l'utilisateur doit créer/associer son `Identity`, vérifier son email, configurer la 2FA (si interne) et activer sa `Membership` avec le rôle adéquat.
+
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Clerk fournit des webhooks/SDK pour confirmer la vérification email et la configuration 2FA.
+- **CONSTRAINT:** Le lien d'invitation est à usage unique; l'API doit verrouiller l'invitation après activation ou expiration.
+
+### 4. Dependencies (Autres Tâches ou Artefacts)
+- **Tasks:** `TASK-IAM-BE-001-DB-Schema`, `TASK-IAM-BE-002-Auth-Guard`, `TASK-IAM-BE-005-A-Resend-Integration`
+- **Files:** `alpha-v1-context/5_PRD_Features_Alpha_v1/PRD_Features_Alpha_v1_IAM_Socle.md`, `tasks/TASK-IAM-BE-003-Tenant-Enforcement.md`
+
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `apps/backend/src/invitations/invitations.controller.ts`
+    - `apps/backend/src/invitations/invitations.service.ts`
+    - `apps/backend/src/clerk/clerk.service.ts`
+    - `apps/backend/src/memberships/memberships.service.ts`
+    - `apps/backend/test/activation.e2e-spec.ts`
+- **END STATE (must exist after completion):**
+    - `apps/backend/src/clerk/clerk.service.ts`
+    - `apps/backend/src/invitations/invitations.controller.ts`
+    - `apps/backend/src/memberships/memberships.service.ts`
+    - `apps/backend/test/activation.e2e-spec.ts`
+
+### 6. Low-Level Steps (Ordonnés et denses en information)
+1. **APPLY POLICY** `TASK-IAM-BE-003` : S'assurer que toutes les requêtes Prisma sont filtrées par `organizationId` et que les tests de cloisonnement sont implémentés.
+2. **INTEGRATE** Clerk pour créer ou lier une `Identity` lors de l'acceptation (`clerkId`, email vérifié).
+3. **CREATE** la `Membership` associée avec rôle ou statut "Temporaire" si option différée.
+4. **FORCE** la confirmation 2FA : marquer le compte comme bloqué tant que 2FA non activée.
+5. **EMIT** audit `user.team_member.activated` et envoyer réponse conforme PRD.
+6. **TEST** e2e couvrant token expiré, déjà utilisé, succès rôles Admin/CSM/Closer/Temporaire.
+
+### 7. Acceptance Criteria
+- [ ] Invitation expirée -> message "Invitation expirée..." sans activation.
+- [ ] Invitation consommée -> accès refusé.
+- [ ] Activation crée Identity/Membership correctes, 2FA exigée pour internes.
+- [ ] Audit `user.team_member.activated` enregistré.
+
+### **8. Sécurité et Conformité Qualité**
+- [ ] **Validation des Entrées :** Vérifier cohérence email/token/role avant création membership.
+- [ ] **Gestion des Secrets :** Liaison Clerk via env vars sécurisées.
+- [ ] **Performance :** Opérations transactionnelles Prisma pour garantir atomicité activation + audit.

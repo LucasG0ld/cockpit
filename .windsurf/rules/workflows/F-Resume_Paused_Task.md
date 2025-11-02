@@ -1,0 +1,33 @@
+# Micro-Workflow F.2 : Reprise d'une Tâche Mise en Pause
+
+**Objectif :** Ce protocole est un outil tactique autonome pour restaurer le travail sur une tâche précédemment mise en pause. Il est déclenché après que la tâche prérequise bloquante a été complétée et fusionnée dans `main`.
+
+---
+
+### **Phase 1 : Assimilation de la Procédure de Reprise**
+
+**Instruction :** Lis et assimile intégralement le contenu du fichier de fonction suivant.
+
+*   `.windsurf/rules/functions/run_context_resume.md` **(Version Renforcée)**
+
+Une fois cette procédure parfaitement assimilée, passe à la phase d'exécution.
+
+---
+
+### **Phase 2 : Exécution Séquentielle de la Mission**
+
+**Instruction :** Exécute la procédure que tu viens d'assimiler.
+
+1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
+    *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
+    *   **Si oui,** tu peux continuer.
+    *   **Si non,** tu dois d'abord relire le fichier `.windsurf/rules/functions/inject_doctrines_fondamentales.md` avant de procéder.
+
+2.  **Exécution de la Reprise de Contexte :**
+    *   Exécute la procédure `run_context_resume`.
+    *   **Instruction de Câblage du Contexte (Action Critique) :** Pour satisfaire le **'Contrat d'Interface'** de cette fonction, tu dois lui fournir l'information suivante, extraite du prompt de l'opérateur qui a lancé ce workflow :
+        *   **`task_id_blocked` :** L'identifiant de la tâche que tu dois reprendre.
+
+3.  **Fin de Workflow :**
+    *   Ce micro-workflow est considéré comme terminé lorsque la procédure `run_context_resume` a achevé son exécution complète, incluant sa phase de nettoyage conditionnelle et son rapport final.
+    *   Suis scrupuleusement ses points d'arrêt internes et ses interactions avec l'opérateur. **STOPPE** une fois que la fonction a signalé que la reprise est terminée.

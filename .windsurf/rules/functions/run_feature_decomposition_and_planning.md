@@ -1,0 +1,65 @@
+---
+trigger: manual
+---
+
+### Procédure de Décomposition et Planification Technique (Cyclique)
+
+**Instruction :** Ce processus est analytique et cyclique. Ton objectif est de transformer une spécification fonctionnelle en un plan d'action détaillé, un jalon à la fois.
+
+---
+
+### **Phase 0 : Diagnostic de l'État du Plan**
+
+**Instruction :** Avant toute action, tu dois déterminer le contexte de cette exécution.
+
+1.  **Vérifie l'existence** du fichier plan stratégique : `annex/[nom-de-l-epique]/_plan.md`.
+
+2.  **Décision Basée sur l'Existence :**
+    *   **SI le fichier n'existe PAS :** Procède au **Scénario A : Création Initiale du Plan**.
+    *   **SI le fichier existe DÉJÀ :** Procède au **Scénario B : Itération sur un Jalon Existant**.
+
+---
+
+### **Scénario A : Création Initiale du Plan**
+
+**Instruction :** Exécute cette procédure uniquement si aucun `_plan.md` n'existe.
+
+1.  **Phase 1 : Assimilation et Analyse Structurelle**
+    *   Lis attentivement le `@PRD_Feature` et les documents techniques associés.
+    *   Identifie les domaines techniques et décompose la fonctionnalité en suivant la hiérarchie de l'Atomic Design pour le frontend.
+    *   Identifie les grands jalons logiques de l'épique (ex: Jalon 1: Backend, Jalon 2: UI, etc.).
+
+2.  **Phase 2 : Création du Plan et Détaillage du Jalon 1**
+    *   **Crée et rédige le plan stratégique** dans le fichier `_plan.md` en utilisant le template `@.windsurf/rules/templates/graph.template.md`. Le graphe Mermaid doit visualiser **tous les jalons** mais ne détailler que le **Jalon 1**.
+    *   **Auto-Vérifie** le graphe pour détecter les erreurs (dépendances circulaires, etc.) et corrige-les.
+    *   **Génère les tâches détaillées** (fichiers `tasks/[version]/[feature-name]/TASK-ID-NOM.md`) uniquement pour les items du **Jalon 1**, en utilisant le template `@.windsurf/rules/templates/task.template.md` et en respectant les conventions de nommage.
+
+---
+
+### **Scénario B : Itération sur un Jalon Existant**
+
+**Instruction :** Exécute cette procédure uniquement si un `_plan.md` existe déjà.
+
+1.  **Phase 1 : Chargement et Analyse du Plan Existant**
+    *   **Ouvre et lis** le fichier `annex/[version]/[nom-de-l-epique]/_plan.md` existant.
+    *   **Identifie le prochain jalon** qui est défini dans le graphe Mermaid mais dont les tâches ne sont pas encore détaillées. (Ex: Le "Jalon 2" est présent comme un bloc, mais ses `TASK-ID-...` n'existent pas encore).
+
+2.  **Phase 2 : Détaillage du Jalon Suivant**
+    *   **Ne modifie PAS** le graphe Mermaid global du `_plan.md`, sauf si une dépendance inter-jalons doit être explicitée. Le but principal est de **lire** le plan, pas de le réécrire.
+    *   **Génère les tâches détaillées** (fichiers `tasks/[version]/[feature-name]/TASK-ID-NOM.md`) uniquement pour les items du **jalon cible identifié**, en utilisant le template `@.windsurf/rules/templates/task.template.md` et en respectant les conventions de nommage.
+
+---
+
+### **[POINT DE CONTRÔLE HUMAIN - VALIDATION DU PLAN TECHNIQUE] (Commun aux deux scénarios)**
+
+**STOP.** Le jalon pertinent a été détaillé.
+
+> **Instructions pour l'Opérateur Humain (PO & Dev) :**
+>
+> 1.  C'est le **Point de Contrôle du Chef de Projet**. Validez le `_plan.md` (si c'est une création) et les nouvelles tâches générées dans `tasks/[version]/[feature-name]/TASK-ID-NOM.md`.
+> 2.  Utilisez la checklist suivante :
+>     *   **Couverture :** Le plan couvre-t-il les critères d'acceptation du PRD pertinents pour ce jalon ?
+>     *   **Dépendances :** Le graphe est-il logique ?
+>     *   **Clarté :** Les titres des nouvelles tâches sont-ils clairs et actionnables ?
+>     *   **Conformité Architecturale :** La décomposition suit-elle bien nos standards ?
+> 3.  Une fois le plan validé, créez les items correspondants dans le `Centre de Travail`.
