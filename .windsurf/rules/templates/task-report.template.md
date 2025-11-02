@@ -1,6 +1,10 @@
 ---
+trigger: manual
+---
+
+---
 task_id: "[TASK-ID]"
-status: "completed" | "partial" | "blocked"
+status: "completed" # Peut être : "completed" | "partial" | "blocked"
 date: "[YYYY-MM-DD]"
 ---
 
