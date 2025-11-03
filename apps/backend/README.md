@@ -31,6 +31,26 @@
 $ pnpm install
 ```
 
+## Status Lifecycle – Pré-requis (TASK-IAM-BE-008)
+
+Avant d’implémenter `PATCH /memberships/:id/status`, s’assurer que l’environnement est prêt :
+
+1. **Secrets & configuration**  
+   - `CLERK_SECRET_KEY` disponible en développement, tests et CI.  
+   - Clé Resend optionnelle (`RESEND_API_KEY`) si les invitations déclenchent un envoi réel.  
+   - Fichier `test/.env.test` avec des valeurs factices pour les e2e.
+2. **Base de données**  
+   - `DATABASE_URL` pointe vers un PostgreSQL accessible.  
+   - Migrations Prisma appliquées (`pnpm prisma migrate deploy`).  
+   - Pour les e2e : `pnpm prisma migrate reset --force` fonctionne avec une base dédiée si besoin.
+3. **Dépendances applicatives**  
+   - `AuditModule` opérationnel pour enregistrer `user.status.changed`.  
+   - `ClerkService` prêt pour la désactivation et la réactivation (méthode `banUser` existante, prévoir l’unban).  
+   - Stratégie pour vérifier les contraintes CSM/Closer (services réels ou stubs).
+4. **Tests**  
+   - Guard Clerk mocké pour les e2e (`req.auth`).  
+   - Jeux de données couvrant désactivation simple, blocage CSM/Closer, réactivation (rôle `Temporaire`).
+
 ## Compile and run the project
 
 ```bash
