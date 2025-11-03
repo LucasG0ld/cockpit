@@ -8,7 +8,7 @@ migration_name: ''
 
 id: "TASK-IAM-BE-008-Status-Lifecycle"
 title: "Construire l'API désactivation/réactivation memberships"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["backend", "types", "tests"]
 dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-004-Audit-Service"]
