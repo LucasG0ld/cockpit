@@ -4,7 +4,7 @@ import { MembershipsService } from './memberships.service';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { Roles } from '../decorators/roles.decorator';
-import { UserRole, UserStatus } from '../../prisma/generated/client';
+import { UserRole } from '../../prisma/generated/client';
 import { ClerkAuthGuard } from '../guards/clerk-auth.guard';
 
 @Controller('memberships')

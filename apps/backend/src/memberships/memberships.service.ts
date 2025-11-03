@@ -109,7 +109,10 @@ export class MembershipsService {
         data: {
           status: newStatus,
           disabledAt: newStatus === UserStatus.Disabled ? new Date() : null,
-          role: newStatus === UserStatus.Active ? UserRole.Temporaire : membership.role,
+          role:
+            newStatus === UserStatus.Active
+              ? UserRole.Temporaire
+              : membership.role,
         },
       }),
       this.prisma.auditEvent.create({
