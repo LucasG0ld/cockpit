@@ -53,4 +53,8 @@ export class ClerkService {
   async banUser(clerkId: string): Promise<void> {
     await clerkClient.users.banUser(clerkId);
   }
+
+  async unbanUser(clerkId: string): Promise<void> {
+    await clerkClient.users.unbanUser(clerkId);
+  }
 }
