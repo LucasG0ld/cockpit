@@ -9,7 +9,8 @@
     "test": "pnpm --filter backend test",
     "build": "pnpm --filter backend build",
     "quality-gate:mac": "bash ./run_quality_gate_mac.sh",
-    "quality-gate:win": "powershell -ExecutionPolicy Bypass -File .\\run_quality_gate_win.ps1"
+    "quality-gate:win": "powershell -ExecutionPolicy Bypass -File .\\run_quality_gate_win.ps1",
+    "scan:tech-debt": "node ./scan_tech_debt.js"
   },
   "keywords": [],
   "author": "",
