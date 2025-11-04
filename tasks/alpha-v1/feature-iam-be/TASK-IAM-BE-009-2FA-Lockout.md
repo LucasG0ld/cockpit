@@ -8,7 +8,7 @@ migration_name: ''
 
 id: "TASK-IAM-BE-009-2FA-Lockout"
 title: "Imposer la 2FA email et le verrouillage après 5 échecs"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["backend", "types", "tests"]
 dependencies: ["TASK-IAM-BE-001-DB-Schema", "TASK-IAM-BE-002-Auth-Guard", "TASK-IAM-BE-006-Activation-Flow"]
