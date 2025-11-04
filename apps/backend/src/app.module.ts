@@ -7,6 +7,8 @@ import { MembershipsModule } from './memberships/memberships.module';
 import { ClerkModule } from './clerk/clerk.module';
 import { EmailModule } from './email/email.module';
 import { AuditModule } from './audit/audit.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ClerkAuthGuard } from './guards/clerk-auth.guard';
 
 @Module({
   imports: [
@@ -18,6 +20,13 @@ import { AuditModule } from './audit/audit.module';
     ClerkModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ClerkAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
+

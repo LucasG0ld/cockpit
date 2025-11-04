@@ -3,24 +3,26 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  ForbiddenException,
+  Inject,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from './public.decorator';
-import { createClerkClient } from '@clerk/backend';
 import type { Request as ExpressRequest } from 'express';
 import type { ClerkAuthContext, ClerkRole } from './clerk-auth-context';
+import { CLERK_CLIENT } from '../clerk/clerk.module';
+import type { ClerkClient } from '@clerk/backend';
 
 interface AuthenticatedRequest extends ExpressRequest {
   auth: ClerkAuthContext;
 }
 
-const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY,
-});
-
 @Injectable()
 export class ClerkAuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    @Inject(CLERK_CLIENT) private clerkClient: ClerkClient,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -32,43 +34,53 @@ export class ClerkAuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<ExpressRequest>();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const sessionToken = request.headers.authorization?.split(' ')[1];
+
+    if (!sessionToken) {
+      throw new UnauthorizedException('Authorization token not found.');
+    }
 
     try {
-      // Clerk's SDK expects a standard Request object, but NestJS provides an Express Request object.
-      // We need to construct a standard Request from the Express one.
-      const standardRequest = new Request(
-        `${request.protocol}://${request.get('host')}${request.originalUrl}`,
-        {
-          headers: request.headers as HeadersInit,
-          method: request.method,
-        },
-      );
-
-      const requestState =
-        await clerkClient.authenticateRequest(standardRequest);
-
-      if (requestState.status !== 'signed-in') {
-        throw new UnauthorizedException('Invalid session');
+      // The session ID is often required along with the token for verification
+      const sessionId = request.headers['x-session-id'] as string; 
+      if (!sessionId) {
+        throw new UnauthorizedException('Session ID not found in headers.');
       }
 
-      const authObject = requestState.toAuth();
+      const session = await this.clerkClient.sessions.verifySession(sessionId, sessionToken);
 
-      if (!authObject.orgId) {
-        throw new UnauthorizedException('Organization ID not found in token');
+      if (!session || !session.actor) {
+        throw new UnauthorizedException('Invalid session or actor.');
       }
 
-      (request as AuthenticatedRequest).auth = {
-        ...authObject,
-        orgId: authObject.orgId,
-        role: authObject.sessionClaims.org_role as ClerkRole,
+      const amr = session.actor.amr as { method: string; timestamp: number }[];
+      const isTwoFactorEnabled = amr?.some(entry => entry.method === 'totp');
+
+      if (!isTwoFactorEnabled) {
+        throw new ForbiddenException('Two-factor authentication required');
+      }
+
+      const orgId = session.actor.orgId as string;
+      if (!orgId) {
+        throw new UnauthorizedException('Organization ID not found in session');
+      }
+
+      request.auth = {
+        userId: session.userId,
+        sessionId: session.id,
+        orgId: orgId,
+        role: session.actor.org_role as ClerkRole,
       };
-    } catch {
-      // We catch all errors and throw a generic UnauthorizedException
-      // to avoid leaking any sensitive information.
+
+    } catch (error) {
+      if (error instanceof ForbiddenException) {
+        throw error;
+      }
       throw new UnauthorizedException('Invalid token or session.');
     }
 
     return true;
   }
+
 }
