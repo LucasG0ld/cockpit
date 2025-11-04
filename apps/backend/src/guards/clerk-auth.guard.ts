@@ -69,6 +69,11 @@ export class ClerkAuthGuard implements CanActivate {
         throw new UnauthorizedException('Organization ID not found in session');
       }
 
+      const requestOrgId = request.headers['x-org-id'] as string;
+      if (orgId !== requestOrgId) {
+        throw new ForbiddenException('Organization mismatch');
+      }
+
       request.auth = {
         userId: session.userId,
         sessionId: session.id,
