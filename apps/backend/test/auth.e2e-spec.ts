@@ -6,6 +6,8 @@ import { CLERK_CLIENT } from '../src/clerk/clerk.module';
 
 const VALID_TOKEN_2FA_DISABLED = 'valid.token.2fa_disabled';
 const SESSION_ID_2FA_DISABLED = 'sess_2fa_disabled';
+const VALID_TOKEN_2FA_ENABLED = 'valid.token.2fa_enabled';
+const SESSION_ID_2FA_ENABLED = 'sess_2fa_enabled';
 const ORG_ID = 'org_0123456789abcdefghijklmnop';
 
 describe('AuthController (e2e) - 2FA & Lockout', () => {
@@ -22,11 +24,28 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
     },
   };
 
+  const mockSession2faEnabled = {
+    id: SESSION_ID_2FA_ENABLED,
+    userId: 'user_2fa_enabled',
+    actor: {
+      sub: 'user_2fa_enabled',
+      orgId: ORG_ID,
+      org_role: 'Admin',
+      amr: [
+        { method: 'password', timestamp: Date.now() },
+        { method: 'totp', timestamp: Date.now() }, // 2FA est présente
+      ],
+    },
+  };
+
   const mockClerkClient = {
     sessions: {
       verifySession: (sessionId: string, token: string) => {
         if (token === VALID_TOKEN_2FA_DISABLED && sessionId === SESSION_ID_2FA_DISABLED) {
           return Promise.resolve(mockSession2faDisabled);
+        }
+        if (token === VALID_TOKEN_2FA_ENABLED && sessionId === SESSION_ID_2FA_ENABLED) {
+          return Promise.resolve(mockSession2faEnabled);
         }
         return Promise.reject(new UnauthorizedException('Invalid session'));
       },
@@ -62,6 +81,17 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
       message: 'Two-factor authentication required',
       error: 'Forbidden',
     });
+  });
+
+  it('should allow access if 2FA is enabled', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/auth')
+      .set('Authorization', `Bearer ${VALID_TOKEN_2FA_ENABLED}`)
+      .set('x-session-id', SESSION_ID_2FA_ENABLED)
+      .set('x-org-id', ORG_ID);
+
+    expect(response.status).toBe(200);
+    expect(response.body.userId).toBe(mockSession2faEnabled.userId);
   });
 });
 
