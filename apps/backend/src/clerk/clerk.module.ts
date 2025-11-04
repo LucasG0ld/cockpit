@@ -16,4 +16,3 @@ const clerkProvider = {
   exports: [ClerkService, clerkProvider],
 })
 export class ClerkModule {}
-

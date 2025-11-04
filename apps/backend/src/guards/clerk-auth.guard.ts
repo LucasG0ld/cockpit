@@ -43,19 +43,22 @@ export class ClerkAuthGuard implements CanActivate {
 
     try {
       // The session ID is often required along with the token for verification
-      const sessionId = request.headers['x-session-id'] as string; 
+      const sessionId = request.headers['x-session-id'] as string;
       if (!sessionId) {
         throw new UnauthorizedException('Session ID not found in headers.');
       }
 
-      const session = await this.clerkClient.sessions.verifySession(sessionId, sessionToken);
+      const session = await this.clerkClient.sessions.verifySession(
+        sessionId,
+        sessionToken,
+      );
 
       if (!session || !session.actor) {
         throw new UnauthorizedException('Invalid session or actor.');
       }
 
       const amr = session.actor.amr as { method: string; timestamp: number }[];
-      const isTwoFactorEnabled = amr?.some(entry => entry.method === 'totp');
+      const isTwoFactorEnabled = amr?.some((entry) => entry.method === 'totp');
 
       if (!isTwoFactorEnabled) {
         throw new ForbiddenException('Two-factor authentication required');
@@ -72,7 +75,6 @@ export class ClerkAuthGuard implements CanActivate {
         orgId: orgId,
         role: session.actor.org_role as ClerkRole,
       };
-
     } catch (error) {
       if (error instanceof ForbiddenException) {
         throw error;
@@ -82,5 +84,4 @@ export class ClerkAuthGuard implements CanActivate {
 
     return true;
   }
-
 }

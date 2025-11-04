@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { execSync } from 'child_process';
 import { INestApplication } from '@nestjs/common';
@@ -6,12 +5,11 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UserRole, UserStatus } from '../prisma/generated/client';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { ClerkAuthGuard } from '../src/guards/clerk-auth.guard';
-import { ClerkService } from '../src/clerk/clerk.service';
-import { ExecutionContext } from '@nestjs/common';
-import { AuthedRequest } from '../src/guards/authed-request';
+import { CLERK_CLIENT } from '../src/clerk/clerk.module';
+import { UnauthorizedException } from '@nestjs/common';
 
 const VALID_ADMIN_TOKEN = 'valid-admin-token';
+const ADMIN_SESSION_ID = 'sess_admin_id';
 const ORG_ID = 'org_test_id';
 const ADMIN_USER_ID = 'user_admin_id';
 const MEMBER_USER_ID = 'user_member_id';
@@ -19,36 +17,48 @@ const MEMBER_USER_ID = 'user_member_id';
 describe('MembershipsController (e2e) - Status Lifecycle', () => {
   let app: INestApplication;
   let prisma: PrismaService;
-  let moduleFixture: TestingModule;
-  let clerkService: ClerkService;
 
-  const adminClaims = {
-    sub: ADMIN_USER_ID,
-    orgId: ORG_ID,
-    role: 'Admin',
+  const mockAdminSession = {
+    id: ADMIN_SESSION_ID,
+    userId: ADMIN_USER_ID,
+    actor: {
+      sub: ADMIN_USER_ID,
+      orgId: ORG_ID,
+      org_role: 'Admin',
+      amr: [
+        { method: 'password', timestamp: Date.now() },
+        { method: 'totp', timestamp: Date.now() },
+      ],
+    },
+  };
+
+  const mockClerkClient = {
+    sessions: {
+      verifySession: (sessionId: string, token: string) => {
+        if (token === VALID_ADMIN_TOKEN && sessionId === ADMIN_SESSION_ID) {
+          return Promise.resolve(mockAdminSession);
+        }
+        return Promise.reject(new UnauthorizedException('Invalid session'));
+      },
+    },
+    users: {
+      banUser: jest.fn(),
+      unbanUser: jest.fn(),
+    },
   };
 
   beforeEach(async () => {
-    moduleFixture = await Test.createTestingModule({
+    const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-      .overrideGuard(ClerkAuthGuard)
-      .useValue({
-        canActivate: (context: ExecutionContext) => {
-          const req: AuthedRequest = context.switchToHttp().getRequest();
-          req.auth = adminClaims;
-          return true;
-        },
-      })
-      .overrideProvider(ClerkService)
-      .useValue({ banUser: jest.fn(), unbanUser: jest.fn() })
+      .overrideProvider(CLERK_CLIENT)
+      .useValue(mockClerkClient)
       .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
 
     prisma = moduleFixture.get<PrismaService>(PrismaService);
-    clerkService = moduleFixture.get<ClerkService>(ClerkService);
 
     execSync('pnpm prisma migrate reset --force', {
       cwd: 'f:/dev/cockpit/apps/backend',
@@ -95,9 +105,11 @@ describe('MembershipsController (e2e) - Status Lifecycle', () => {
       },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await request(app.getHttpServer())
       .patch(`/memberships/${targetMembership.id}/status`)
       .set('Authorization', `Bearer ${VALID_ADMIN_TOKEN}`)
+      .set('x-session-id', ADMIN_SESSION_ID)
       .send({ status: UserStatus.Disabled })
       .expect(200);
 
@@ -121,6 +133,8 @@ describe('MembershipsController (e2e) - Status Lifecycle', () => {
     expect(metadata.from).toBe(UserStatus.Active);
     expect(metadata.to).toBe(UserStatus.Disabled);
 
-    expect(clerkService.banUser).toHaveBeenCalledWith('clerk_member_id');
+    expect(mockClerkClient.users.banUser).toHaveBeenCalledWith(
+      'clerk_member_id',
+    );
   });
 });

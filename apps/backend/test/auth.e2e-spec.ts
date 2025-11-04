@@ -41,10 +41,16 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
   const mockClerkClient = {
     sessions: {
       verifySession: (sessionId: string, token: string) => {
-        if (token === VALID_TOKEN_2FA_DISABLED && sessionId === SESSION_ID_2FA_DISABLED) {
+        if (
+          token === VALID_TOKEN_2FA_DISABLED &&
+          sessionId === SESSION_ID_2FA_DISABLED
+        ) {
           return Promise.resolve(mockSession2faDisabled);
         }
-        if (token === VALID_TOKEN_2FA_ENABLED && sessionId === SESSION_ID_2FA_ENABLED) {
+        if (
+          token === VALID_TOKEN_2FA_ENABLED &&
+          sessionId === SESSION_ID_2FA_ENABLED
+        ) {
           return Promise.resolve(mockSession2faEnabled);
         }
         return Promise.reject(new UnauthorizedException('Invalid session'));
@@ -69,6 +75,7 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
   });
 
   it('should reject access if 2FA is not enabled for a protected route', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const response = await request(app.getHttpServer())
       .get('/auth') // Utilise une route protégée existante
       .set('Authorization', `Bearer ${VALID_TOKEN_2FA_DISABLED}`)
@@ -84,6 +91,7 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
   });
 
   it('should allow access if 2FA is enabled', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const response = await request(app.getHttpServer())
       .get('/auth')
       .set('Authorization', `Bearer ${VALID_TOKEN_2FA_ENABLED}`)
@@ -91,7 +99,8 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
       .set('x-org-id', ORG_ID);
 
     expect(response.status).toBe(200);
-    expect(response.body.userId).toBe(mockSession2faEnabled.userId);
+    expect((response.body as { userId: string }).userId).toBe(
+      mockSession2faEnabled.userId,
+    );
   });
 });
-
