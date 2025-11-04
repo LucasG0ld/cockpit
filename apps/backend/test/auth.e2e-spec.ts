@@ -91,6 +91,7 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
   });
 
   it('should reject access if orgId does not match', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const response = await request(app.getHttpServer())
       .get('/auth')
       .set('Authorization', `Bearer ${VALID_TOKEN_2FA_ENABLED}`)
@@ -98,7 +99,9 @@ describe('AuthController (e2e) - 2FA & Lockout', () => {
       .set('x-org-id', 'org_mismatch');
 
     expect(response.status).toBe(403);
-    expect(response.body.message).toBe('Organization mismatch');
+    expect((response.body as { message: string }).message).toBe(
+      'Organization mismatch',
+    );
   });
 
   it('should allow access if 2FA is enabled', async () => {
