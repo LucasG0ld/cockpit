@@ -1,41 +1,51 @@
-# TASK-IAM-FE-004: Edit Member Logic
-
-**Epic:** [epic-1-iam](../annex/epic-1-iam/_plan.md)
-**Jalon:** 2 - Team Management UI
-**Dépend de:** [TASK-IAM-FE-001-UI-Components](./TASK-IAM-FE-001-UI-Components.md)
-**Statut:** To Do
-
+## Méta-données (OBLIGATOIRE)
 ---
-
-### Objectif
-
+task_type: 'development'
+migration_name: ''
+---
+id: "TASK-IAM-FE-004"
+title: "Edit Member Logic"
+status: "planned"
+priority: "P1"
+labels: ["frontend"]
+dependencies: ["TASK-IAM-FE-001", "TASK-IAM-FE-002"]
+created: "2025-11-06"
+---
+### 1. High-Level Objective
 Implémenter la logique de modification du rôle et du statut d'un membre existant via le menu d'actions de la table des membres.
 
-### Low-Level Steps
+### 2. Background / Context
+Cette fonctionnalité permet aux administrateurs de gérer le cycle de vie des membres de leur équipe.
 
-1.  **Edit Role Modal**:
-    *   Le clic sur "Modifier le rôle" dans le `DropdownMenu` doit ouvrir une modale de confirmation.
-    *   La modale affichera le nom de l'utilisateur et un champ `Select` pré-rempli avec son rôle actuel.
-    *   La modification et la validation (mockée) doivent afficher un `Toast` de succès et mettre à jour l'état local (mocké) de la table.
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Les actions de modification seront mockées. L'intégration API est gérée dans une tâche séparée.
 
-2.  **Disable/Re-enable Action**:
-    *   Le clic sur "Désactiver" ou "Réactiver" doit ouvrir une modale de confirmation simple (ex: "Êtes-vous sûr de vouloir désactiver cet utilisateur ?").
-    *   La validation (mockée) doit afficher un `Toast` de succès et mettre à jour le statut de l'utilisateur dans l'état local (mocké) de la table.
+### 4. Dependencies
+- **Tasks:** `TASK-IAM-FE-001`, `TASK-IAM-FE-002`
+- **Files:** `app/(dashboard)/team/components/team-table.tsx`, `components/ui/dialog.tsx`, `components/ui/select.tsx`
 
-3.  **Conditional Rendering**:
-    *   L'option dans le `DropdownMenu` doit changer dynamiquement de "Désactiver" à "Réactiver" en fonction du statut actuel de l'utilisateur.
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `app/(dashboard)/team/components/team-table.tsx`
+- **END STATE (must exist after completion):**
+    - `app/(dashboard)/team/components/edit-role-dialog.tsx`
+    - `app/(dashboard)/team/components/toggle-status-dialog.tsx`
+    - `app/(dashboard)/team/components/team-table.tsx` (modifié)
 
-### Acceptance Criteria
+### 6. Low-Level Steps
+1.  **CREATE** le composant `app/(dashboard)/team/components/edit-role-dialog.tsx`.
+2.  **CREATE** le composant `app/(dashboard)/team/components/toggle-status-dialog.tsx`.
+3.  **MODIFY** `app/(dashboard)/team/components/team-table.tsx` pour que les options du `DropdownMenu` ouvrent les modales correspondantes.
+4.  **IMPLEMENT** la logique de changement de rôle (mockée) dans `edit-role-dialog.tsx`.
+5.  **IMPLEMENT** la logique de changement de statut (mockée) dans `toggle-status-dialog.tsx`.
+6.  **IMPLEMENT** le rendu conditionnel de l'option "Désactiver"/"Réactiver" dans le `DropdownMenu`.
 
-*   [ ] La modale de changement de rôle permet de sélectionner un nouveau rôle et de simuler la mise à jour.
-*   [ ] La modale de confirmation pour la désactivation/réactivation fonctionne.
-*   [ ] Les actions (mockées) mettent à jour l'affichage dans la table des membres.
-*   [ ] L'option de menu pour le statut est conditionnelle.
+### 7. Acceptance Criteria
+- [ ] Le clic sur "Modifier le rôle" ouvre une modale pour changer le rôle.
+- [ ] Le clic sur "Désactiver"/"Réactiver" ouvre une modale de confirmation.
+- [ ] Les actions (mockées) mettent à jour l'état de la table.
 
-### END STATE
-
-*   **Créés**:
-    *   `app/(dashboard)/team/components/edit-role-dialog.tsx`
-    *   `app/(dashboard)/team/components/toggle-status-dialog.tsx`
-*   **Modifiés**:
-    *   `app/(dashboard)/team/components/team-table.tsx` (pour intégrer les modales d'action)
+### 8. Sécurité et Conformité Qualité
+- [ ] **Validation des Entrées :** N/A
+- [ ] **Gestion des Secrets :** N/A
+- [ ] **Performance :** N/A

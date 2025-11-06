@@ -1,42 +1,47 @@
-# TASK-IAM-FE-005: Audit Trail View
-
-**Epic:** [epic-1-iam](../annex/epic-1-iam/_plan.md)
-**Jalon:** 2 - Team Management UI
-**Dépend de:** [TASK-IAM-FE-001-UI-Components](./TASK-IAM-FE-001-UI-Components.md)
-**Statut:** To Do
-
+## Méta-données (OBLIGATOIRE)
 ---
-
-### Objectif
-
+task_type: 'development'
+migration_name: ''
+---
+id: "TASK-IAM-FE-005"
+title: "Audit Trail View"
+status: "planned"
+priority: "P2"
+labels: ["frontend"]
+dependencies: ["TASK-IAM-FE-001"]
+created: "2025-11-06"
+---
+### 1. High-Level Objective
 Créer une vue simple pour afficher le journal d'audit des événements IAM, accessible depuis la navigation principale.
 
-### Low-Level Steps
+### 2. Background / Context
+La traçabilité des actions est une exigence clé du PRD (US-7). Cette page fournit une interface pour consulter ces événements.
 
-1.  **Page Layout**:
-    *   Créer la page `app/(dashboard)/audit/page.tsx`.
-    *   Ajouter un titre, par exemple "Journal d'audit".
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** Les données d'audit seront mockées. L'intégration API est gérée dans une tâche séparée.
 
-2.  **Data Table Integration**:
-    *   Utiliser le composant `Table` pour afficher les événements d'audit.
-    *   Définir les colonnes : `Date`, `Acteur`, `Action`, `Cible`, `Détails`.
+### 4. Dependencies
+- **Tasks:** `TASK-IAM-FE-001`
+- **Files:** `components/ui/table.tsx`
 
-3.  **Data Fetching (Mocked)**:
-    *   Utiliser des données mockées pour peupler la liste des événements.
-    *   Le mock doit inclure des exemples pour chaque type d'événement IAM (`user.team_member.invited`, `user.role.changed`, etc.).
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `components/ui/table.tsx`
+- **END STATE (must exist after completion):**
+    - `app/(dashboard)/audit/page.tsx`
+    - `app/(dashboard)/audit/components/audit-table.tsx`
 
-4.  **Metadata Display**:
-    *   Dans la colonne `Détails`, afficher les informations pertinentes de la `metadata` de l'événement (ex: `{ "from": "CSM", "to": "Admin" }`).
+### 6. Low-Level Steps
+1.  **CREATE** la page `app/(dashboard)/audit/page.tsx`.
+2.  **CREATE** le composant `app/(dashboard)/audit/components/audit-table.tsx`.
+3.  **INTEGRATE** le composant `Table` et définir les colonnes: `Date`, `Acteur`, `Action`, `Cible`, `Détails`.
+4.  **POPULATE** la table avec des données d'audit mockées, incluant différents types d'événements.
 
-### Acceptance Criteria
+### 7. Acceptance Criteria
+- [ ] La page `/audit` est accessible et affiche une table d'événements mockés.
+- [ ] Les colonnes de la table correspondent aux spécifications.
 
-*   [ ] La page du journal d'audit est créée et accessible.
-*   [ ] Le tableau affiche correctement les événements d'audit mockés.
-*   [ ] Les métadonnées des événements sont lisibles.
-
-### END STATE
-
-*   **Créés**:
-    *   `app/(dashboard)/audit/page.tsx`
-    *   `app/(dashboard)/audit/components/audit-table.tsx`
-*   **Modifiés**: Aucun
+### 8. Sécurité et Conformité Qualité
+- [ ] **Validation des Entrées :** N/A (données mockées)
+- [ ] **Gestion des Secrets :** N/A
+- [ ] **Performance :** N/A

@@ -1,43 +1,46 @@
-# TASK-IAM-FE-006: State Management for Team & Audit
-
-**Epic:** [epic-1-iam](../annex/epic-1-iam/_plan.md)
-**Jalon:** 2 - Team Management UI
-**Statut:** To Do
-
+## Méta-données (OBLIGATOIRE)
 ---
-
-### Objectif
-
+task_type: 'development'
+migration_name: ''
+---
+id: "TASK-IAM-FE-006"
+title: "State Management for Team & Audit"
+status: "planned"
+priority: "P1"
+labels: ["frontend", "types"]
+dependencies: []
+created: "2025-11-06"
+---
+### 1. High-Level Objective
 Mettre en place un store de gestion d'état (Zustand) pour gérer de manière centralisée les données de la page "Équipe" et du journal d'audit.
 
-### Low-Level Steps
+### 2. Background / Context
+Une gestion d'état centralisée est cruciale pour éviter le 'prop drilling' et maintenir une architecture frontend saine et évolutive.
 
-1.  **Store Setup**:
-    *   Installer et configurer Zustand.
-    *   Créer un `teamStore` pour gérer la liste des membres, l'état de chargement et les erreurs.
-    *   Créer un `auditStore` pour gérer la liste des événements d'audit.
+### 3. Assumptions & Constraints
+- **CONSTRAINT:** La bibliothèque de gestion d'état sera `Zustand`.
+- **ASSUMPTION:** Les appels API réels ne seront pas implémentés dans cette tâche, mais les actions correspondantes seront définies.
 
-2.  **Team Store Actions**:
-    *   Définir les actions pour le `teamStore` :
-        *   `fetchMembers`: Pour récupérer la liste des membres.
-        *   `inviteMember`: Pour ajouter un membre (après succès de l'API).
-        *   `updateMember`: Pour mettre à jour le rôle ou le statut d'un membre.
+### 4. Dependencies
+- **Files:** `package.json` (pour vérifier l'installation de Zustand)
 
-3.  **Audit Store Actions**:
-    *   Définir l'action `fetchAuditEvents` pour récupérer les logs.
+### 5. Context Plan
+- **END STATE (must exist after completion):**
+    - `lib/store/team-store.ts`
+    - `lib/store/audit-store.ts`
 
-4.  **Store Integration (Hooks)**:
-    *   Créer des hooks personnalisés (ex: `useTeamStore`, `useAuditStore`) pour faciliter l'accès au store depuis les composants React.
+### 6. Low-Level Steps
+1.  **INSTALL** `zustand` si ce n'est pas déjà fait (`npm install zustand`).
+2.  **CREATE** le fichier `lib/store/team-store.ts` et définir le store avec un état initial (liste de membres, chargement, erreur) et les actions `fetchMembers`, `inviteMember`, `updateMember`.
+3.  **CREATE** le fichier `lib/store/audit-store.ts` et définir le store avec un état initial et l'action `fetchAuditEvents`.
+4.  **EXPORT** des hooks personnalisés (`useTeamStore`, `useAuditStore`) depuis chaque fichier de store.
 
-### Acceptance Criteria
+### 7. Acceptance Criteria
+- [ ] Les fichiers `team-store.ts` et `audit-store.ts` sont créés.
+- [ ] Les stores contiennent les états et les actions définis.
+- [ ] Les hooks personnalisés sont exportés et utilisables.
 
-*   [ ] Les stores Zustand pour l'équipe et l'audit sont créés.
-*   [ ] Les actions pour récupérer et manipuler les données sont définies (sans l'implémentation des appels API).
-*   [ ] Les hooks personnalisés permettent d'accéder aux états et actions des stores.
-
-### END STATE
-
-*   **Créés**:
-    *   `lib/store/team-store.ts`
-    *   `lib/store/audit-store.ts`
-*   **Modifiés**: Aucun
+### 8. Sécurité et Conformité Qualité
+- [ ] **Validation des Entrées :** N/A
+- [ ] **Gestion des Secrets :** N/A
+- [ ] **Performance :** N/A

@@ -1,47 +1,50 @@
-# TASK-IAM-FE-003: Invite Member Form & Logic
-
-**Epic:** [epic-1-iam](../annex/epic-1-iam/_plan.md)
-**Jalon:** 2 - Team Management UI
-**Dépend de:** [TASK-IAM-FE-001-UI-Components](./TASK-IAM-FE-001-UI-Components.md)
-**Statut:** To Do
-
+## Méta-données (OBLIGATOIRE)
 ---
-
-### Objectif
-
+task_type: 'development'
+migration_name: ''
+---
+id: "TASK-IAM-FE-003"
+title: "Invite Member Form & Logic"
+status: "planned"
+priority: "P1"
+labels: ["frontend"]
+dependencies: ["TASK-IAM-FE-001", "TASK-IAM-FE-002"]
+created: "2025-11-06"
+---
+### 1. High-Level Objective
 Implémenter le formulaire d'invitation d'un nouveau membre, accessible depuis la page "Équipe", et gérer la logique de soumission (sans l'appel API réel).
 
-### Low-Level Steps
+### 2. Background / Context
+Cette fonctionnalité est essentielle pour permettre aux administrateurs d'agrandir leur équipe.
 
-1.  **Modal Integration**:
-    *   Le clic sur le bouton "Inviter un membre" (de la tâche `FE-002`) doit ouvrir un composant `Dialog`.
+### 3. Assumptions & Constraints
+- **ASSUMPTION:** La logique de soumission sera mockée. L'appel API réel est géré dans une tâche séparée.
 
-2.  **Form Creation**:
-    *   Dans la modale, créer un formulaire avec les champs suivants :
-        *   `email`: Champ de texte pour l'adresse email de l'invité.
-        *   `role`: Champ `Select` avec les options {Admin, CSM, Closer, "À configurer plus tard"}.
-    *   Utiliser `zod` pour la validation du schéma du formulaire.
+### 4. Dependencies
+- **Tasks:** `TASK-IAM-FE-001`, `TASK-IAM-FE-002`
+- **Files:** `components/ui/dialog.tsx`, `components/ui/input.tsx`, `components/ui/select.tsx`, `components/ui/toast.tsx`
 
-3.  **Form Validation**:
-    *   Implémenter la validation côté client :
-        *   L'email doit être dans un format valide.
-        *   Le rôle est un champ obligatoire.
-    *   Afficher les messages d'erreur sous les champs correspondants si la validation échoue.
+### 5. Context Plan
+- **BEGIN (add to model context):**
+    - `app/(dashboard)/team/page.tsx`
+    - `components/ui/dialog.tsx`
+- **END STATE (must exist after completion):**
+    - `app/(dashboard)/team/components/invite-member-dialog.tsx`
+    - `app/(dashboard)/team/page.tsx` (modifié)
 
-4.  **Submission Logic (Mocked)**:
-    *   Lors de la soumission d'un formulaire valide, simuler un appel API.
-    *   Afficher une notification `Toast` de succès ("Invitation envoyée à ...") ou d'erreur ("Cet utilisateur est déjà membre.").
-    *   Fermer la modale en cas de succès.
+### 6. Low-Level Steps
+1.  **CREATE** le composant `app/(dashboard)/team/components/invite-member-dialog.tsx`.
+2.  **INTEGRATE** le `Dialog` et un formulaire (utilisant `react-hook-form` et `zod`) avec les champs `email` et `role`.
+3.  **IMPLEMENT** la validation côté client pour s'assurer que l'email est valide et que le rôle est sélectionné.
+4.  **MODIFY** `app/(dashboard)/team/page.tsx` pour que le bouton "Inviter un membre" ouvre `invite-member-dialog`.
+5.  **MOCK** la logique de soumission pour afficher un `Toast` de succès ou d'erreur.
 
-### Acceptance Criteria
+### 7. Acceptance Criteria
+- [ ] Le clic sur "Inviter un membre" ouvre une modale avec le formulaire.
+- [ ] Le formulaire valide correctement les entrées.
+- [ ] La soumission (mockée) affiche une notification et ferme la modale en cas de succès.
 
-*   [ ] Le formulaire d'invitation s'ouvre dans une modale.
-*   [ ] La validation des champs `email` et `role` fonctionne comme attendu.
-*   [ ] La soumission (mockée) déclenche les notifications `Toast` appropriées.
-
-### END STATE
-
-*   **Créés**:
-    *   `app/(dashboard)/team/components/invite-member-dialog.tsx`
-*   **Modifiés**:
-    *   `app/(dashboard)/team/page.tsx` (pour intégrer la modale)
+### 8. Sécurité et Conformité Qualité
+- [ ] **Validation des Entrées :** La validation de l'email et du rôle est implémentée côté client.
+- [ ] **Gestion des Secrets :** N/A
+- [ ] **Performance :** N/A

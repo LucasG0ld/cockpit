@@ -1,49 +1,52 @@
-# TASK-IAM-FE-001: UI Components for Team Management
-
-**Epic:** [epic-1-iam](../annex/epic-1-iam/_plan.md)
-**Jalon:** 2 - Team Management UI
-**Statut:** To Do
-
+## Méta-données (OBLIGATOIRE)
 ---
-
-### Objectif
-
+task_type: 'development'
+migration_name: ''
+---
+id: "TASK-IAM-FE-001"
+title: "UI Components for Team Management"
+status: "planned"
+priority: "P0"
+labels: ["frontend", "types"]
+dependencies: []
+created: "2025-11-06"
+---
+### 1. High-Level Objective
 Créer la bibliothèque de composants React (shadcn/ui) de base, réutilisables et "dumb" (sans logique métier) qui seront nécessaires pour construire l'interface de gestion de l'équipe.
 
-### Low-Level Steps
+### 2. Background / Context
+Cette tâche est la fondation de l'interface utilisateur du Jalon 2. Elle s'appuie sur shadcn/ui pour garantir la cohérence et l'accessibilité.
 
-1.  **Button Component**:
-    *   Créer une variante stylisée du composant `Button` pour les actions principales (ex: "Inviter", "Enregistrer").
+### 3. Assumptions & Constraints
+- **CONSTRAINT:** Tous les composants doivent être basés sur la bibliothèque `shadcn/ui`.
+- **CONSTRAINT:** Les composants doivent être testés via Storybook.
 
-2.  **Input & Form Components**:
-    *   Configurer les composants `Input`, `Label`, et `Select` pour les formulaires d'invitation et d'édition.
+### 4. Dependencies
+- **Files:** `f:\dev\cockpit\tailwind.config.js` (pour la configuration du thème)
 
-3.  **Modal/Dialog Component**:
-    *   Implémenter un composant `Dialog` pour les actions de confirmation (ex: désactivation d'un membre, changement de rôle).
+### 5. Context Plan
+- **END STATE (must exist after completion):**
+    - `components/ui/button.tsx`
+    - `components/ui/input.tsx`
+    - `components/ui/label.tsx`
+    - `components/ui/select.tsx`
+    - `components/ui/dialog.tsx`
+    - `components/ui/table.tsx`
+    - `components/ui/dropdown-menu.tsx`
+    - `components/ui/toast.tsx`
+    - `components/ui/toaster.tsx`
 
-4.  **Data Table Component**:
-    *   Mettre en place un composant `Table` pour afficher la liste des membres de l'équipe.
-    *   La table doit inclure des colonnes pour le nom/email, le rôle, le statut, et un menu d'actions (`DropdownMenu`).
+### 6. Low-Level Steps
+1.  **SETUP** Storybook pour le projet si non existant.
+2.  **ADD** les composants `Button`, `Input`, `Label`, `Select`, `Dialog`, `Table`, `DropdownMenu`, `Toast`, `Toaster` via la CLI de `shadcn/ui`.
+3.  **CREATE** des stories Storybook pour chaque composant afin de valider leur apparence et leurs variantes.
 
-5.  **Toast/Notification Component**:
-    *   Configurer le composant `Toast` pour afficher des notifications de succès ou d'erreur suite aux actions de l'utilisateur.
+### 7. Acceptance Criteria
+- [ ] Tous les composants listés dans `END STATE` sont créés.
+- [ ] Chaque composant a une story correspondante dans Storybook.
+- [ ] Le style est cohérent avec la charte graphique définie dans `tailwind.config.js`.
 
-### Acceptance Criteria
-
-*   [ ] Tous les composants sont développés en isolation et testés avec Storybook.
-*   [ ] Les composants sont purement présentationnels et reçoivent leurs données et callbacks via des props.
-*   [ ] Le style est cohérent avec la charte graphique existante.
-
-### END STATE
-
-*   **Créés**:
-    *   `components/ui/button.tsx`
-    *   `components/ui/input.tsx`
-    *   `components/ui/label.tsx`
-    *   `components/ui/select.tsx`
-    *   `components/ui/dialog.tsx`
-    *   `components/ui/table.tsx`
-    *   `components/ui/dropdown-menu.tsx`
-    *   `components/ui/toast.tsx`
-    *   `components/ui/toaster.tsx`
-*   **Modifiés**: Aucun
+### 8. Sécurité et Conformité Qualité
+- [ ] **Validation des Entrées :** N/A (composants présentationnels)
+- [ ] **Gestion des Secrets :** N/A
+- [ ] **Performance :** N/A
