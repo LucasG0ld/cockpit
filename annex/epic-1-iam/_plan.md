@@ -27,8 +27,18 @@ graph TD
     end
 
     %% Jalons Futurs (Conceptuels) : Représente chaque jalon futur par un seul nœud.
+    %% Jalon 2 (Détaillé) : Tâches Frontend pour la gestion d'équipe.
     subgraph Jalon 2: Team Management UI
-        J2_Node(Jalon 2)
+        direction LR
+        subgraph Frontend
+            FE001[TASK-IAM-FE-001-UI-Components]
+            FE002[TASK-IAM-FE-002-Team-View]
+            FE003[TASK-IAM-FE-003-Invite-Member]
+            FE004[TASK-IAM-FE-004-Edit-Member]
+            FE005[TASK-IAM-FE-005-Audit-Trail]
+            FE006[TASK-IAM-FE-006-State-Management]
+            FE007[TASK-IAM-FE-007-API-Integration]
+        end
     end
     subgraph Jalon 3: Cross-Tenant UX
         J3_Node(Jalon 3)
@@ -64,12 +74,27 @@ graph TD
     BE005A --> BE008
     BE005A --> BE009
 
+    %% Dépendances internes au Jalon 2
+    FE001 --> FE002
+    FE001 --> FE003
+    FE001 --> FE004
+    FE001 --> FE005
+    FE006 --> FE007
+    FE002 --> FE007
+    FE003 --> FE007
+    FE004 --> FE007
+    FE005 --> FE007
+
     %% Dépendances entre les Jalons
-    %% Connecte la ou les dernières tâches du Jalon 1 au nœud conceptuel du Jalon 2
-    BE006 --> J2_Node
-    BE007 --> J2_Node
-    BE008 --> J2_Node
-    BE009 --> J2_Node
+    %% Le Backend (Jalon 1) est un prérequis pour l'intégration API (Jalon 2)
+    BE005 --> FE003
+    BE006 --> FE003
+    BE007 --> FE004
+    BE008 --> FE004
+    BE004 --> FE005
+
+    %% La dernière tâche d'intégration du Jalon 2 débloque le Jalon 3
+    FE007 --> J3_Node
 
     %% Ordonnancement global des jalons
     J2_Node --> J3_Node
