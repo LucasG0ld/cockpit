@@ -3,7 +3,7 @@
 task_type: 'development'
 migration_name: ''
 ---
-id: "TASK-IAM-FE-003"
+id: "TASK-IAM-FE-003-Invite-Member"
 title: "Invite Member Form & Logic"
 status: "planned"
 priority: "P1"

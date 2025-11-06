@@ -3,7 +3,7 @@
 task_type: 'development'
 migration_name: ''
 ---
-id: "TASK-IAM-FE-001"
+id: "TASK-IAM-FE-001-UI-Components"
 title: "UI Components for Team Management"
 status: "planned"
 priority: "P0"
