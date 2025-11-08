@@ -38,6 +38,7 @@ graph TD
             FE005[TASK-IAM-FE-005-Audit-Trail]
             FE006[TASK-IAM-FE-006-State-Management]
             FE007[TASK-IAM-FE-007-API-Integration]
+            FE007A[TASK-IAM-FE-007-A-UI-Permissions]
         end
     end
     subgraph Jalon 3: Cross-Tenant UX
@@ -85,6 +86,7 @@ graph TD
     FE003 --> FE007
     FE004 --> FE007
     FE005 --> FE007
+    FE007 --> FE007A
 
     %% Dépendances entre les Jalons
     %% Le Backend (Jalon 1) est un prérequis pour l'intégration API (Jalon 2)
@@ -95,7 +97,7 @@ graph TD
     BE004 --> FE005
 
     %% La dernière tâche d'intégration du Jalon 2 débloque le Jalon 3
-    FE007 --> J3_Node
+    FE007A --> J3_Node
 
     %% Ordonnancement global des jalons
     J2_Node --> J3_Node
