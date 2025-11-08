@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-004-Edit-Member"
 title: "Edit Member Logic"
-status: "planned"
+status: "completed"
 priority: "P1"
 labels: ["frontend"]
 dependencies: ["TASK-IAM-FE-001", "TASK-IAM-FE-002"]
