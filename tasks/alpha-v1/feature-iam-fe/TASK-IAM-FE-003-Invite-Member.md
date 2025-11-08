@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-003-Invite-Member"
 title: "Invite Member Form & Logic"
-status: "planned"
+status: "completed"
 priority: "P1"
 labels: ["frontend"]
 dependencies: ["TASK-IAM-FE-001", "TASK-IAM-FE-002"]
