@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,11 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 const inviteMemberSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
-  role: z.enum(["ADMIN", "MEMBER"], { required_error: "Please select a role." }),
+  role: z.string().refine((val) => val === "ADMIN" || val === "MEMBER", {
+    message: "Please select a role.",
+  }),
 });
 
 type InviteMemberFormValues = z.infer<typeof inviteMemberSchema>;
@@ -50,8 +50,7 @@ interface InviteMemberDialogProps {
 }
 
 export function InviteMemberDialog({ children, open, onOpenChange }: InviteMemberDialogProps) {
-  const { toast } = useToast();
-  const form = useForm<InviteMemberFormValues>({
+    const form = useForm<InviteMemberFormValues>({
     resolver: zodResolver(inviteMemberSchema),
     defaultValues: {
       email: "",
@@ -66,16 +65,13 @@ export function InviteMemberDialog({ children, open, onOpenChange }: InviteMembe
     const isSuccess = Math.random() > 0.2; // 80% success rate
 
     if (isSuccess) {
-      toast({
-        title: "Invitation sent!",
+      toast.success("Invitation sent!", {
         description: `An invitation has been sent to ${data.email}.`,
       });
       onOpenChange(false);
       form.reset();
     } else {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "There was a problem with your request.",
       });
     }
