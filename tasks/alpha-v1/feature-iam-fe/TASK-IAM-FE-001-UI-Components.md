@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-001-UI-Components"
 title: "UI Components for Team Management"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["frontend", "types"]
 dependencies: []
