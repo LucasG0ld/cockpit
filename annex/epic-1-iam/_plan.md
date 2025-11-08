@@ -77,6 +77,7 @@ graph TD
     %% Dépendances internes au Jalon 2
     FE001 --> FE002
     FE001 --> FE003
+    FE002 --> FE003
     FE001 --> FE004
     FE001 --> FE005
     FE006 --> FE007
