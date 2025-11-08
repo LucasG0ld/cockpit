@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-002-Team-View"
 title: "Team View Page"
-status: "planned"
+status: "completed"
 priority: "P1"
 labels: ["frontend"]
 dependencies: ["TASK-IAM-FE-001"]
