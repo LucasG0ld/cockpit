@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-005-Audit-Trail"
 title: "Audit Trail View"
-status: "planned"
+status: "completed"
 priority: "P2"
 labels: ["frontend"]
 dependencies: ["TASK-IAM-FE-001"]
