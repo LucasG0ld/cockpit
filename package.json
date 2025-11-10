@@ -18,5 +18,10 @@
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
     "resend": "^6.2.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "@clerk/clerk-sdk-node": "npm:@clerk/backend@^2.19.0"
+    }
   }
 }
