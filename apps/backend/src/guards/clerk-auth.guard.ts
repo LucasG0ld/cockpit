@@ -51,10 +51,13 @@ export class ClerkAuthGuard implements CanActivate {
 
       const headerValidation = headerSchema.safeParse(request.headers);
       if (!headerValidation.success) {
-        throw new UnauthorizedException('Invalid or missing session/organization headers.');
+        throw new UnauthorizedException(
+          'Invalid or missing session/organization headers.',
+        );
       }
 
-      const { 'x-session-id': sessionId, 'x-org-id': requestOrgId } = headerValidation.data;
+      const { 'x-session-id': sessionId, 'x-org-id': requestOrgId } =
+        headerValidation.data;
 
       const session = await this.clerkClient.sessions.verifySession(
         sessionId,
