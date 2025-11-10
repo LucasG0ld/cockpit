@@ -11,7 +11,7 @@ import { IS_PUBLIC_KEY } from './public.decorator';
 import type { Request as ExpressRequest } from 'express';
 import type { ClerkAuthContext, ClerkRole } from './clerk-auth-context';
 import { CLERK_CLIENT } from '../clerk/clerk.module';
-import type { ClerkClient } from '@clerk/backend';
+import type { ClerkClient } from '@clerk/clerk-sdk-node';
 
 interface AuthenticatedRequest extends ExpressRequest {
   auth: ClerkAuthContext;
