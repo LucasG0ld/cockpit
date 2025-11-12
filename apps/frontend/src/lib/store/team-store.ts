@@ -15,9 +15,9 @@ interface TeamState {
   members: TeamMember[];
   isLoading: boolean;
   error: string | null;
-  fetchMembers: () => Promise<void>;
-  inviteMember: (email: string, role: 'ADMIN' | 'MEMBER') => Promise<void>;
-  updateMember: (memberId: string, role: 'ADMIN' | 'MEMBER') => Promise<void>;
+  fetchMembers: (token: string) => Promise<void>;
+  inviteMember: (token: string, email: string, role: 'ADMIN' | 'MEMBER') => Promise<void>;
+  updateMember: (token: string, memberId: string, role: 'ADMIN' | 'MEMBER') => Promise<void>;
 }
 
 // Create the store
@@ -27,10 +27,12 @@ export const useTeamStore = create<TeamState>((set, get) => ({
   error: null,
 
   // Action to fetch members
-  fetchMembers: async () => {
+  fetchMembers: async (token) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get<TeamMember[]>('/team/members');
+      const response = await apiClient.get<TeamMember[]>('/team/members', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       set({ members: response.data, isLoading: false });
     } catch (error) {
       set({ error: 'Failed to fetch members', isLoading: false });
@@ -38,7 +40,7 @@ export const useTeamStore = create<TeamState>((set, get) => ({
   },
 
   // Action to invite a new member
-  inviteMember: async (email, role) => {
+  inviteMember: async (token, email, role) => {
     const schema = z.object({ email: z.string().email(), role: z.enum(['ADMIN', 'MEMBER']) });
     const validation = schema.safeParse({ email, role });
 
@@ -48,9 +50,12 @@ export const useTeamStore = create<TeamState>((set, get) => ({
     }
 
     try {
-      await apiClient.post('/team/invitations', { email: validation.data.email, role: validation.data.role });
+      await apiClient.post('/team/invitations', 
+        { email: validation.data.email, role: validation.data.role },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       // Refresh the list after inviting
-      await get().fetchMembers();
+      await get().fetchMembers(token);
     } catch (error) {
       console.error('Failed to invite member:', error);
       throw new Error('Failed to send invitation');
@@ -58,7 +63,7 @@ export const useTeamStore = create<TeamState>((set, get) => ({
   },
 
   // Action to update a member's role
-  updateMember: async (memberId, role) => {
+  updateMember: async (token, memberId, role) => {
     const schema = z.object({ memberId: z.string().min(1), role: z.enum(['ADMIN', 'MEMBER']) });
     const validation = schema.safeParse({ memberId, role });
 
@@ -68,9 +73,12 @@ export const useTeamStore = create<TeamState>((set, get) => ({
     }
 
     try {
-      await apiClient.patch(`/team/members/${validation.data.memberId}`, { role: validation.data.role });
+      await apiClient.patch(`/team/members/${validation.data.memberId}`, 
+        { role: validation.data.role },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       // Refresh the list after updating
-      await get().fetchMembers();
+      await get().fetchMembers(token);
     } catch (error) {
       console.error('Failed to update member:', error);
       throw new Error('Failed to update member role');

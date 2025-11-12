@@ -3,13 +3,21 @@
 import * as React from "react";
 import { AuditTable } from "./components/audit-table";
 import { useAuditStore } from "@/lib/store/audit-store";
+import { useAuth } from "@clerk/nextjs";
 
 const AuditPage = () => {
+  const { getToken } = useAuth();
   const { events, isLoading, error, fetchAuditEvents } = useAuditStore();
 
   React.useEffect(() => {
-    fetchAuditEvents();
-  }, [fetchAuditEvents]);
+    const loadEvents = async () => {
+      const token = await getToken();
+      if (token) {
+        fetchAuditEvents(token);
+      }
+    };
+    loadEvents();
+  }, [getToken, fetchAuditEvents]);
 
   return (
     <div className="container mx-auto py-10">

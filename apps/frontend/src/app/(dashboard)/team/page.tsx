@@ -5,17 +5,28 @@ import { Button } from "@/components/ui/button";
 import TeamTable from "./components/team-table";
 import { InviteMemberDialog } from "./components/invite-member-dialog";
 import { useTeamStore } from "@/lib/store/team-store";
+import { useAuth } from "@clerk/nextjs";
 
 export default function TeamPage() {
   const [isInviteDialogOpen, setInviteDialogOpen] = React.useState(false);
+  const { getToken } = useAuth();
   const { members, isLoading, error, fetchMembers, updateMember } = useTeamStore();
 
   React.useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+    const loadMembers = async () => {
+      const token = await getToken();
+      if (token) {
+        fetchMembers(token);
+      }
+    };
+    loadMembers();
+  }, [getToken, fetchMembers]);
 
-  const handleRoleChange = (memberId: string, newRole: 'ADMIN' | 'MEMBER') => {
-    updateMember(memberId, newRole);
+  const handleRoleChange = async (memberId: string, newRole: 'ADMIN' | 'MEMBER') => {
+    const token = await getToken();
+    if (token) {
+      updateMember(token, memberId, newRole);
+    }
   };
 
   const handleStatusChange = (memberId: string, newStatus: 'ACTIVE' | 'INACTIVE') => {

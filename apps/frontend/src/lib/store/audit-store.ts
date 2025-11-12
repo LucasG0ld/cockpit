@@ -14,7 +14,7 @@ interface AuditState {
   events: AuditEvent[];
   isLoading: boolean;
   error: string | null;
-  fetchAuditEvents: () => Promise<void>;
+  fetchAuditEvents: (token: string) => Promise<void>;
 }
 
 // Create the store
@@ -24,10 +24,12 @@ export const useAuditStore = create<AuditState>((set) => ({
   error: null,
 
   // Action to fetch audit events
-  fetchAuditEvents: async () => {
+  fetchAuditEvents: async (token) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get<AuditEvent[]>('/audit-log');
+      const response = await apiClient.get<AuditEvent[]>('/audit-log', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       set({ events: response.data, isLoading: false });
     } catch (error) {
       set({ error: 'Failed to fetch audit events', isLoading: false });

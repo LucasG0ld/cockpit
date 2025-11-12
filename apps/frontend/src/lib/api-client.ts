@@ -1,19 +1,10 @@
-import { auth } from '@clerk/nextjs/app';
 import axios from 'axios';
 
+// Create a basic axios instance.
+// The authentication token will be added to headers in the store actions themselves,
+// after being fetched from a React component context.
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-});
-
-apiClient.interceptors.request.use(async (config) => {
-  const { getToken } = auth();
-  const token = await getToken();
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
 });
 
 export default apiClient;
