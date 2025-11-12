@@ -24,49 +24,23 @@ import {
 import { EditRoleDialog, TeamMember } from "./edit-role-dialog";
 import { ToggleStatusDialog } from "./toggle-status-dialog";
 
-const initialMembers: TeamMember[] = [
-  {
-    id: "1",
-    name: "Lucas Gold",
-    email: "lucas.gold@example.com",
-    role: "ADMIN",
-    status: "ACTIVE",
-    lastActivity: "2 days ago",
-  },
-  {
-    id: "2",
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    role: "MEMBER",
-    status: "INACTIVE",
-    lastActivity: "1 week ago",
-  },
-  {
-    id: "3",
-    name: "John Smith",
-    email: "john.smith@example.com",
-    role: "MEMBER",
-    status: "ACTIVE",
-    lastActivity: "3 hours ago",
-  },
-];
+interface TeamTableProps {
+  members: TeamMember[];
+  onRoleChange: (memberId: string, newRole: 'ADMIN' | 'MEMBER') => void;
+  onStatusChange: (memberId: string, newStatus: 'ACTIVE' | 'INACTIVE') => void;
+}
 
-export default function TeamTable() {
-  const [members, setMembers] = React.useState<TeamMember[]>(initialMembers);
+export default function TeamTable({ members, onRoleChange, onStatusChange }: TeamTableProps) {
   const [selectedMember, setSelectedMember] = React.useState<TeamMember | null>(null);
   const [isEditRoleDialogOpen, setEditRoleDialogOpen] = React.useState(false);
   const [isToggleStatusDialogOpen, setToggleStatusDialogOpen] = React.useState(false);
 
   const handleRoleChange = (memberId: string, newRole: "ADMIN" | "MEMBER") => {
-    setMembers((prev) =>
-      prev.map((m) => (m.id === memberId ? { ...m, role: newRole } : m))
-    );
+    onRoleChange(memberId, newRole);
   };
 
   const handleStatusChange = (memberId: string, newStatus: "ACTIVE" | "INACTIVE") => {
-    setMembers((prev) =>
-      prev.map((m) => (m.id === memberId ? { ...m, status: newStatus } : m))
-    );
+    onStatusChange(memberId, newStatus);
   };
 
   const handleOpenDialog = (member: TeamMember, dialog: 'edit' | 'status') => {

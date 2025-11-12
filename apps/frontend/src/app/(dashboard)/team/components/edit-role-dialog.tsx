@@ -38,8 +38,8 @@ export interface TeamMember {
   name: string;
   email: string;
   role: 'ADMIN' | 'MEMBER';
-  status: 'ACTIVE' | 'INACTIVE';
-  lastActivity: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'PENDING';
+  lastActivity?: string;
 }
 
 const editRoleSchema = z.object({

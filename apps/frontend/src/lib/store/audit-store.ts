@@ -1,7 +1,8 @@
 import { create } from 'zustand';
+import apiClient from '../api-client';
 
 // Define the state's shape
-interface AuditEvent {
+export interface AuditEvent {
   id: string;
   actor: { id: string; name: string };
   action: string;
@@ -22,30 +23,12 @@ export const useAuditStore = create<AuditState>((set) => ({
   isLoading: false,
   error: null,
 
-  // Action to fetch audit events (simulated API call)
+  // Action to fetch audit events
   fetchAuditEvents: async () => {
     set({ isLoading: true, error: null });
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // In a real app, you would fetch data from an API
-      const fakeEvents: AuditEvent[] = [
-        {
-          id: 'evt_1',
-          actor: { id: 'user_1', name: 'Alice' },
-          action: 'member.invited',
-          target: { id: 'user_3', type: 'user' },
-          createdAt: new Date(),
-        },
-        {
-          id: 'evt_2',
-          actor: { id: 'user_1', name: 'Alice' },
-          action: 'member.role.updated',
-          target: { id: 'user_2', type: 'user' },
-          createdAt: new Date(Date.now() - 1000 * 60 * 5),
-        },
-      ];
-      set({ events: fakeEvents, isLoading: false });
+      const response = await apiClient.get<AuditEvent[]>('/audit-log');
+      set({ events: response.data, isLoading: false });
     } catch (error) {
       set({ error: 'Failed to fetch audit events', isLoading: false });
     }

@@ -4,9 +4,25 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import TeamTable from "./components/team-table";
 import { InviteMemberDialog } from "./components/invite-member-dialog";
+import { useTeamStore } from "@/lib/store/team-store";
 
 export default function TeamPage() {
   const [isInviteDialogOpen, setInviteDialogOpen] = React.useState(false);
+  const { members, isLoading, error, fetchMembers, updateMember } = useTeamStore();
+
+  React.useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
+
+  const handleRoleChange = (memberId: string, newRole: 'ADMIN' | 'MEMBER') => {
+    updateMember(memberId, newRole);
+  };
+
+  const handleStatusChange = (memberId: string, newStatus: 'ACTIVE' | 'INACTIVE') => {
+    // The current backend implementation doesn't support changing status directly.
+    // This is a placeholder for future functionality.
+    console.log(`Status change for ${memberId} to ${newStatus} is not implemented yet.`);
+  };
 
   return (
     <div className="container mx-auto py-10">
@@ -19,7 +35,15 @@ export default function TeamPage() {
           <Button>Inviter un membre</Button>
         </InviteMemberDialog>
       </div>
-      <TeamTable />
+      {isLoading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {!isLoading && !error && (
+        <TeamTable 
+          members={members} 
+          onRoleChange={handleRoleChange} 
+          onStatusChange={handleStatusChange} 
+        />
+      )}
     </div>
   );
 }
