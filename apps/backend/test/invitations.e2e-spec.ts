@@ -4,11 +4,12 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { Invitation, UserRole } from '../prisma/generated/client';
-import { CLERK_TOKEN_VERIFIER } from '../src/guards/clerk-auth.guard';
+import { CLERK_CLIENT } from '../src/clerk/clerk.module';
 import { EmailService, IEmailService } from '../src/email/email.service';
 
 const VALID_TOKEN = 'valid.token.example';
 const ORG_ID = 'org_0123456789abcdefghijklmnop';
+const SESSION_ID = 'sess_123';
 
 import { PrismaService } from '../src/prisma/prisma.service';
 
@@ -21,57 +22,75 @@ describe('InvitationsController (e2e)', () => {
     sub: 'user_123',
     orgId: ORG_ID,
     role: 'Admin',
-    sid: 'sess_123',
+    sid: SESSION_ID,
   };
 
-  const mockVerifier = {
-    verify: (token: string) => {
-      if (token === VALID_TOKEN) {
-        return Promise.resolve(verifiedTokenClaims);
-      }
-      return Promise.reject(new UnauthorizedException('Invalid token'));
+  const baseSession = {
+    id: SESSION_ID,
+    userId: verifiedTokenClaims.sub,
+    actor: {
+      orgId: ORG_ID,
+      org_role: verifiedTokenClaims.role,
+      amr: [{ method: 'totp', timestamp: Date.now() }],
     },
   };
 
   beforeEach(async () => {
+    const mockClerkClient = {
+      sessions: {
+        verifySession: jest.fn((sessionId: string, token: string) => {
+          if (sessionId !== SESSION_ID || token !== VALID_TOKEN) {
+            return Promise.reject(new UnauthorizedException('Invalid token'));
+          }
+
+          return Promise.resolve(baseSession);
+        }),
+      },
+    };
+
+    const mockEmailService: IEmailService = {
+      sendInvitationEmail: jest.fn().mockResolvedValue(undefined),
+    };
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-      .overrideProvider(CLERK_TOKEN_VERIFIER)
-      .useValue(mockVerifier)
+      .overrideProvider(CLERK_CLIENT)
+      .useValue(mockClerkClient)
+      .overrideProvider(EmailService)
+      .useValue(mockEmailService)
       .compile();
 
     app = moduleFixture.createNestApplication();
     prisma = moduleFixture.get<PrismaService>(PrismaService);
     emailService = moduleFixture.get<IEmailService>(EmailService);
 
-    // Clean up database before each test
-    await prisma.invitation.deleteMany();
-    await prisma.membership.deleteMany();
-    await prisma.identity.deleteMany();
-    await prisma.organization.deleteMany();
-
-    // Create test organization and user
-    await prisma.organization.create({
-      data: {
-        id: ORG_ID,
-        externalId: 'ext-org-123',
-        name: 'Test Org',
-      },
-    });
-
-    await prisma.identity.create({
-      data: {
-        id: verifiedTokenClaims.sub,
-        clerkId: 'clerk-user-123',
-        email: 'inviter@test.com',
-      },
-    });
+    await prisma.$transaction([
+      prisma.membership.deleteMany(),
+      prisma.invitation.deleteMany(),
+      prisma.identity.deleteMany(),
+      prisma.organization.deleteMany(),
+      prisma.organization.create({
+        data: {
+          id: ORG_ID,
+          externalId: 'ext-org-123',
+          name: 'Test Org',
+        },
+      }),
+      prisma.identity.create({
+        data: {
+          id: verifiedTokenClaims.sub,
+          clerkId: 'clerk-user-123',
+          email: 'inviter@test.com',
+        },
+      }),
+    ]);
 
     await app.init();
   });
 
   afterEach(async () => {
+    jest.clearAllMocks();
     await app.close();
   });
 
@@ -90,6 +109,7 @@ describe('InvitationsController (e2e)', () => {
         .post('/invitations')
         .set('Authorization', `Bearer ${VALID_TOKEN}`)
         .set('x-org-id', ORG_ID)
+        .set('x-session-id', SESSION_ID)
         .send(invitationPayload)
         .expect(201);
 
@@ -109,6 +129,7 @@ describe('InvitationsController (e2e)', () => {
         .post('/invitations')
         .set('Authorization', `Bearer ${VALID_TOKEN}`)
         .set('x-org-id', ORG_ID)
+        .set('x-session-id', SESSION_ID)
         .send(invitationPayload)
         .expect(201)
         .expect(({ body }: { body: Invitation }) => {

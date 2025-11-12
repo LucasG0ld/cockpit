@@ -4,42 +4,65 @@ import { App } from 'supertest/types';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UserRole } from '../prisma/generated/client';
-import { CLERK_TOKEN_VERIFIER } from '../src/guards/clerk-auth.guard';
+import { CLERK_CLIENT } from '../src/clerk/clerk.module';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { EmailService, IEmailService } from '../src/email/email.service';
 
 const VALID_TOKEN = 'valid.token.example';
 const ORG_ID = 'org_0123456789abcdefghijklmnop';
+const SESSION_ID = 'sess_123';
 
 describe('Activation (e2e)', () => {
   let app: INestApplication<App>;
   let prisma: PrismaService;
+  let emailService: IEmailService;
 
   const verifiedTokenClaims = {
     sub: 'user_123',
     orgId: ORG_ID,
     role: 'Admin',
-    sid: 'sess_123',
+    sid: SESSION_ID,
   };
 
-  const mockVerifier = {
-    verify: (token: string) => {
-      if (token === VALID_TOKEN) {
-        return Promise.resolve(verifiedTokenClaims);
-      }
-      return Promise.reject(new UnauthorizedException('Invalid token'));
+  const baseSession = {
+    id: SESSION_ID,
+    userId: verifiedTokenClaims.sub,
+    actor: {
+      orgId: ORG_ID,
+      org_role: verifiedTokenClaims.role,
+      amr: [{ method: 'totp', timestamp: Date.now() }],
     },
   };
 
   beforeEach(async () => {
+    const mockClerkClient = {
+      sessions: {
+        verifySession: jest.fn((sessionId: string, token: string) => {
+          if (sessionId !== SESSION_ID || token !== VALID_TOKEN) {
+            return Promise.reject(new UnauthorizedException('Invalid token'));
+          }
+
+          return Promise.resolve(baseSession);
+        }),
+      },
+    };
+
+    const mockEmailService: IEmailService = {
+      sendInvitationEmail: jest.fn().mockResolvedValue(undefined),
+    };
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-      .overrideProvider(CLERK_TOKEN_VERIFIER)
-      .useValue(mockVerifier)
+      .overrideProvider(CLERK_CLIENT)
+      .useValue(mockClerkClient)
+      .overrideProvider(EmailService)
+      .useValue(mockEmailService)
       .compile();
 
     app = moduleFixture.createNestApplication();
     prisma = moduleFixture.get<PrismaService>(PrismaService);
+    emailService = moduleFixture.get<IEmailService>(EmailService);
 
     await prisma.invitation.deleteMany();
     await prisma.membership.deleteMany();
@@ -66,26 +89,56 @@ describe('Activation (e2e)', () => {
   });
 
   afterEach(async () => {
+    jest.clearAllMocks();
     await app.close();
   });
 
   describe('POST /invitations/:token/activate', () => {
     it('should accept an invitation and create a membership', async () => {
-      const invitation = await prisma.invitation.create({
-        data: {
-          email: 'acceptable@example.com',
-          role: UserRole.Admin,
-          organizationId: ORG_ID,
-          invitedById: verifiedTokenClaims.sub,
-          token: 'acceptable-token',
-          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-        },
-      });
+      const createPayload = {
+        email: 'acceptable@example.com',
+        role: UserRole.Admin,
+      };
+
+      const sendInvitationEmailSpy = jest
+        .spyOn(emailService, 'sendInvitationEmail')
+        .mockResolvedValue(undefined);
+
+      const invitationResponse = await request(app.getHttpServer())
+        .post('/invitations')
+        .set('Authorization', `Bearer ${VALID_TOKEN}`)
+        .set('x-org-id', ORG_ID)
+        .set('x-session-id', SESSION_ID)
+        .send(createPayload)
+        .expect(201);
+
+      expect(sendInvitationEmailSpy).toHaveBeenCalled();
+
+      const invitationToken = invitationResponse.body
+        .token as string | undefined;
+
+      const invitationRecord = invitationToken
+        ? await prisma.invitation.findUnique({
+            where: { token: invitationToken },
+          })
+        : await prisma.invitation.findFirst({
+            where: { email: createPayload.email },
+            orderBy: { createdAt: 'desc' },
+          });
+
+      if (!invitationRecord) {
+        throw new Error('Invitation not created in database');
+      }
+
+      const activationToken = invitationRecord.token;
 
       const activationPayload = { clerkId: 'new-clerk-user-123' };
 
       await request(app.getHttpServer())
-        .post(`/invitations/${invitation.token}/activate`)
+        .post(`/invitations/${activationToken}/activate`)
+        .set('Authorization', `Bearer ${VALID_TOKEN}`)
+        .set('x-org-id', ORG_ID)
+        .set('x-session-id', SESSION_ID)
         .send(activationPayload)
         .expect(201);
 
@@ -102,10 +155,10 @@ describe('Activation (e2e)', () => {
       });
 
       expect(membership).not.toBeNull();
-      expect(membership?.role).toBe(invitation.role);
+      expect(membership?.role).toBe(invitationRecord.role);
 
       const usedInvitation = await prisma.invitation.findUnique({
-        where: { id: invitation.id },
+        where: { id: invitationRecord.id },
       });
       expect(usedInvitation?.status).toBe('Accepted');
     });
