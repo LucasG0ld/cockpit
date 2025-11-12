@@ -11,6 +11,13 @@ importers:
       resend:
         specifier: ^6.2.2
         version: 6.2.2
+    devDependencies:
+      '@nestjs/cli':
+        specifier: ^11.0.10
+        version: 11.0.10(@types/node@22.18.8)
+      ts-loader:
+        specifier: ^9.5.4
+        version: 9.5.4(typescript@5.9.2)(webpack@5.100.2)
 
   apps/backend:
     dependencies:
