@@ -114,8 +114,8 @@ describe('Activation (e2e)', () => {
 
       expect(sendInvitationEmailSpy).toHaveBeenCalled();
 
-      const invitationToken = invitationResponse.body
-        .token as string | undefined;
+      const responseBody = invitationResponse.body as { token: string };
+      const invitationToken = responseBody.token;
 
       const invitationRecord = invitationToken
         ? await prisma.invitation.findUnique({
