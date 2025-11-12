@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-007-API-Integration"
 title: "API Integration"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["frontend"]
 dependencies: ["TASK-IAM-FE-002", "TASK-IAM-FE-003", "TASK-IAM-FE-004", "TASK-IAM-FE-005", "TASK-IAM-FE-006"]
