@@ -1,6 +1,12 @@
-# Micro-Workflow C : Génération du Plan Technique
+---
+trigger: manual
+---
 
-**Objectif :** Ce protocole guide l'exécution de la planification technique d'une feature, un jalon à la fois. Tu commences cette mission après avoir reçu l'approbation humaine suite au workflow `α-Start_Mission`. Ton but est d'exécuter la procédure de décomposition pour créer ou mettre à jour le plan d'action technique.
+# Micro-Workflow C : Génération du Plan d'Exécution Technique
+
+**Objectif :** Ce protocole transforme une **spécification fonctionnelle validée** (`PRD_Feature_...md`) en un **plan d'exécution technique** (`_plan.md`) et en tâches détaillées (`TASK-*.md`).
+
+**Garde-fou de Responsabilité :** Ce workflow se concentre exclusivement sur le **"COMMENT"**. Il est initié **APRÈS** la validation du livrable du Workflow B. Il est le seul workflow habilité à créer ou modifier le fichier `_plan.md`.
 
 ---
 
@@ -8,7 +14,7 @@
 
 **Instruction :** Lis et assimile intégralement le contenu du fichier de fonction suivant.
 
-*   `.windsurf/rules/functions/run_feature_decomposition_and_planning.md` **(Version Cyclique)**
+*   [.windsurf/rules/functions/run_feature_decomposition_and_planning.md](cci:7://file:///f:/dev/cockpit/.windsurf/rules/functions/run_feature_decomposition_and_planning.md:0:0-0:0) **(Version Cyclique)**
 
 Une fois cette procédure parfaitement assimilée, passe à la phase d'exécution.
 
@@ -21,7 +27,7 @@ Une fois cette procédure parfaitement assimilée, passe à la phase d'exécutio
 1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
     *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
     *   **Si oui,** tu peux continuer.
-    *   **Si non (parce que la conversation a été longue ou a dévié),** tu dois d'abord relire le fichier `.windsurf/rules/functions/inject_doctrines_fondamentales.md` avant de procéder à l'étape suivante.
+    *   **Si non (parce que la conversation a été longue ou a dévié),** tu dois d'abord relire le fichier [.windsurf/rules/functions/inject_doctrines_fondamentales.md](cci:7://file:///f:/dev/cockpit/.windsurf/rules/functions/inject_doctrines_fondamentales.md:0:0-0:0) avant de procéder à l'étape suivante.
 
 2.  **Exécution de la Décomposition et de la Planification :**
     *   Exécute la procédure `run_feature_decomposition_and_planning`.

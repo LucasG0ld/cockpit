@@ -1,6 +1,12 @@
-# Micro-Workflow B : Génération du PRD Feature
+---
+trigger: manual
+---
 
-**Objectif :** Ce protocole guide l'exécution de la spécification détaillée d'une feature. Tu commences cette mission après avoir reçu l'approbation humaine suite au workflow `α-Start_Mission`, qui a permis de valider ta compréhension initiale de la vision de l'épique.
+# Micro-Workflow B : Génération de la Spécification Fonctionnelle (PRD Feature)
+
+**Objectif :** Ce protocole guide la création du **cahier des charges fonctionnel** (`PRD_Feature_...md`). Il traduit la vision de l'épique en User Stories et critères d'acceptation.
+
+**Garde-fou de Responsabilité :** Ce workflow se concentre exclusivement sur le **"QUOI"**. Il ne doit **JAMAIS** être utilisé pour générer un plan d'exécution technique (`_plan.md`) ou des tâches (`TASK-*.md`). Cette responsabilité incombe au **Workflow C**.
 
 ---
 
@@ -8,7 +14,7 @@
 
 **Instruction :** Lis et assimile intégralement le contenu du fichier de fonction suivant.
 
-*   `.windsurf/rules/functions/run_prd_feature_specification.md` **(Version Renforcée)**
+*   [.windsurf/rules/functions/run_prd_feature_specification.md](cci:7://file:///f:/dev/cockpit/.windsurf/rules/functions/run_prd_feature_specification.md:0:0-0:0) **(Version Renforcée)**
 
 Une fois cette procédure parfaitement assimilée, passe à la phase d'exécution.
 
@@ -21,7 +27,7 @@ Une fois cette procédure parfaitement assimilée, passe à la phase d'exécutio
 1.  **Validation du Contexte Doctrinal (Approche Opportuniste) :**
     *   Au début de cette phase, confirme que les neuf doctrines fondamentales sont toujours présentes dans ton contexte de travail récent.
     *   **Si oui,** tu peux continuer.
-    *   **Si non,** tu dois d'abord relire le fichier `.windsurf/rules/functions/inject_doctrines_fondamentales.md` avant de procéder.
+    *   **Si non,** tu dois d'abord relire le fichier [.windsurf/rules/functions/inject_doctrines_fondamentales.md](cci:7://file:///f:/dev/cockpit/.windsurf/rules/functions/inject_doctrines_fondamentales.md:0:0-0:0) avant de procéder.
 
 2.  **Exécution de la Spécification de la Feature :**
     *   Exécute la procédure `run_prd_feature_specification`.
