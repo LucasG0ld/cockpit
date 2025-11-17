@@ -28,9 +28,10 @@ interface TeamTableProps {
   members: TeamMember[];
   onRoleChange: (memberId: string, newRole: 'ADMIN' | 'MEMBER') => void;
   onStatusChange: (memberId: string, newStatus: 'ACTIVE' | 'INACTIVE') => void;
+  userRole: 'ADMIN' | 'MEMBER' | null | undefined;
 }
 
-export default function TeamTable({ members, onRoleChange, onStatusChange }: TeamTableProps) {
+export default function TeamTable({ members, onRoleChange, onStatusChange, userRole }: TeamTableProps) {
   const [selectedMember, setSelectedMember] = React.useState<TeamMember | null>(null);
   const [isEditRoleDialogOpen, setEditRoleDialogOpen] = React.useState(false);
   const [isToggleStatusDialogOpen, setToggleStatusDialogOpen] = React.useState(false);
@@ -77,24 +78,26 @@ export default function TeamTable({ members, onRoleChange, onStatusChange }: Tea
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => handleOpenDialog(member, 'edit')}>
-                      Edit role
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleOpenDialog(member, 'status')}>
-                      {member.status === "ACTIVE" ? "Deactivate" : "Reactivate"}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {userRole === 'ADMIN' && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleOpenDialog(member, 'edit')}>
+                        Edit role
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleOpenDialog(member, 'status')}>
+                        {member.status === "ACTIVE" ? "Deactivate" : "Reactivate"}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </TableCell>
             </TableRow>
           ))}

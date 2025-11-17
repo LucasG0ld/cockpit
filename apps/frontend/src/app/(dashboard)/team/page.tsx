@@ -9,7 +9,7 @@ import { useAuth } from "@clerk/nextjs";
 
 export default function TeamPage() {
   const [isInviteDialogOpen, setInviteDialogOpen] = React.useState(false);
-  const { getToken } = useAuth();
+  const { getToken, orgRole } = useAuth();
   const { members, isLoading, error, fetchMembers, updateMember } = useTeamStore();
 
   React.useEffect(() => {
@@ -53,6 +53,7 @@ export default function TeamPage() {
           members={members} 
           onRoleChange={handleRoleChange} 
           onStatusChange={handleStatusChange} 
+          userRole={orgRole}
         />
       )}
     </div>
