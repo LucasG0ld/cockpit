@@ -39,6 +39,7 @@ graph TD
             FE006[TASK-IAM-FE-006-State-Management]
             FE007[TASK-IAM-FE-007-API-Integration]
             FE007A[TASK-IAM-FE-007-A-UI-Permissions]
+            FE008[TASK-IAM-FE-008-Clerk-Integration-Fix]
         end
     end
     subgraph Jalon 3: Cross-Tenant UX
@@ -76,16 +77,27 @@ graph TD
     BE005A --> BE009
 
     %% Dépendances internes au Jalon 2
+    %% La configuration de Clerk est un prérequis pour toutes les vues et intégrations
+    FE008 --> FE002
+    FE008 --> FE003
+    FE008 --> FE004
+    FE008 --> FE005
+    FE008 --> FE007
+
+    %% Les composants UI sont des prérequis pour les vues
     FE001 --> FE002
     FE001 --> FE003
-    FE002 --> FE003
     FE001 --> FE004
     FE001 --> FE005
+
+    %% L'intégration API dépend de toutes les fonctionnalités et du state management
     FE006 --> FE007
     FE002 --> FE007
     FE003 --> FE007
     FE004 --> FE007
     FE005 --> FE007
+    
+    %% La gestion des permissions est la dernière étape
     FE007 --> FE007A
 
     %% Dépendances entre les Jalons
