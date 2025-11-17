@@ -28,7 +28,7 @@ interface TeamTableProps {
   members: TeamMember[];
   onRoleChange: (memberId: string, newRole: 'ADMIN' | 'MEMBER') => void;
   onStatusChange: (memberId: string, newStatus: 'ACTIVE' | 'INACTIVE') => void;
-  userRole: 'ADMIN' | 'MEMBER' | null | undefined;
+  userRole: string | null | undefined;
 }
 
 export default function TeamTable({ members, onRoleChange, onStatusChange, userRole }: TeamTableProps) {
@@ -78,7 +78,7 @@ export default function TeamTable({ members, onRoleChange, onStatusChange, userR
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                {userRole === 'ADMIN' && (
+                {userRole === 'admin' && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
