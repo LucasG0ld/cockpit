@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-007-A-UI-Permissions"
 title: "UI Permissions & Access Control"
-status: "planned"
+status: "completed"
 priority: "P1"
 labels: ["frontend", "security"]
 dependencies: ["TASK-IAM-FE-007"]
