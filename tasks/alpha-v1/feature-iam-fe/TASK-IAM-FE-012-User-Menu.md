@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-012-User-Menu"
 title: "User Menu & Logout Integration"
-status: "planned"
+status: "completed"
 priority: "P1"
 labels: ["frontend", "ux", "auth"]
 dependencies: ["TASK-IAM-FE-008-Clerk-Integration-Fix"]
