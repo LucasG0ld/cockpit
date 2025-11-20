@@ -5,7 +5,7 @@ migration_name: ''
 ---
 id: "TASK-IAM-FE-008-Clerk-Integration-Fix"
 title: "Fix Clerk Integration: Add Middleware and Sign-In Page"
-status: "planned"
+status: "completed"
 priority: "P0"
 labels: ["frontend", "auth"]
 dependencies: []
