@@ -40,6 +40,10 @@ graph TD
             FE007[TASK-IAM-FE-007-API-Integration]
             FE007A[TASK-IAM-FE-007-A-UI-Permissions]
             FE008[TASK-IAM-FE-008-Clerk-Integration-Fix]
+            FE009[TASK-IAM-FE-009-Invite-Acceptance]
+            FE010[TASK-IAM-FE-010-Reassignment-Flow]
+            FE011[TASK-IAM-FE-011-Access-Control-UI]
+            FE012[TASK-IAM-FE-012-User-Menu]
         end
     end
     subgraph Jalon 3: Cross-Tenant UX
@@ -110,6 +114,28 @@ graph TD
 
     %% La dernière tâche d'intégration du Jalon 2 débloque le Jalon 3
     FE007A --> J3_Node
+
+    %% Tâches issues de l'Audit (Complétude Jalon 2)
+    %% Le flux d'invitation public nécessite le client API et Clerk
+    FE007 --> FE009
+    FE008 --> FE009
+
+    %% La réassignation est une extension de l'édition de membre avec des vérifications API
+    FE004 --> FE010
+    FE007 --> FE010
+
+    %% Les pages d'erreur globales sont déclenchées par l'API ou les guards
+    FE007 --> FE011
+    FE007A --> FE011
+
+    %% Le menu utilisateur nécessite l'auth Clerk
+    FE008 --> FE012
+
+    %% Ces tâches sont requises pour clôturer le Jalon 2
+    FE009 --> J3_Node
+    FE010 --> J3_Node
+    FE011 --> J3_Node
+    FE012 --> J3_Node
 
     %% Ordonnancement global des jalons
     J2_Node --> J3_Node
