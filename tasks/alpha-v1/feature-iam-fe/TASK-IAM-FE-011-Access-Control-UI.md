@@ -1,17 +1,4 @@
 ## Méta-données (OBLIGATOIRE)
----
-task_type: 'development'
-migration_name: ''
----
-id: "TASK-IAM-FE-011-Access-Control-UI"
-title: "Global 403/404 Error Pages & Handling"
-status: "planned"
-priority: "P1"
-labels: ["frontend", "ux", "security"]
-dependencies: ["TASK-IAM-FE-007-API-Integration", "TASK-IAM-FE-007-A-UI-Permissions"]
-created: "2025-11-20"
----
-### 1. High-Level Objective
 Créer les pages d'erreur explicites pour les accès refusés (403 - Mauvaise Org/Rôle) et s'assurer que l'utilisateur n'est pas juste bloqué face à une page blanche ou un toast générique.
 
 ### 2. Background / Context
